@@ -46,6 +46,3 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
-springBoot {
-  mainClass = "hello.Application"
-}
