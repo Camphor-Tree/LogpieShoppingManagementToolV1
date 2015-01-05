@@ -3,9 +3,6 @@
 /bin/
 target/
  
-# OS Files #
-.DS_Store
- 
 # Package Files #
 *.war
 *.ear
@@ -14,6 +11,6 @@ target/
 .DS_Store
 .svn
 .classpath
-.settings/
-.bin
-.lock
+/.settings/
+*.bin
+*.lock
