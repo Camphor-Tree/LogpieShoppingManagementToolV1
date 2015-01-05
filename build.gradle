@@ -9,7 +9,6 @@ buildscript {
     }
 }
 
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -41,6 +40,8 @@ dependencies {
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     testCompile("junit:junit")
+    compile("mysql:mysql-connector-java:5.1.16")
+    compile("org.springframework:spring-jdbc")
 }
 
 task wrapper(type: Wrapper) {

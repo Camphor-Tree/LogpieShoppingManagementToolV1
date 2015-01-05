@@ -13,3 +13,7 @@ target/
 #For iOS auto-generated file
 .DS_Store
 .svn
+.classpath
+.settings/
+.bin
+.lock
