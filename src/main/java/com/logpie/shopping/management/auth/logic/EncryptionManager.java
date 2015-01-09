@@ -35,7 +35,9 @@ public class EncryptionManager
     // Internally it will use PKCS7Padding. Because AES's
     private static final String AES_CBC_PKCS7_PADDING = "AES/CBC/PKCS5Padding";
     private static final String AES_SALT = "AES/CBC/PKCS7Padding";
-    private static final byte VERSION_0 = 0;
+    // This is the cookie version. If we need to upgrade the encryption
+    // mechanism, we should change this.
+    private static final byte COOKIE_VERSION = 0;
     private static final int HMAC_LENGTH = 8;
     private static final int IV_LENGTH = 16;
 
@@ -73,7 +75,7 @@ public class EncryptionManager
             // 9-24 Initialization vector (16 bytes)
             // 25-end Ciphertext
             final byte[] result = new byte[1 + HMAC_LENGTH + IV_LENGTH + ciphertext.length];
-            result[0] = VERSION_0;
+            result[0] = COOKIE_VERSION;
             System.arraycopy(hmac, 0, result, 1, HMAC_LENGTH);
             System.arraycopy(iv, 0, result, 1 + HMAC_LENGTH, IV_LENGTH);
             System.arraycopy(ciphertext, 0, result, 1 + HMAC_LENGTH + IV_LENGTH, ciphertext.length);
@@ -92,7 +94,7 @@ public class EncryptionManager
         {
             return null;
         }
-        if (encryptedBytes[0] != VERSION_0)
+        if (encryptedBytes[0] != COOKIE_VERSION)
         {
             return null;
         }

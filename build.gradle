@@ -1,3 +1,4 @@
+import java.util.regex.Pattern
 buildscript {
     repositories {
         maven { url "https://repo.spring.io/libs-release" }
@@ -15,9 +16,30 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
 
+class Version
+{
+	String mVersion
+}
+Version ver = new Version();
+
+task increaseVersion (){
+	println(":incrementVersionCode - Incrementing Version Code...")
+	//TODO: we should move it to remote.
+	def versionFile = file("version.txt")
+	def patternVersionCode = Pattern.compile("versionCode=\"(\\d+)\"")
+	def versionText = versionFile.getText();
+	def matcherVersionCode = patternVersionCode.matcher(versionText)
+    matcherVersionCode.find()
+    def versionCode = Integer.parseInt(matcherVersionCode.group(1))
+    def nextVersionCode = versionCode + 1
+    def nextVersionContent = matcherVersionCode.replaceAll("versionCode=\"" + nextVersionCode + "\"")
+	versionFile.write(nextVersionContent);
+	ver.mVersion = nextVersionCode;
+}
+
 war {
     baseName = 'LogpieShopping'
-    version =  '1.0.0'
+    version =  '1.0.' + ver.mVersion
 }
 
 jar {
@@ -48,3 +70,4 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
+
