@@ -16,12 +16,12 @@
   <body>
 
     <div class="container">
-      <form class="form-signin">
+      <form class="form-signin" action="/LogpieShopping/signin" method="post">
         <h2 class="form-signin-heading">登陆logpie管理系统</h2>
         <label for="inputEmail" class="sr-only">管理员email</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="管理员 email" required autofocus>
+        <input type="email" id="inputEmail" name="email" class="form-control" placeholder="管理员 email" required autofocus>
         <label for="inputPassword" class="sr-only">管理员 密码</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="管理员 密码" required>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="管理员 密码" required>
 		<!--  Currently we don't support remember me
         <div class="checkbox">
           <label>

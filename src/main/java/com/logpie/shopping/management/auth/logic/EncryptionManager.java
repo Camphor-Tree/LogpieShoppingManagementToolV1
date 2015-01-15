@@ -3,8 +3,11 @@ package com.logpie.shopping.management.auth.logic;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -17,6 +20,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 /**
@@ -27,10 +31,11 @@ import org.apache.tomcat.util.codec.binary.Base64;
  */
 public class EncryptionManager
 {
+    private static final Logger LOG = Logger.getLogger(EncryptionManager.class);
     /*
      * HMAC hash for verification of the data.
      */
-    private static final String HMAC_SHA256 = "HmacSha256";
+    private static final String HMAC_SHA256 = "HmacSHA256";
 
     // Internally it will use PKCS7Padding. Because AES's
     private static final String AES_CBC_PKCS7_PADDING = "AES/CBC/PKCS5Padding";
@@ -82,7 +87,7 @@ public class EncryptionManager
             return Base64.encodeBase64String(result);
         } catch (Exception e)
         {
-            e.printStackTrace();
+            LOG.error("Unknow exception happened when encrypt the cookie", e);
             return null;
         }
     }
@@ -143,27 +148,21 @@ public class EncryptionManager
     // Currently we just derive the encryption from a specific String
     // TODO: In the future, we should just randomly generate the key, and store
     // the key in the file.
-    private Key generateKey()
+    private Key generateKey() throws NoSuchAlgorithmException, UnsupportedEncodingException,
+            InvalidKeySpecException
     {
         final int iterationCount = 1000;
-        final int keyLength = 128;
+        final int keyLength = 128; // AES-128
         final String password = "wealllovelogpie";
-        try
-        {
-            final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            final KeySpec keySpec = new PBEKeySpec(password.toCharArray(),
-                    AES_SALT.getBytes("UTF-8"), iterationCount, keyLength);
 
-            final SecretKey secrectKey = factory.generateSecret(keySpec);
-            // specify the key is used for AES algorithm
-            final Key encryptionKey = new SecretKeySpec(secrectKey.getEncoded(), "AES");
-            return encryptionKey;
+        final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        final KeySpec keySpec = new PBEKeySpec(password.toCharArray(), AES_SALT.getBytes("UTF-8"),
+                iterationCount, keyLength);
 
-        } catch (Exception e)
-        {
-            System.out.println();
-        }
-        return null;
+        final SecretKey secrectKey = factory.generateSecret(keySpec);
+        // specify the key is used for AES algorithm
+        final Key encryptionKey = new SecretKeySpec(secrectKey.getEncoded(), "AES");
+        return encryptionKey;
     }
 
     private byte[] generateIVForEncryption()

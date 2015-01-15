@@ -16,7 +16,7 @@ public class CookieManager
 {
     private static final Logger LOG = Logger.getLogger(CookieManager.class);
 
-    private static final String AUTH_COOKIE_NAME = "logpie.auth_id";
+    public static final String AUTH_COOKIE_NAME = "logpie.auth_id";
     // auth cookie expires in 1 hour
     private static final int AUTH_COOKIE_DURATION = 60 * 60;
     private static final long AUTH_COOKIE_EXPIRATION_MILLIS = AUTH_COOKIE_DURATION * 1000;
@@ -50,7 +50,7 @@ public class CookieManager
         mEncryptor = new EncryptionManager();
     }
 
-    public Cookie setupAuthCookie(Admin admin)
+    public Cookie setupAuthCookie(final Admin admin)
     {
         Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, buildAuthenticationCookie(admin));
         authCookie.setMaxAge(AUTH_COOKIE_DURATION);
@@ -58,7 +58,7 @@ public class CookieManager
         return authCookie;
     }
 
-    private String buildAuthenticationCookie(Admin admin)
+    private String buildAuthenticationCookie(final Admin admin)
     {
         final JSONObject cookieJSON = new JSONObject();
         long currentTime = System.currentTimeMillis();
@@ -75,7 +75,51 @@ public class CookieManager
             LOG.error("JSONException when building authentication cookie", e);
         }
         return mEncryptor.encrypt(cookieJSON.toString());
-
     }
 
+    public boolean validateCookie(final String cookieValue)
+    {
+        try
+        {
+            final String cookie = mEncryptor.decrypt(cookieValue);
+            final JSONObject cookieJSON = new JSONObject(cookie);
+
+            final String adminId = cookieJSON.getString("adminId");
+            final String adminEmail = cookieJSON.getString("email");
+            final String adminName = cookieJSON.getString("name");
+            final String adminPassVersion = cookieJSON.getString("passVersion");
+            final String cookieExpiration = cookieJSON.getString("expires_in");
+            // TODO: verify these values from the database
+            return checkExpiration(cookieExpiration);
+        } catch (Exception e)
+        {
+            LOG.error("Exception happened when try to parse the cookie", e);
+            return false;
+        }
+    }
+
+    public String getAdminIdFromCookie(final String cookieValue)
+    {
+        try
+        {
+            final String cookie = mEncryptor.decrypt(cookieValue);
+            final JSONObject cookieJSON = new JSONObject(cookie);
+            final String adminId = cookieJSON.getString("adminId");
+            return adminId;
+        } catch (Exception e)
+        {
+            LOG.error("Exception happened when trying to get admin id from cookie", e);
+        }
+        return null;
+    }
+
+    private boolean checkExpiration(final String cookieExpiration)
+    {
+        long cookieExpirationTime = Long.parseLong(cookieExpiration);
+        if (cookieExpirationTime > System.currentTimeMillis())
+        {
+            return true;
+        }
+        return false;
+    }
 }

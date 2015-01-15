@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="com.logpie.shopping.management.controller, com.logpie.shopping.management.auth.controller" />
+	<context:component-scan base-package="com.logpie.shopping.management.home.controller, com.logpie.shopping.management.auth.controller" />
 	
 	<bean id="ViewResolver"
 		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
