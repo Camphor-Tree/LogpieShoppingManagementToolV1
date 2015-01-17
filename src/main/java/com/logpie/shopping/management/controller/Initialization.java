@@ -9,7 +9,7 @@ public class Initialization {
 		initDatabase();
 	}
 
-	private static void initDatabase() {
+	private void initDatabase() {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 		dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
 		dataSource.setUrl("jdbc:mysql://localhost:8889/Logpie");
