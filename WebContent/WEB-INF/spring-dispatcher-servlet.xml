@@ -11,8 +11,21 @@
         http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
-
+	
 	<context:component-scan base-package="com.logpie.shopping.management.home.controller, com.logpie.shopping.management.auth.controller" />
+	
+	<mvc:interceptors>
+		<!-- This bit of XML will intercept all URLs - which is what you want in a web app -->
+		<!-- Currently logpie want to intercept all the request -->
+		<bean class="com.logpie.shopping.management.auth.controller.AuthInterceptor" />
+		<!-- This bit of XML will apply certain URLs to certain interceptors  -->
+		<!--
+		<mvc:interceptor>
+			<mvc:mapping path="/" />
+			<bean class="" />
+		</mvc:interceptor>
+		 -->
+	</mvc:interceptors>
 	
 	<bean id="ViewResolver"
 		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
