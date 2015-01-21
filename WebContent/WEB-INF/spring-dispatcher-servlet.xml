@@ -39,7 +39,7 @@
     <mvc:resources location="/resources/" mapping="/resources/**"/>
     <mvc:annotation-driven/>
     
-    <bean id="Initialization" class="com.logpie.shopping.management.controller.Initialization" init-method="init">
+    <bean id="Initialization" class="com.logpie.shopping.management.controller.LogpieInitialization" init-method="init">
         
     </bean>
 		  
