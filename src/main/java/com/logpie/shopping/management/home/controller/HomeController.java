@@ -23,6 +23,7 @@ public class HomeController
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
         if (authSuccess)
         {
+            LOG.debug("Authenticate cookie is valid. Going to home page.");
             Admin admin = AuthenticationHelper.getAdminFromCookie(request);
 
             final ModelAndView signinPage = new ModelAndView("home");
