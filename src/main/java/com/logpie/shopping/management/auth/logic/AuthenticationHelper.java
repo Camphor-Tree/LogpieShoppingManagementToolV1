@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.storage.AdminDAO;
+
 /**
  * @author zhoyilei
  *
@@ -68,7 +70,8 @@ public class AuthenticationHelper
             if (cookieName != null && cookieName.equals(CookieManager.AUTH_COOKIE_NAME))
             {
                 final String adminId = sCookieManager.getAdminIdFromCookie(cookie.getValue());
-                return new Admin(adminId, "test", "test", "test", "test", "test", "test", "test");
+                AdminDAO adminDAO = new AdminDAO();
+                return adminDAO.queryAccountByAdminId(adminId);
             }
         }
         return null;

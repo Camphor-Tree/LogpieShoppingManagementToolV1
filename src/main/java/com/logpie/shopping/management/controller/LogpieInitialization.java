@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import com.logpie.shopping.management.storage.LogpieDataSourceFactory;
+
 public class LogpieInitialization
 {
     Logger LOG = Logger.getLogger(LogpieInitialization.class);
@@ -21,11 +23,7 @@ public class LogpieInitialization
 
     private void initDatabase()
     {
-        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
-        dataSource.setUrl("jdbc:mysql://localhost:8889/Logpie");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
+        SimpleDriverDataSource dataSource = LogpieDataSourceFactory.getDataSource();
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
