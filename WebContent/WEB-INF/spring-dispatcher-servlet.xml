@@ -12,7 +12,8 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 	
-	<context:component-scan base-package="com.logpie.shopping.management.home.controller, com.logpie.shopping.management.auth.controller" />
+	<!-- you can use "," to separate multiple packages -->
+	<context:component-scan base-package="com.logpie.shopping.management.controller, com.logpie.shopping.management.auth.controller" />
 	
 	<mvc:interceptors>
 		<!-- This bit of XML will intercept all URLs - which is what you want in a web app -->
@@ -39,7 +40,7 @@
     <mvc:resources location="/resources/" mapping="/resources/**"/>
     <mvc:annotation-driven/>
     
-    <bean id="Initialization" class="com.logpie.shopping.management.controller.LogpieInitialization" init-method="init">
+    <bean id="Initialization" class="com.logpie.shopping.management.init.LogpieInitialization" init-method="init">
         
     </bean>
 		  

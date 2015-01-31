@@ -1,4 +1,4 @@
-package com.logpie.shopping.management.home.controller;
+package com.logpie.shopping.management.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +31,5 @@ public class HomeController
             return signinPage;
         }
         return "redirect:/signin";
-
     }
 }

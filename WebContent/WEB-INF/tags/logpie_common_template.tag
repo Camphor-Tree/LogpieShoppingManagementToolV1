@@ -44,14 +44,15 @@ h2{
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="./">Logpie 欢迎，${AdminName}</a>
+          <a class="navbar-brand" href="./">Logpie米国小买手 欢迎，${AdminName}</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="./">主页</a></li>
-            <li><a href="./about.php">商品管理</a></li>
-			<li><a href="./order.php">订单管理</a></li>
-			<li><a href="./message.php">财务报表</a></li>
+            <li class="active"><a href="./home">主页</a></li>
+            <li><a href="./product_management">商品管理</a></li>
+			<li><a href="./order_management">订单管理</a></li>
+			<li><a href="./accounting">财务报表</a></li>
+			<li><a href="./logout">退出登录</a></li>
           </ul>
         </div>
       </div>

@@ -1,4 +1,4 @@
-package com.logpie.shopping.management.controller;
+package com.logpie.shopping.management.init;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;

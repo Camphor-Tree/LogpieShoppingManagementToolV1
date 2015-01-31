@@ -20,20 +20,22 @@ public class AuthController
     private static final Logger LOG = Logger.getLogger(AuthController.class);
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
-    public ModelAndView showSignInPage(HttpServletRequest request, HttpServletResponse httpResponse)
+    public ModelAndView showSignInPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse)
     {
         final ModelAndView signinPage = new ModelAndView("signin");
         return signinPage;
     }
 
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
-    public Object verifyPassword(HttpServletRequest request, HttpServletResponse httpResponse)
+    public Object verifyPassword(final HttpServletRequest request,
+            final HttpServletResponse httpResponse)
     {
         LOG.debug("receiving post signin request");
         final String email = request.getParameter("email");
         final String password = request.getParameter("password");
-        AdminDAO adminDAO = new AdminDAO();
-        Admin admin = adminDAO.verifyAccount(email, password);
+        final AdminDAO adminDAO = new AdminDAO();
+        final Admin admin = adminDAO.verifyAccount(email, password);
         if (admin == null)
         {
             return "redirect:/signin";
@@ -41,10 +43,19 @@ public class AuthController
         else
         {
             final CookieManager cookieManager = new CookieManager();
-            Cookie cookie = cookieManager.setupAuthCookie(admin);
+            final Cookie cookie = cookieManager.setupAuthCookie(admin);
             httpResponse.addCookie(cookie);
             return "redirect:/home";
         }
+    }
 
+    @RequestMapping(value = "/logout")
+    public Object logout(final HttpServletRequest request, final HttpServletResponse httpResponse)
+    {
+        LOG.debug("receiving logout request");
+        final CookieManager cookieManager = new CookieManager();
+        final Cookie emptyAuthCookie = cookieManager.getEmptyAuthCookie();
+        httpResponse.addCookie(emptyAuthCookie);
+        return "redirect:/signin";
     }
 }

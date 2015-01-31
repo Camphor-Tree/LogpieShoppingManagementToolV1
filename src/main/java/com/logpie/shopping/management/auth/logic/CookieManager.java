@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.logpie.shopping.management.storage.AdminDAO;
+
 /**
  * @author zhoyilei
  * 
@@ -58,6 +60,14 @@ public class CookieManager
         return authCookie;
     }
 
+    public Cookie getEmptyAuthCookie()
+    {
+        Cookie emptyAuthCookie = new Cookie(AUTH_COOKIE_NAME, "");
+        emptyAuthCookie.setMaxAge(0);
+        emptyAuthCookie.setPath("/");
+        return emptyAuthCookie;
+    }
+
     private String buildAuthenticationCookie(final Admin admin)
     {
         final JSONObject cookieJSON = new JSONObject();
@@ -67,7 +77,7 @@ public class CookieManager
             cookieJSON.put("adminId", admin.getAdminId());
             cookieJSON.put("email", admin.getAdminEmail());
             cookieJSON.put("name", admin.getAdminName());
-            cookieJSON.put("passVersion", admin.getPassVersion());
+            // cookieJSON.put("passVersion", admin.getPassVersion());
             cookieJSON.put("expires_in",
                     String.valueOf(currentTime + AUTH_COOKIE_EXPIRATION_MILLIS));
         } catch (JSONException e)
@@ -87,9 +97,32 @@ public class CookieManager
             final String adminId = cookieJSON.getString("adminId");
             final String adminEmail = cookieJSON.getString("email");
             final String adminName = cookieJSON.getString("name");
-            final String adminPassVersion = cookieJSON.getString("passVersion");
+            // TODO: we have implemented passVersion
+            // final String adminPassVersion =
+            // cookieJSON.getString("passVersion");
+            AdminDAO adminDAO = new AdminDAO();
+            Admin admin = adminDAO.queryAccountByAdminId(adminId);
+            if (admin == null)
+            {
+                LOG.error("No such admin id!");
+                return false;
+            }
+            final String expectedEmail = admin.getAdminEmail();
+            final String expectedName = admin.getAdminName();
+            // final String expectedPassVersion = admin.getPassVersion();
+
+            if (!adminEmail.equals(expectedEmail))
+            {
+                LOG.error("Email changed or doesn't match!");
+                return false;
+            }
+            if (!adminName.equals(expectedName))
+            {
+                LOG.error("Name changed or doesn't match!");
+                return false;
+            }
             final String cookieExpiration = cookieJSON.getString("expires_in");
-            // TODO: verify these values from the database
+
             return checkExpiration(cookieExpiration);
         } catch (Exception e)
         {

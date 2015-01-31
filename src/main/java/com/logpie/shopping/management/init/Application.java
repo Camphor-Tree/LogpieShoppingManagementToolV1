@@ -1,5 +1,5 @@
 // Copyright 2015 logpie.com. All rights reserved.
-package com.logpie.shopping.management.controller;
+package com.logpie.shopping.management.init;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.SpringApplication;
