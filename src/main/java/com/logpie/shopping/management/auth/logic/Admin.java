@@ -129,6 +129,11 @@ public class Admin implements RowMapper<Admin>
     @Override
     public Admin mapRow(ResultSet rs, int rowNum) throws SQLException
     {
+        return getAdminByResultSet(rs, rowNum);
+    }
+
+    public static Admin getAdminByResultSet(final ResultSet rs, int row) throws SQLException
+    {
         if (rs == null)
         {
             return null;
@@ -147,6 +152,5 @@ public class Admin implements RowMapper<Admin>
         final String adminPassVersion = "1";
         return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
                 adminIdentityNumber, adminPassVersion);
-
     }
 }

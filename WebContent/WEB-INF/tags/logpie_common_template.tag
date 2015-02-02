@@ -44,7 +44,7 @@ h2{
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="./">Logpie米国小买手 欢迎，${AdminName}</a>
+          <a class="navbar-brand" href="./home">Logpie米国小买手</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -52,7 +52,7 @@ h2{
             <li><a href="./product_management">商品管理</a></li>
 			<li><a href="./order_management">订单管理</a></li>
 			<li><a href="./accounting">财务报表</a></li>
-			<li><a href="./logout">退出登录</a></li>
+			<li><a href="./logout">退出登录,${AdminName}</a></li>
           </ul>
         </div>
       </div>
