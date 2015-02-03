@@ -20,9 +20,9 @@ public class Product implements RowMapper<Product>
     public static final String DB_KEY_PRODUCT_LINK = "ProductLink";
     public static final String DB_KEY_PRODUCT_WEIGHT = "ProductWeight";
     public static final String DB_KEY_PRODUCT_IMAGE_ID = "ProductImageId";
-    public static final String DB_KEY_IS_ACTIVATED = "IsActivated";
-    public static final String DB_KEY_POST_DATE = "PostDate";
-    public static final String DB_KEY_BAND_ID = "BrandId";
+    public static final String DB_KEY_IS_ACTIVATED = "ProductIsActivated";
+    public static final String DB_KEY_POST_DATE = "ProductPostDate";
+    public static final String DB_KEY_BAND_ID = "ProductBrandId";
 
     private String mProductId;
     private String mProductName;

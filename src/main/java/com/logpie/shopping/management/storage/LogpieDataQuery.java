@@ -1,6 +1,7 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -15,5 +16,6 @@ public interface LogpieDataQuery<T>
 
     public Set<String> getQueryConditions();
 
-    public Set<String> getQueryTables();
+    // table name => table alias (used in multiple foreign keys connections)
+    public Map<String, String> getQueryTables();
 }

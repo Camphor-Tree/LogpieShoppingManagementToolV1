@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.logpie.shopping.management.auth.logic.Admin;
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
+import com.logpie.shopping.management.model.Admin;
 
 @Controller
 public class HomeController

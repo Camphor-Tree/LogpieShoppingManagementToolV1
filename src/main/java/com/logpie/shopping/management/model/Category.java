@@ -8,19 +8,40 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class Category implements RowMapper<Category>
 {
-    public static final String DB_KEY_CATEGORY_ID = "";
-    public static final String DB_KEY_CATEGORY_URL = "";
-    public static final String DB_KEY_CATEGORY_DESCRIPTION = "";
+    public static final String DB_KEY_CATEGORY_ID = "CategoryId";
+    public static final String DB_KEY_CATEGORY_NAME = "CategoryName";
 
-    private final String mCategoryId;
-    private final String mCategoryUrl;
-    private final String mCategoryDescription;
+    private String mCategoryId;
+    private String mCategoryName;
 
-    public Category(String categoryId, String categoryUrl, String categoryDescription)
+    // For creating a new category
+    public Category(String categoryName)
+    {
+        this.mCategoryName = categoryName;
+    }
+
+    public Category(String categoryId, String categoryName)
     {
         this.mCategoryId = categoryId;
-        this.mCategoryUrl = categoryUrl;
-        this.mCategoryDescription = categoryDescription;
+        this.mCategoryName = categoryName;
+    }
+
+    @Override
+    public Category mapRow(final ResultSet rs, final int rowNum) throws SQLException
+    {
+        return getCategoryByResultSet(rs, rowNum);
+    }
+
+    public static Category getCategoryByResultSet(final ResultSet rs, final int row)
+            throws SQLException
+    {
+        if (rs == null)
+        {
+            return null;
+        }
+        final String categoryId = rs.getString(DB_KEY_CATEGORY_ID);
+        final String categoryName = rs.getString(DB_KEY_CATEGORY_NAME);
+        return new Category(categoryId, categoryName);
     }
 
     public String getCategoryId()
@@ -28,33 +49,8 @@ public class Category implements RowMapper<Category>
         return mCategoryId;
     }
 
-    public String getCategoryUrl()
+    public String getCategoryName()
     {
-        return mCategoryUrl;
-    }
-
-    public String getCategoryDescription()
-    {
-        return mCategoryDescription;
-    }
-
-    /*
-     * Map the database row into Category object
-     * 
-     * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet,
-     * int)
-     */
-    @Override
-    public Category mapRow(ResultSet rs, int rowNum) throws SQLException
-    {
-        if (rs == null || rowNum == 0)
-        {
-            return null;
-        }
-        final String categoryId = rs.getString(DB_KEY_CATEGORY_ID);
-        final String categoryUrl = rs.getString(DB_KEY_CATEGORY_URL);
-        final String categoryDescription = rs.getString(DB_KEY_CATEGORY_DESCRIPTION);
-
-        return new Category(categoryId, categoryUrl, categoryDescription);
+        return mCategoryName;
     }
 }

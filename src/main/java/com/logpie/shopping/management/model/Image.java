@@ -29,20 +29,36 @@ public class Image implements RowMapper<Image>
     @Override
     public Image mapRow(final ResultSet rs, final int rowNum) throws SQLException
     {
-        return getImageByResultSet(rs, rowNum);
+        return getImageByResultSet(rs, rowNum, null);
     }
 
-    public static Image getImageByResultSet(final ResultSet rs, int rowNum) throws SQLException
+    public static Image getImageByResultSet(final ResultSet rs, final int rowNum,
+            final String imageTableAlias) throws SQLException
     {
         if (rs == null)
         {
             return null;
         }
-        final String imageId = rs.getString(DB_KEY_IMAGE_ID);
-        final String imageUrl = rs.getString(DB_KEY_IMAGE_URL);
-        final String imageDescription = rs.getString(DB_KEY_IMAGE_DESCRIPTION);
-        return new Image(imageId, imageUrl, imageDescription);
 
+        String keyImageId;
+        String keyImageUrl;
+        String keyImageDescription;
+        if (imageTableAlias != null)
+        {
+            keyImageId = imageTableAlias + "." + DB_KEY_IMAGE_ID;
+            keyImageUrl = imageTableAlias + "." + DB_KEY_IMAGE_URL;
+            keyImageDescription = imageTableAlias + "." + DB_KEY_IMAGE_DESCRIPTION;
+        }
+        else
+        {
+            keyImageId = DB_KEY_IMAGE_ID;
+            keyImageUrl = DB_KEY_IMAGE_URL;
+            keyImageDescription = DB_KEY_IMAGE_DESCRIPTION;
+        }
+        final String imageId = rs.getString(keyImageId);
+        final String imageUrl = rs.getString(keyImageUrl);
+        final String imageDescription = rs.getString(keyImageDescription);
+        return new Image(imageId, imageUrl, imageDescription);
     }
 
     // ImageId should be generated automatically by database

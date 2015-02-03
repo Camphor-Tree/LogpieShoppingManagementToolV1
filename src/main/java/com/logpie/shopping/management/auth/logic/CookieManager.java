@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.storage.AdminDAO;
 
 /**

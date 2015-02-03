@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.logpie.shopping.management.auth.logic.Admin;
 import com.logpie.shopping.management.auth.logic.CookieManager;
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.storage.AdminDAO;
 
 @Controller

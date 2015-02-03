@@ -2,6 +2,7 @@
 package com.logpie.shopping.management.storage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,19 +20,47 @@ public class LogpieBaseDAO<T>
 {
     private static final Logger LOG = Logger.getLogger(LogpieBaseDAO.class);
     private static final String sBaseQuerySQL = "select * from ";
+    private static final String sBaseInsertSQL = "insert into ";
 
     public LogpieBaseDAO()
     {
     }
 
+    /**
+     * Insert data into the database
+     * 
+     * @return
+     */
+    public boolean insertData(final LogpieDataInsert<T> dataInsert)
+    {
+        final JdbcTemplate jdbcTemplate = LogpieDataSourceFactory.getJdbcTemplate();
+        final String insertSQL = buildInsertSQL(dataInsert);
+        LOG.debug("insert sql is:" + insertSQL);
+        try
+        {
+            jdbcTemplate.execute(insertSQL);
+            return true;
+        } catch (Exception e)
+        {
+            LOG.error("Error happened when inserting the data", e);
+        }
+        return false;
+    }
+
+    /**
+     * Query result from database
+     * 
+     * @param query
+     * @return
+     */
     public List<T> queryResult(final LogpieDataQuery<T> query)
     {
         final JdbcTemplate jdbcTemplate = LogpieDataSourceFactory.getJdbcTemplate();
         final RowMapper<T> resultMapper = query.getQueryResultMapper();
         final Set<String> queryConditions = query.getQueryConditions();
-        final Set<String> queryTables = query.getQueryTables();
+        final Map<String, String> queryTables = query.getQueryTables();
 
-        if (CollectionUtils.isEmpty(queryTables))
+        if (queryTables == null || queryTables.size() == 0)
         {
             throw new IllegalArgumentException("The query talbe cannot be null or empty");
         }
@@ -65,14 +94,21 @@ public class LogpieBaseDAO<T>
     /**
      * @param queryTables
      */
-    private String buildQueryTablesSQL(final Set<String> queryTables)
+    private String buildQueryTablesSQL(final Map<String, String> queryTables)
     {
         final StringBuilder queryTablesBuilder = new StringBuilder();
         final int countTables = queryTables.size();
         int i = 0;
-        for (final String table : queryTables)
+        for (final Map.Entry<String, String> tableEntry : queryTables.entrySet())
         {
-            queryTablesBuilder.append(table);
+            queryTablesBuilder.append(tableEntry.getKey());
+            // Append table name alias, which is used in multiple foreign keys
+            // connections
+            if (tableEntry.getValue() != null)
+            {
+                queryTablesBuilder.append(" AS ");
+                queryTablesBuilder.append(tableEntry.getValue());
+            }
             if (++i < countTables)
             {
                 queryTablesBuilder.append(",");
@@ -106,5 +142,55 @@ public class LogpieBaseDAO<T>
             }
         }
         return queryConditionBuilder.toString();
+    }
+
+    private String buildInsertSQL(final LogpieDataInsert<T> dataInsert)
+    {
+        final StringBuilder insertSqlBuilder = new StringBuilder(sBaseInsertSQL);
+        final String table = dataInsert.getInsertTable();
+        final Map<String, Object> dataMap = dataInsert.getInsertValues();
+        // append the table name
+        insertSqlBuilder.append(table);
+
+        final StringBuilder keyBuilder = new StringBuilder(" (");
+        final StringBuilder valueBuilder = new StringBuilder(" values (");
+        int i = 0;
+        int size = dataMap.size();
+        for (Map.Entry<String, Object> dataEntry : dataMap.entrySet())
+        {
+            final String key = dataEntry.getKey();
+            final Object value = dataEntry.getValue();
+            keyBuilder.append(key);
+            if (++i < size)
+            {
+                // If not last element, append ","
+                keyBuilder.append(",");
+            }
+
+            if (value instanceof String)
+            {
+                valueBuilder.append("\'");
+                valueBuilder.append(value);
+                valueBuilder.append("\'");
+            }
+            else
+            {
+                valueBuilder.append(String.valueOf(value));
+            }
+
+            // If not last element, append ","
+            if (i < size)
+            {
+                valueBuilder.append(",");
+            }
+
+        }
+        keyBuilder.append(")");
+        valueBuilder.append(")");
+
+        // append the keys and values sql statement
+        insertSqlBuilder.append(keyBuilder.toString());
+        insertSqlBuilder.append(valueBuilder.toString());
+        return insertSqlBuilder.toString();
     }
 }

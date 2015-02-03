@@ -1,5 +1,5 @@
 // Copyright 2015 logpie.com. All rights reserved.
-package com.logpie.shopping.management.auth.logic;
+package com.logpie.shopping.management.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

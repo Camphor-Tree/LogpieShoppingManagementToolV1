@@ -1,14 +1,16 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.logpie.shopping.management.auth.logic.Admin;
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -84,11 +86,11 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         }
 
         @Override
-        public Set<String> getQueryTables()
+        public Map<String, String> getQueryTables()
         {
-            Set<String> tableSet = new HashSet<String>();
-            tableSet.add(AdminDAO.sAdminTableName);
-            return tableSet;
+            final Map<String, String> tableMap = new HashMap<String, String>();
+            tableMap.put(AdminDAO.sAdminTableName, null);
+            return tableMap;
         }
     }
 
@@ -116,11 +118,11 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         }
 
         @Override
-        public Set<String> getQueryTables()
+        public Map<String, String> getQueryTables()
         {
-            Set<String> tableSet = new HashSet<String>();
-            tableSet.add(AdminDAO.sAdminTableName);
-            return tableSet;
+            final Map<String, String> tableMap = new HashMap<String, String>();
+            tableMap.put(AdminDAO.sAdminTableName, null);
+            return tableMap;
         }
     }
 
