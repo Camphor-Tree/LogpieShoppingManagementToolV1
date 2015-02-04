@@ -14,6 +14,11 @@ public class Category implements RowMapper<Category>
     private String mCategoryId;
     private String mCategoryName;
 
+    // For RowMapper
+    public Category()
+    {
+    }
+
     // For creating a new category
     public Category(String categoryName)
     {

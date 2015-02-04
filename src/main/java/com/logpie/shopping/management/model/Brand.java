@@ -13,7 +13,7 @@ public class Brand implements RowMapper<Brand>
     public static final String DB_KEY_BRAND_ENGLISH_NAME = "BrandEnglishName";
     public static final String DB_KEY_BRAND_CHINESE_NAME = "BrandChineseName";
     public static final String DB_KEY_BRAND_IS_ACTIVATED = "BrandIsActivated";
-    public static final String DB_KEY_BRAND_SIZE_CHART_URL = "BrandSizeChartId";
+    public static final String DB_KEY_BRAND_SIZE_CHART_ID = "BrandSizeChartId";
     public static final String DB_KEY_BRAND_CATEGORY_ID = "BrandCategoryId";
 
     private String mBrandId;
@@ -22,11 +22,17 @@ public class Brand implements RowMapper<Brand>
     private String mBrandChineseName;
     private Image mBrandSizeChartImage;
     private Category mBrandCategory;
-    private boolean mBrandIsActivated;
+    private Boolean mBrandIsActivated;
+
+    // For RowMapper
+    public Brand()
+    {
+
+    }
 
     public Brand(final String brandId, final Image brandImage, final String brandEnglishName,
             final String brandChineseName, final Image brandSizeChartImage,
-            final Category brandCategory, final boolean isActivated)
+            final Category brandCategory, final Boolean isActivated)
     {
         this.mBrandId = brandId;
         this.mBrandImage = brandImage;
@@ -151,7 +157,7 @@ public class Brand implements RowMapper<Brand>
     }
 
     /**
-     * @return the brandCategoryId
+     * @return the brandCategory
      */
     public Category getBrandCategory()
     {
@@ -159,8 +165,8 @@ public class Brand implements RowMapper<Brand>
     }
 
     /**
-     * @param brandCategoryId
-     *            the brandCategoryId to set
+     * @param brandCategory
+     *            the brandCategory to set
      */
     public void setBrandCategory(Category brandCategory)
     {
@@ -170,7 +176,7 @@ public class Brand implements RowMapper<Brand>
     /**
      * @return the brandIsActivated
      */
-    public boolean isBrandIsActivated()
+    public Boolean getBrandIsActivated()
     {
         return mBrandIsActivated;
     }
@@ -179,7 +185,7 @@ public class Brand implements RowMapper<Brand>
      * @param brandIsActivated
      *            the brandIsActivated to set
      */
-    public void setBrandIsActivated(boolean brandIsActivated)
+    public void setBrandIsActivated(Boolean brandIsActivated)
     {
         mBrandIsActivated = brandIsActivated;
     }

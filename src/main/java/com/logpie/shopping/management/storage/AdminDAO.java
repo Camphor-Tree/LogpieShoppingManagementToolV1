@@ -79,7 +79,7 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         @Override
         public Set<String> getQueryConditions()
         {
-            Set<String> queryConditionsSet = new HashSet<String>();
+            final Set<String> queryConditionsSet = new HashSet<String>();
             queryConditionsSet.add("AdminEmail=\"" + mEmail + "\"");
             queryConditionsSet.add("AdminPassword=\"" + mPassword + "\"");
             return queryConditionsSet;
@@ -94,35 +94,12 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         }
     }
 
-    private class QueryAccountByAdminIdQuery implements LogpieDataQuery<Admin>
+    private class QueryAccountByAdminIdQuery extends
+            LogpieBaseQuerySingleRecordByIdTemplateQuery<Admin>
     {
-        final String mAdminId;
-
         QueryAccountByAdminIdQuery(final String adminId)
         {
-            mAdminId = adminId;
-        }
-
-        @Override
-        public RowMapper<Admin> getQueryResultMapper()
-        {
-            return new Admin();
-        }
-
-        @Override
-        public Set<String> getQueryConditions()
-        {
-            Set<String> queryConditionsSet = new HashSet<String>();
-            queryConditionsSet.add("AdminId=\"" + mAdminId + "\"");
-            return queryConditionsSet;
-        }
-
-        @Override
-        public Map<String, String> getQueryTables()
-        {
-            final Map<String, String> tableMap = new HashMap<String, String>();
-            tableMap.put(AdminDAO.sAdminTableName, null);
-            return tableMap;
+            super(new Admin(), AdminDAO.sAdminTableName, Admin.DB_KEY_ADMIN_ID, adminId);
         }
     }
 

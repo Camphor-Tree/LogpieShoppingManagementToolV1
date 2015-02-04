@@ -15,9 +15,14 @@ public class Image implements RowMapper<Image>
     public static final String DB_KEY_IMAGE_URL = "ImageUrl";
     public static final String DB_KEY_IMAGE_DESCRIPTION = "ImageDescription";
 
-    private final String mImageId;
-    private final String mImageUrl;
-    private final String mImageDescription;
+    private String mImageId;
+    private String mImageUrl;
+    private String mImageDescription;
+
+    // For RowMapper
+    public Image()
+    {
+    }
 
     public Image(final String imageId, final String imageUrl, final String imageDescription)
     {

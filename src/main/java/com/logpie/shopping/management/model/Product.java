@@ -20,34 +20,40 @@ public class Product implements RowMapper<Product>
     public static final String DB_KEY_PRODUCT_LINK = "ProductLink";
     public static final String DB_KEY_PRODUCT_WEIGHT = "ProductWeight";
     public static final String DB_KEY_PRODUCT_IMAGE_ID = "ProductImageId";
-    public static final String DB_KEY_IS_ACTIVATED = "ProductIsActivated";
-    public static final String DB_KEY_POST_DATE = "ProductPostDate";
-    public static final String DB_KEY_BAND_ID = "ProductBrandId";
+    public static final String DB_KEY_PRODUCT_IS_ACTIVATED = "ProductIsActivated";
+    public static final String DB_KEY_PRODUCT_POST_DATE = "ProductPostDate";
+    public static final String DB_KEY_PRODUCT_BRAND_ID = "ProductBrandId";
 
     private String mProductId;
     private String mProductName;
     private String mProductDescription;
     private String mProductLink;
-    private String mProductImageId;
-    private int mProductWeight;
-    private boolean mIsActivated;
-    private String mPostDate;
-    private Brand mBrand;
+    private Image mProductImage;
+    private Integer mProductWeight;
+    private Boolean mProductIsActivated;
+    private String mProductPostDate;
+    private Brand mProductBrand;
+
+    // For RowMapper
+    public Product()
+    {
+
+    }
 
     public Product(final String productId, final String productName,
-            final String productDescription, final String productLink, final String productImageId,
-            final int productWeight, final boolean isActivated, final String postDate,
+            final String productDescription, final String productLink, final Image productImage,
+            final Integer productWeight, final Boolean isActivated, final String postDate,
             final Brand brand)
     {
         mProductId = productId;
         mProductName = productName;
         mProductDescription = productDescription;
         mProductLink = productLink;
-        mProductImageId = productImageId;
+        mProductImage = productImage;
         mProductWeight = productWeight;
-        mIsActivated = isActivated;
-        mPostDate = postDate;
-        mBrand = brand;
+        mProductIsActivated = isActivated;
+        mProductPostDate = postDate;
+        mProductBrand = brand;
     }
 
     @Override
@@ -68,13 +74,13 @@ public class Product implements RowMapper<Product>
         final String productDescription = rs.getString(DB_KEY_PRODUCT_DESCRIPTION);
         final String productLink = rs.getString(DB_KEY_PRODUCT_LINK);
         final int productWeight = rs.getInt(DB_KEY_PRODUCT_WEIGHT);
-        final String productImageId = rs.getString(DB_KEY_PRODUCT_IMAGE_ID);
-        final boolean isActivated = rs.getBoolean(DB_KEY_IS_ACTIVATED);
-        final Date postDate = rs.getTimestamp(DB_KEY_POST_DATE);
+        final Image productImage = Image.getImageByResultSet(rs, row, null);
+        final boolean isActivated = rs.getBoolean(DB_KEY_PRODUCT_IS_ACTIVATED);
+        final Date postDate = rs.getTimestamp(DB_KEY_PRODUCT_POST_DATE);
         final String postDateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(postDate);
         final Brand brand = Brand.getBrandByResultSet(rs, row);
 
-        return new Product(productId, productName, productDescription, productLink, productImageId,
+        return new Product(productId, productName, productDescription, productLink, productImage,
                 productWeight, isActivated, postDateString, brand);
     }
 
@@ -149,18 +155,18 @@ public class Product implements RowMapper<Product>
     /**
      * @return the productImageId
      */
-    public String getProductImageId()
+    public Image getProductImage()
     {
-        return mProductImageId;
+        return mProductImage;
     }
 
     /**
      * @param productImageId
      *            the productImageId to set
      */
-    public void setProductImageId(String productImageId)
+    public void setProductImageId(Image productImage)
     {
-        mProductImageId = productImageId;
+        mProductImage = productImage;
     }
 
     /**
@@ -183,52 +189,52 @@ public class Product implements RowMapper<Product>
     /**
      * @return the isActivated
      */
-    public boolean isIsActivated()
+    public Boolean getProductIsActivated()
     {
-        return mIsActivated;
+        return mProductIsActivated;
     }
 
     /**
      * @param isActivated
      *            the isActivated to set
      */
-    public void setIsActivated(boolean isActivated)
+    public void setProductIsActivated(boolean isActivated)
     {
-        mIsActivated = isActivated;
+        mProductIsActivated = isActivated;
     }
 
     /**
      * @return the postDate
      */
-    public String getPostDate()
+    public String getProductPostDate()
     {
-        return mPostDate;
+        return mProductPostDate;
     }
 
     /**
      * @param postDate
      *            the postDate to set
      */
-    public void setPostDate(String postDate)
+    public void setProductPostDate(String postDate)
     {
-        mPostDate = postDate;
+        mProductPostDate = postDate;
     }
 
     /**
      * @return the brand
      */
-    public Brand getBrand()
+    public Brand getProductBrand()
     {
-        return mBrand;
+        return mProductBrand;
     }
 
     /**
      * @param brand
      *            the brand to set
      */
-    public void setBrand(Brand brand)
+    public void setProductBrand(Brand brand)
     {
-        mBrand = brand;
+        mProductBrand = brand;
     }
 
 }

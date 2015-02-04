@@ -19,34 +19,40 @@ public class Order implements RowMapper<Order>
     public static final String DB_KEY_PRODUCT_ID = "OrderProductId";
     public static final String DB_KEY_PRODUCT_COUNT = "OrderProductCount";
     public static final String DB_KEY_ORDER_BUYER_NAME = "OrderBuyerName";
-    public static final String DB_KEY_ORDER_PROXY = "OrderProxy";
+    public static final String DB_KEY_ORDER_PROXY_ID = "OrderProxyId";
     public static final String DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE = "OrderProxyProfitPercentage";
-    public static final String DB_KEY_CURRENCY_RATE = "OrderCurrencyRate";
-    public static final String DB_KEY_PACKAGE_ID = "OrderPackageId";
-    public static final String DB_KEY_ESTIMATED_SHIPPING_FEE = "OrderEstimatedShippingFee";
-    public static final String DB_KEY_ACTUAL_SHIPPING_FEE = "OrderActualShippingFee";
-    public static final String DB_KEY_SELLING_PRICE = "OrderSellingPrice";
-    public static final String DB_KEY_CUSTOMER_PAID_MONEY = "OrderCustomerPaidMoney";
-    public static final String DB_KEY_FINAL_PROFIT = "OrderFinalProfit";
-    public static final String DB_KEY_IS_PROFIT_PAID = "OrderIsProfitPaid";
-    public static final String DB_KEY_ORDER_NOTES = "OrderNotes";
+    public static final String DB_KEY_ORDER_CURRENCY_RATE = "OrderCurrencyRate";
+    public static final String DB_KEY_ORDER_PACKAGE_ID = "OrderPackageId";
+    public static final String DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE = "OrderEstimatedShippingFee";
+    public static final String DB_KEY_ORDER_ACTUAL_SHIPPING_FEE = "OrderActualShippingFee";
+    public static final String DB_KEY_ORDER_SELLING_PRICE = "OrderSellingPrice";
+    public static final String DB_KEY_ORDER_CUSTOMER_PAID_MONEY = "OrderCustomerPaidMoney";
+    public static final String DB_KEY_ORDER_FINAL_PROFIT = "OrderFinalProfit";
+    public static final String DB_KEY_ORDER_IS_PROFIT_PAID = "OrderIsProfitPaid";
+    public static final String DB_KEY_ORDER_NOTE = "OrderNote";
 
     private String mOrderId;
     private String mOrderDate;
-    private Product mProduct;
-    private int mProductCount;
+    private Product mOrderProduct;
+    private Integer mOrderProductCount;
     private String mOrderBuyerName;
     private Admin mOrderProxy; // may be null
-    private float mProxyProfitPercentage;
-    private float mCurrencyRate;
-    private Package mPackage;// may be null
-    private int mEstimatedShippingFee;
-    private int mActualShippingFee;// may be null
-    private int mSellingPrice;
-    private int mCustomerPaidMoney;// may be null
-    private int mFinalProfit;// may be null
-    private boolean mIsProfitPaid;
+    private Float mOrderProxyProfitPercentage;
+    private Float mOrderCurrencyRate;
+    private LogpiePackage mOrderPackage;// may be null
+    private Integer mOrderEstimatedShippingFee;
+    private Integer mOrderActualShippingFee;// may be null
+    private Integer mOrderSellingPrice;
+    private Integer mOrderCustomerPaidMoney;// may be null
+    private Integer mOrderFinalProfit;// may be null
+    private Boolean mOrderIsProfitPaid;
     private String mOrderNote;
+
+    // For RowMapper
+    public Order()
+    {
+
+    }
 
     /**
      * @param orderId
@@ -66,27 +72,27 @@ public class Order implements RowMapper<Order>
      * @param isProfitPaid
      * @param orderNote
      */
-    public Order(String orderId, String orderDate, Product product, int productCount,
-            String orderBuyerName, Admin orderProxy, float proxyProfitPercentage,
-            float currencyRate, Package package1, int estimatedShippingFee, int actualShippingFee,
-            int sellingPrice, int customerPaidMoney, int finalProfit, boolean isProfitPaid,
-            String orderNote)
+    public Order(String orderId, String orderDate, Product product, Integer productCount,
+            String orderBuyerName, Admin orderProxy, Float proxyProfitPercentage,
+            Float currencyRate, LogpiePackage package1, Integer estimatedShippingFee,
+            Integer actualShippingFee, Integer sellingPrice, Integer customerPaidMoney,
+            Integer finalProfit, Boolean isProfitPaid, String orderNote)
     {
         mOrderId = orderId;
         mOrderDate = orderDate;
-        mProduct = product;
-        mProductCount = productCount;
+        mOrderProduct = product;
+        mOrderProductCount = productCount;
         mOrderBuyerName = orderBuyerName;
         mOrderProxy = orderProxy;
-        mProxyProfitPercentage = proxyProfitPercentage;
-        mCurrencyRate = currencyRate;
-        mPackage = package1;
-        mEstimatedShippingFee = estimatedShippingFee;
-        mActualShippingFee = actualShippingFee;
-        mSellingPrice = sellingPrice;
-        mCustomerPaidMoney = customerPaidMoney;
-        mFinalProfit = finalProfit;
-        mIsProfitPaid = isProfitPaid;
+        mOrderProxyProfitPercentage = proxyProfitPercentage;
+        mOrderCurrencyRate = currencyRate;
+        mOrderPackage = package1;
+        mOrderEstimatedShippingFee = estimatedShippingFee;
+        mOrderActualShippingFee = actualShippingFee;
+        mOrderSellingPrice = sellingPrice;
+        mOrderCustomerPaidMoney = customerPaidMoney;
+        mOrderFinalProfit = finalProfit;
+        mOrderIsProfitPaid = isProfitPaid;
         mOrderNote = orderNote;
     }
 
@@ -96,7 +102,8 @@ public class Order implements RowMapper<Order>
         return getOrderByResultSet(rs, row);
     }
 
-    public static Order getOrderByResultSet(final ResultSet rs, final int row) throws SQLException
+    public static Order getOrderByResultSet(final ResultSet rs, final Integer row)
+            throws SQLException
     {
         if (rs == null)
         {
@@ -108,20 +115,20 @@ public class Order implements RowMapper<Order>
         final String orderDateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 .format(orderDate);
         final Product product = Product.getProductByResultSet(rs, row);
-        final int productCount = rs.getInt(DB_KEY_PRODUCT_COUNT);
+        final Integer productCount = rs.getInt(DB_KEY_PRODUCT_COUNT);
         final String orderBuyerName = rs.getString(DB_KEY_ORDER_BUYER_NAME);
         final Admin orderProxy = Admin.getAdminByResultSet(rs, row);
-        final float proxyProfitPercentage = rs.getFloat(DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE);
-        final float currencyRate = rs.getFloat(DB_KEY_CURRENCY_RATE);
+        final Float proxyProfitPercentage = rs.getFloat(DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE);
+        final Float currencyRate = rs.getFloat(DB_KEY_ORDER_CURRENCY_RATE);
         // TODO
-        final Package package1 = null;
-        final int estimatedShippingFee = rs.getInt(DB_KEY_ESTIMATED_SHIPPING_FEE);
-        final int actualShippingFee = rs.getInt(DB_KEY_ACTUAL_SHIPPING_FEE);
-        final int sellingPrice = rs.getInt(DB_KEY_SELLING_PRICE);
-        final int customerPaidMoney = rs.getInt(DB_KEY_CUSTOMER_PAID_MONEY);
-        final int finalProfit = rs.getInt(DB_KEY_FINAL_PROFIT);
-        final boolean isProfitPaid = rs.getBoolean(DB_KEY_IS_PROFIT_PAID);
-        final String orderNote = rs.getString(DB_KEY_ORDER_NOTES);
+        final LogpiePackage package1 = null;
+        final Integer estimatedShippingFee = rs.getInt(DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE);
+        final Integer actualShippingFee = rs.getInt(DB_KEY_ORDER_ACTUAL_SHIPPING_FEE);
+        final Integer sellingPrice = rs.getInt(DB_KEY_ORDER_SELLING_PRICE);
+        final Integer customerPaidMoney = rs.getInt(DB_KEY_ORDER_CUSTOMER_PAID_MONEY);
+        final Integer finalProfit = rs.getInt(DB_KEY_ORDER_FINAL_PROFIT);
+        final Boolean isProfitPaid = rs.getBoolean(DB_KEY_ORDER_IS_PROFIT_PAID);
+        final String orderNote = rs.getString(DB_KEY_ORDER_NOTE);
 
         return new Order(orderId, orderDateString, product, productCount, orderBuyerName,
                 orderProxy, proxyProfitPercentage, currencyRate, package1, estimatedShippingFee,
@@ -164,37 +171,37 @@ public class Order implements RowMapper<Order>
     }
 
     /**
-     * @return the product
+     * @return the orderProduct
      */
-    public Product getProduct()
+    public Product getOrderProduct()
     {
-        return mProduct;
+        return mOrderProduct;
     }
 
     /**
-     * @param product
-     *            the product to set
+     * @param orderProduct
+     *            the orderProduct to set
      */
-    public void setProduct(Product product)
+    public void setOrderProduct(Product orderProduct)
     {
-        mProduct = product;
+        mOrderProduct = orderProduct;
     }
 
     /**
-     * @return the productCount
+     * @return the orderProductCount
      */
-    public int getProductCount()
+    public Integer getOrderProductCount()
     {
-        return mProductCount;
+        return mOrderProductCount;
     }
 
     /**
-     * @param productCount
-     *            the productCount to set
+     * @param orderProductCount
+     *            the orderProductCount to set
      */
-    public void setProductCount(int productCount)
+    public void setOrderProductCount(Integer orderProductCount)
     {
-        mProductCount = productCount;
+        mOrderProductCount = orderProductCount;
     }
 
     /**
@@ -232,156 +239,156 @@ public class Order implements RowMapper<Order>
     }
 
     /**
-     * @return the proxyProfitPercentage
+     * @return the orderProxyProfitPercentage
      */
-    public float getProxyProfitPercentage()
+    public Float getOrderProxyProfitPercentage()
     {
-        return mProxyProfitPercentage;
+        return mOrderProxyProfitPercentage;
     }
 
     /**
-     * @param proxyProfitPercentage
-     *            the proxyProfitPercentage to set
+     * @param orderProxyProfitPercentage
+     *            the orderProxyProfitPercentage to set
      */
-    public void setProxyProfitPercentage(float proxyProfitPercentage)
+    public void setOrderProxyProfitPercentage(Float orderProxyProfitPercentage)
     {
-        mProxyProfitPercentage = proxyProfitPercentage;
+        mOrderProxyProfitPercentage = orderProxyProfitPercentage;
     }
 
     /**
-     * @return the currencyRate
+     * @return the orderCurrencyRate
      */
-    public float getCurrencyRate()
+    public Float getOrderCurrencyRate()
     {
-        return mCurrencyRate;
+        return mOrderCurrencyRate;
     }
 
     /**
-     * @param currencyRate
-     *            the currencyRate to set
+     * @param orderCurrencyRate
+     *            the orderCurrencyRate to set
      */
-    public void setCurrencyRate(float currencyRate)
+    public void setOrderCurrencyRate(Float orderCurrencyRate)
     {
-        mCurrencyRate = currencyRate;
+        mOrderCurrencyRate = orderCurrencyRate;
     }
 
     /**
-     * @return the package
+     * @return the orderPackage
      */
-    public Package getPackage()
+    public LogpiePackage getOrderPackage()
     {
-        return mPackage;
+        return mOrderPackage;
     }
 
     /**
-     * @param package1
-     *            the package to set
+     * @param orderPackage
+     *            the orderPackage to set
      */
-    public void setPackage(Package package1)
+    public void setOrderPackage(LogpiePackage orderPackage)
     {
-        mPackage = package1;
+        mOrderPackage = orderPackage;
     }
 
     /**
-     * @return the estimatedShippingFee
+     * @return the orderEstimatedShippingFee
      */
-    public int getEstimatedShippingFee()
+    public Integer getOrderEstimatedShippingFee()
     {
-        return mEstimatedShippingFee;
+        return mOrderEstimatedShippingFee;
     }
 
     /**
-     * @param estimatedShippingFee
-     *            the estimatedShippingFee to set
+     * @param orderEstimatedShippingFee
+     *            the orderEstimatedShippingFee to set
      */
-    public void setEstimatedShippingFee(int estimatedShippingFee)
+    public void setOrderEstimatedShippingFee(Integer orderEstimatedShippingFee)
     {
-        mEstimatedShippingFee = estimatedShippingFee;
+        mOrderEstimatedShippingFee = orderEstimatedShippingFee;
     }
 
     /**
-     * @return the actualShippingFee
+     * @return the orderActualShippingFee
      */
-    public int getActualShippingFee()
+    public Integer getOrderActualShippingFee()
     {
-        return mActualShippingFee;
+        return mOrderActualShippingFee;
     }
 
     /**
-     * @param actualShippingFee
-     *            the actualShippingFee to set
+     * @param orderActualShippingFee
+     *            the orderActualShippingFee to set
      */
-    public void setActualShippingFee(int actualShippingFee)
+    public void setOrderActualShippingFee(Integer orderActualShippingFee)
     {
-        mActualShippingFee = actualShippingFee;
+        mOrderActualShippingFee = orderActualShippingFee;
     }
 
     /**
-     * @return the sellingPrice
+     * @return the orderSellingPrice
      */
-    public int getSellingPrice()
+    public Integer getOrderSellingPrice()
     {
-        return mSellingPrice;
+        return mOrderSellingPrice;
     }
 
     /**
-     * @param sellingPrice
-     *            the sellingPrice to set
+     * @param orderSellingPrice
+     *            the orderSellingPrice to set
      */
-    public void setSellingPrice(int sellingPrice)
+    public void setOrderSellingPrice(Integer orderSellingPrice)
     {
-        mSellingPrice = sellingPrice;
+        mOrderSellingPrice = orderSellingPrice;
     }
 
     /**
-     * @return the customerPaidMoney
+     * @return the orderCustomerPaidMoney
      */
-    public int getCustomerPaidMoney()
+    public Integer getOrderCustomerPaidMoney()
     {
-        return mCustomerPaidMoney;
+        return mOrderCustomerPaidMoney;
     }
 
     /**
-     * @param customerPaidMoney
-     *            the customerPaidMoney to set
+     * @param orderCustomerPaidMoney
+     *            the orderCustomerPaidMoney to set
      */
-    public void setCustomerPaidMoney(int customerPaidMoney)
+    public void setOrderCustomerPaidMoney(Integer orderCustomerPaidMoney)
     {
-        mCustomerPaidMoney = customerPaidMoney;
+        mOrderCustomerPaidMoney = orderCustomerPaidMoney;
     }
 
     /**
-     * @return the finalProfit
+     * @return the orderFinalProfit
      */
-    public int getFinalProfit()
+    public Integer getOrderFinalProfit()
     {
-        return mFinalProfit;
+        return mOrderFinalProfit;
     }
 
     /**
-     * @param finalProfit
-     *            the finalProfit to set
+     * @param orderFinalProfit
+     *            the orderFinalProfit to set
      */
-    public void setFinalProfit(int finalProfit)
+    public void setOrderFinalProfit(Integer orderFinalProfit)
     {
-        mFinalProfit = finalProfit;
+        mOrderFinalProfit = orderFinalProfit;
     }
 
     /**
-     * @return the isProfitPaid
+     * @return the orderIsProfitPaid
      */
-    public boolean isIsProfitPaid()
+    public Boolean getOrderIsProfitPaid()
     {
-        return mIsProfitPaid;
+        return mOrderIsProfitPaid;
     }
 
     /**
-     * @param isProfitPaid
-     *            the isProfitPaid to set
+     * @param orderIsProfitPaid
+     *            the orderIsProfitPaid to set
      */
-    public void setIsProfitPaid(boolean isProfitPaid)
+    public void setOrderIsProfitPaid(Boolean orderIsProfitPaid)
     {
-        mIsProfitPaid = isProfitPaid;
+        mOrderIsProfitPaid = orderIsProfitPaid;
     }
 
     /**
@@ -400,4 +407,5 @@ public class Order implements RowMapper<Order>
     {
         mOrderNote = orderNote;
     }
+
 }
