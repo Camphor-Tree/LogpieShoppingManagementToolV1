@@ -3,13 +3,15 @@ package com.logpie.shopping.management.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 
 /**
  * @author xujiahang This class is the model class for Image table
  */
-public class Image implements RowMapper<Image>
+public class Image implements RowMapper<Image>, LogpieModel
 {
     public static final String DB_KEY_IMAGE_ID = "ImageId";
     public static final String DB_KEY_IMAGE_URL = "ImageUrl";
@@ -22,6 +24,13 @@ public class Image implements RowMapper<Image>
     // For RowMapper
     public Image()
     {
+
+    }
+
+    // ImageId should be generated automatically by database
+    public Image(final String imageUrl, final String imageDescription)
+    {
+        this(null, imageUrl, imageDescription);
     }
 
     public Image(final String imageId, final String imageUrl, final String imageDescription)
@@ -66,10 +75,13 @@ public class Image implements RowMapper<Image>
         return new Image(imageId, imageUrl, imageDescription);
     }
 
-    // ImageId should be generated automatically by database
-    public Image(final String imageUrl, final String imageDescription)
+    @Override
+    public Map<String, Object> getModelMap()
     {
-        this(null, imageUrl, imageDescription);
+        final Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put(Image.DB_KEY_IMAGE_DESCRIPTION, mImageDescription);
+        modelMap.put(Image.DB_KEY_IMAGE_URL, mImageUrl);
+        return modelMap;
     }
 
     /**

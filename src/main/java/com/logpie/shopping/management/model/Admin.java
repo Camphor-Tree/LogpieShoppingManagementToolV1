@@ -3,6 +3,8 @@ package com.logpie.shopping.management.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,7 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * @author zhoyilei This class is the model class for Admin table
  */
-public class Admin implements RowMapper<Admin>
+public class Admin implements RowMapper<Admin>, LogpieModel
 {
     public static final String DB_KEY_ADMIN_ID = "AdminId";
     public static final String DB_KEY_ADMIN_NAME = "AdminName";
@@ -37,6 +39,8 @@ public class Admin implements RowMapper<Admin>
     // the cookie
     private String mAdminPassVersion;
 
+    private String mAdminPassword;
+
     public Admin()
     {
 
@@ -44,7 +48,7 @@ public class Admin implements RowMapper<Admin>
 
     public Admin(final String adminId, final String name, final String email, final String qq,
             final String wechat, final String phone, final String identityNumber,
-            final String passVersion)
+            final String passVersion, final String password)
     {
         mAdminId = adminId;
         mAdminName = name;
@@ -54,6 +58,21 @@ public class Admin implements RowMapper<Admin>
         mAdminPhone = phone;
         mAdminIdentityNumber = identityNumber;
         mAdminPassVersion = passVersion;
+        mAdminPassword = password;
+    }
+
+    @Override
+    public Map<String, Object> getModelMap()
+    {
+        final Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put(Admin.DB_KEY_ADMIN_NAME, mAdminName);
+        modelMap.put(Admin.DB_KEY_ADMIN_EMAIL, mAdminEmail);
+        modelMap.put(Admin.DB_KEY_ADMIN_QQ, mAdminQQ);
+        modelMap.put(Admin.DB_KEY_ADMIN_WECHAT, mAdminWechat);
+        modelMap.put(Admin.DB_KEY_ADMIN_PHONE, mAdminPhone);
+        modelMap.put(Admin.DB_KEY_ADMIN_IDENTITY_NUMBER, mAdminIdentityNumber);
+        modelMap.put(Admin.DB_KEY_ADMIN_PASSWORD, mAdminPassword);
+        return modelMap;
     }
 
     /**
@@ -151,6 +170,6 @@ public class Admin implements RowMapper<Admin>
         LOG.debug("Find values:" + adminId + ":" + adminName);
         final String adminPassVersion = "1";
         return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
-                adminIdentityNumber, adminPassVersion);
+                adminIdentityNumber, adminPassVersion, "fakePassword");
     }
 }

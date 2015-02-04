@@ -3,10 +3,12 @@ package com.logpie.shopping.management.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 
-public class Brand implements RowMapper<Brand>
+public class Brand implements RowMapper<Brand>, LogpieModel
 {
     public static final String DB_KEY_BRAND_ID = "BrandId";
     public static final String DB_KEY_BRAND_IMAGE_ID = "BrandImageId";
@@ -69,6 +71,19 @@ public class Brand implements RowMapper<Brand>
 
         return new Brand(brandId, brandImage, brandNameEN, brandNameCN, brandSizeChartImage,
                 brandCategory, brandIsActivated);
+    }
+
+    @Override
+    public Map<String, Object> getModelMap()
+    {
+        final Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put(Brand.DB_KEY_BRAND_ENGLISH_NAME, mBrandEnglishName);
+        modelMap.put(Brand.DB_KEY_BRAND_CHINESE_NAME, mBrandChineseName);
+        modelMap.put(Brand.DB_KEY_BRAND_IMAGE_ID, mBrandImage.getImageId());
+        modelMap.put(Brand.DB_KEY_BRAND_SIZE_CHART_ID, mBrandSizeChartImage.getImageId());
+        modelMap.put(Brand.DB_KEY_BRAND_CATEGORY_ID, mBrandCategory.getCategoryId());
+        modelMap.put(Brand.DB_KEY_BRAND_IS_ACTIVATED, mBrandIsActivated);
+        return modelMap;
     }
 
     /**

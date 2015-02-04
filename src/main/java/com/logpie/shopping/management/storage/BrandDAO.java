@@ -1,15 +1,13 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Brand;
-import com.logpie.shopping.management.model.Category;
-import com.logpie.shopping.management.model.Image;
+import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -60,7 +58,18 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
             return null;
         }
         return brandList.get(0);
+    }
 
+    /**
+     * Update the brand profile
+     * 
+     * @param brand
+     * @return
+     */
+    public boolean updateBrandProfile(final Brand brand)
+    {
+        final UpdateBrandUpdate updateBrandUpdate = new UpdateBrandUpdate(brand, sBrandTableName);
+        return super.updateData(updateBrandUpdate);
     }
 
     private class AddBrandInsert implements LogpieDataInsert<Brand>
@@ -81,24 +90,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         @Override
         public Map<String, Object> getInsertValues()
         {
-            final String brandEnglishName = mBrand.getBrandEnglishName();
-            final String brandChineseName = mBrand.getBrandChineseName();
-            final Image brandImage = mBrand.getBrandImage();
-            final String brandImageId = brandImage.getImageId();
-            final Image brandSizeChartImage = mBrand.getBrandSizeChartImage();
-            final String brandSizeChartImageId = brandSizeChartImage.getImageId();
-            final Category brandCategory = mBrand.getBrandCategory();
-            final String brandCategoryId = brandCategory.getCategoryId();
-            final Boolean brandIsActivated = mBrand.getBrandIsActivated();
-
-            final Map<String, Object> insertValues = new HashMap<String, Object>();
-            insertValues.put(Brand.DB_KEY_BRAND_ENGLISH_NAME, brandEnglishName);
-            insertValues.put(Brand.DB_KEY_BRAND_CHINESE_NAME, brandChineseName);
-            insertValues.put(Brand.DB_KEY_BRAND_IMAGE_ID, brandImageId);
-            insertValues.put(Brand.DB_KEY_BRAND_SIZE_CHART_ID, brandSizeChartImageId);
-            insertValues.put(Brand.DB_KEY_BRAND_CATEGORY_ID, brandCategoryId);
-            insertValues.put(Brand.DB_KEY_BRAND_IS_ACTIVATED, brandIsActivated);
-            return insertValues;
+            return mBrand.getModelMap();
         }
     }
 
@@ -115,6 +107,18 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         GetBrandByIdQuery(final String brandId)
         {
             super(new Brand(), BrandDAO.sBrandTableName, Brand.DB_KEY_BRAND_ID, brandId);
+        }
+    }
+
+    private class UpdateBrandUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Brand>
+    {
+        /**
+         * @param model
+         * @param tableName
+         */
+        public UpdateBrandUpdate(LogpieModel model, String tableName)
+        {
+            super(model, tableName);
         }
     }
 

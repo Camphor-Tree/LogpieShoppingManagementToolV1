@@ -1,13 +1,13 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -59,7 +59,19 @@ public class CategoryDAO extends LogpieBaseDAO<Category>
             return null;
         }
         return categoryList.get(0);
+    }
 
+    /**
+     * Update the category profile
+     * 
+     * @param category
+     * @return
+     */
+    public boolean updateCategoryProfile(final Category category)
+    {
+        final UpdateCategoryUpdate updateCategoryUpdate = new UpdateCategoryUpdate(category,
+                sCategoryTableName);
+        return super.updateData(updateCategoryUpdate);
     }
 
     private class AddCategoryInsert implements LogpieDataInsert<Category>
@@ -80,10 +92,7 @@ public class CategoryDAO extends LogpieBaseDAO<Category>
         @Override
         public Map<String, Object> getInsertValues()
         {
-            final String categoryName = mCategory.getCategoryName();
-            final Map<String, Object> insertValues = new HashMap<String, Object>();
-            insertValues.put(Category.DB_KEY_CATEGORY_NAME, categoryName);
-            return insertValues;
+            return mCategory.getModelMap();
         }
     }
 
@@ -102,6 +111,18 @@ public class CategoryDAO extends LogpieBaseDAO<Category>
         {
             super(new Category(), CategoryDAO.sCategoryTableName, Category.DB_KEY_CATEGORY_ID,
                     categoryId);
+        }
+    }
+
+    private class UpdateCategoryUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Category>
+    {
+        /**
+         * @param model
+         * @param tableName
+         */
+        public UpdateCategoryUpdate(LogpieModel model, String tableName)
+        {
+            super(model, tableName);
         }
     }
 }

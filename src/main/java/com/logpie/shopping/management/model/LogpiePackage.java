@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -12,7 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
  * @author zhoyilei
  *
  */
-public class LogpiePackage implements RowMapper<LogpiePackage>
+public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
 {
     public static String DB_KEY_PACKAGE_ID = "PackageId";
     public static String DB_KEY_PACKAGE_PROXY_NAME = "PackageProxyName";
@@ -29,7 +31,7 @@ public class LogpiePackage implements RowMapper<LogpiePackage>
     public static String DB_KEY_PACKAGE_NOTE = "PackageNote";
 
     private String mPackageId;
-    private String mPackgeProxyName;
+    private String mPackageProxyName;
     private String mPackageTrackingNumber;
     private String mPackageReceiver;
     private String mPackageDestination;
@@ -71,7 +73,7 @@ public class LogpiePackage implements RowMapper<LogpiePackage>
     {
         super();
         mPackageId = packageId;
-        mPackgeProxyName = packageProxyName;
+        mPackageProxyName = packageProxyName;
         mPackageTrackingNumber = packageTrackingNumber;
         mPackageReceiver = packageReceiver;
         mPackageDestination = packageDestination;
@@ -124,6 +126,27 @@ public class LogpiePackage implements RowMapper<LogpiePackage>
                 packageIsShipped, packageIsDelivered, packageNote);
     }
 
+    @Override
+    public Map<String, Object> getModelMap()
+    {
+        final Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_PROXY_NAME, mPackageProxyName);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_TRACKING_NUMBER, mPackageTrackingNumber);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_RECEIVER, mPackageReceiver);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_DESTINATION, mPackageDestination);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_DATE, mPackageDate);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_WEIGHT, mPackageWeight);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_SHIPPING_FEE, mPackgeShippingFee);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_ADDITIONAL_CUSTOM_TAX_FEE,
+                mPackageAdditionalCustomTaxFee);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_ADDITIONAL_INSURANCE_FEE,
+                mPackageAdditionalInsuranceFee);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_IS_SHIPPED, mPackageIsShipped);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_IS_DELIVERED, mPackageIsDelivered);
+        modelMap.put(LogpiePackage.DB_KEY_PACKAGE_NOTE, mPackageNote);
+        return modelMap;
+    }
+
     /**
      * @return the packageId
      */
@@ -146,7 +169,7 @@ public class LogpiePackage implements RowMapper<LogpiePackage>
      */
     public String getPackgeProxyName()
     {
-        return mPackgeProxyName;
+        return mPackageProxyName;
     }
 
     /**
@@ -155,7 +178,7 @@ public class LogpiePackage implements RowMapper<LogpiePackage>
      */
     public void setPackgeProxyName(String packgeProxyName)
     {
-        mPackgeProxyName = packgeProxyName;
+        mPackageProxyName = packgeProxyName;
     }
 
     /**

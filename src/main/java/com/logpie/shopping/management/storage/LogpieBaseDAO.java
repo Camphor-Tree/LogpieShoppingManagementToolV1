@@ -19,8 +19,9 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class LogpieBaseDAO<T>
 {
     private static final Logger LOG = Logger.getLogger(LogpieBaseDAO.class);
-    private static final String sBaseQuerySQL = "select * from ";
-    private static final String sBaseInsertSQL = "insert into ";
+    private static final String sBaseQuerySQL = "SELECT * FROM ";
+    private static final String sBaseInsertSQL = "INSERT INTO ";
+    private static final String sBaseUpdateSQL = "UPDATE ";
 
     public LogpieBaseDAO()
     {
@@ -71,6 +72,21 @@ public class LogpieBaseDAO<T>
         return results;
     }
 
+    public boolean updateData(final LogpieDataUpdate<T> update)
+    {
+        final JdbcTemplate jdbcTemplate = LogpieDataSourceFactory.getJdbcTemplate();
+        final String updateSQL = buildUpdateSQL(update);
+        try
+        {
+            jdbcTemplate.execute(updateSQL);
+            return true;
+        } catch (Exception e)
+        {
+            LOG.error("Error happened when updating the data", e);
+        }
+        return false;
+    }
+
     /**
      * @param queryConditions
      * @param queryTablesSql
@@ -81,7 +97,7 @@ public class LogpieBaseDAO<T>
         String querySQL;
         if (!CollectionUtils.isEmpty(queryConditions))
         {
-            final String queryConditionSql = buildQueryConditionsSQL(queryConditions);
+            final String queryConditionSql = buildConditionsSQL(queryConditions);
             querySQL = sBaseQuerySQL + queryTablesSql + queryConditionSql;
         }
         else
@@ -124,9 +140,9 @@ public class LogpieBaseDAO<T>
     /**
      * @param queryConditions
      */
-    private String buildQueryConditionsSQL(final Set<String> queryConditions)
+    private String buildConditionsSQL(final Set<String> queryConditions)
     {
-        final StringBuilder queryConditionBuilder = new StringBuilder("where ");
+        final StringBuilder queryConditionBuilder = new StringBuilder("WHERE ");
         final int countTables = queryConditions.size();
         int i = 0;
         for (final String condition : queryConditions)
@@ -192,5 +208,47 @@ public class LogpieBaseDAO<T>
         insertSqlBuilder.append(keyBuilder.toString());
         insertSqlBuilder.append(valueBuilder.toString());
         return insertSqlBuilder.toString();
+    }
+
+    private String buildUpdateSQL(LogpieDataUpdate<T> update)
+    {
+        final StringBuilder updateSqlBuilder = new StringBuilder(sBaseUpdateSQL);
+        final String table = update.getUpdateTable();
+        final Set<String> condition = update.getUpdateConditions();
+        final Map<String, Object> updateValues = update.getUpdateValues();
+
+        updateSqlBuilder.append(table);
+        updateSqlBuilder.append(" SET ");
+
+        int i = 0;
+        int size = updateValues.size();
+        for (Map.Entry<String, Object> dataEntry : updateValues.entrySet())
+        {
+            final String key = dataEntry.getKey();
+            final Object value = dataEntry.getValue();
+            updateSqlBuilder.append(key);
+            updateSqlBuilder.append("=");
+            if (value instanceof String)
+            {
+                updateSqlBuilder.append("\'");
+                updateSqlBuilder.append(value);
+                updateSqlBuilder.append("\'");
+            }
+            else
+            {
+                updateSqlBuilder.append(String.valueOf(value));
+            }
+            if (++i < size)
+            {
+                // If not last element, append ","
+                updateSqlBuilder.append(",");
+            }
+            else
+            {
+                updateSqlBuilder.append(" ");
+            }
+        }
+        updateSqlBuilder.append(buildConditionsSQL(condition));
+        return updateSqlBuilder.toString();
     }
 }

@@ -3,10 +3,12 @@ package com.logpie.shopping.management.model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 
-public class Category implements RowMapper<Category>
+public class Category implements RowMapper<Category>, LogpieModel
 {
     public static final String DB_KEY_CATEGORY_ID = "CategoryId";
     public static final String DB_KEY_CATEGORY_NAME = "CategoryName";
@@ -57,5 +59,13 @@ public class Category implements RowMapper<Category>
     public String getCategoryName()
     {
         return mCategoryName;
+    }
+
+    @Override
+    public Map<String, Object> getModelMap()
+    {
+        final Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put(Category.DB_KEY_CATEGORY_NAME, mCategoryName);
+        return modelMap;
     }
 }

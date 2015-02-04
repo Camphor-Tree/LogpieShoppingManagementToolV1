@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -12,7 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
  * @author zhoyilei
  *
  */
-public class Product implements RowMapper<Product>
+public class Product implements RowMapper<Product>, LogpieModel
 {
     public static final String DB_KEY_PRODUCT_ID = "ProductId";
     public static final String DB_KEY_PRODUCT_NAME = "ProductName";
@@ -82,6 +84,21 @@ public class Product implements RowMapper<Product>
 
         return new Product(productId, productName, productDescription, productLink, productImage,
                 productWeight, isActivated, postDateString, brand);
+    }
+
+    @Override
+    public Map<String, Object> getModelMap()
+    {
+        final Map<String, Object> modelMap = new HashMap<String, Object>();
+        modelMap.put(Product.DB_KEY_PRODUCT_NAME, mProductName);
+        modelMap.put(Product.DB_KEY_PRODUCT_DESCRIPTION, mProductDescription);
+        modelMap.put(Product.DB_KEY_PRODUCT_LINK, mProductLink);
+        modelMap.put(Product.DB_KEY_PRODUCT_IMAGE_ID, mProductImage.getImageId());
+        modelMap.put(Product.DB_KEY_PRODUCT_WEIGHT, mProductWeight);
+        modelMap.put(Product.DB_KEY_PRODUCT_IS_ACTIVATED, mProductIsActivated);
+        modelMap.put(Product.DB_KEY_PRODUCT_POST_DATE, mProductPostDate);
+        modelMap.put(Product.DB_KEY_PRODUCT_BRAND_ID, mProductBrand.getBrandId());
+        return modelMap;
     }
 
     /**

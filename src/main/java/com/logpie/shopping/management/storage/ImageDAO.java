@@ -1,13 +1,13 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Image;
+import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -58,7 +58,18 @@ public class ImageDAO extends LogpieBaseDAO<Image>
             return null;
         }
         return ImageList.get(0);
+    }
 
+    /**
+     * Update the image profile
+     * 
+     * @param image
+     * @return
+     */
+    public boolean updateImageProfile(final Image image)
+    {
+        final UpdateImageUpdate updateImageUpdate = new UpdateImageUpdate(image, sImageTableName);
+        return super.updateData(updateImageUpdate);
     }
 
     private class AddImageInsert implements LogpieDataInsert<Image>
@@ -79,12 +90,7 @@ public class ImageDAO extends LogpieBaseDAO<Image>
         @Override
         public Map<String, Object> getInsertValues()
         {
-            final String imageDescription = mImage.getImageDescription();
-            final String imageUrl = mImage.getImageUrl();
-            final Map<String, Object> insertValues = new HashMap<String, Object>();
-            insertValues.put(Image.DB_KEY_IMAGE_DESCRIPTION, imageDescription);
-            insertValues.put(Image.DB_KEY_IMAGE_URL, imageUrl);
-            return insertValues;
+            return mImage.getModelMap();
         }
     }
 
@@ -101,6 +107,18 @@ public class ImageDAO extends LogpieBaseDAO<Image>
         GetImageByIdQuery(final String imageId)
         {
             super(new Image(), ImageDAO.sImageTableName, Image.DB_KEY_IMAGE_ID, imageId);
+        }
+    }
+
+    private class UpdateImageUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Image>
+    {
+        /**
+         * @param model
+         * @param tableName
+         */
+        public UpdateImageUpdate(LogpieModel model, String tableName)
+        {
+            super(model, tableName);
         }
     }
 

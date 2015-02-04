@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -52,6 +53,30 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
             return null;
         }
         return queryResult.get(0);
+    }
+
+    /**
+     * For adding a new admin account into the database
+     * 
+     * @param admin
+     * @return true if adding admin successfully. false if adding admin fails
+     */
+    public boolean addAdmin(final Admin admin)
+    {
+        final LogpieDataInsert<Admin> addAdminInsert = new AddAdminInsert(admin);
+        return super.insertData(addAdminInsert);
+    }
+
+    /**
+     * Update the admin profile
+     * 
+     * @param admin
+     * @return
+     */
+    public boolean updateAdminProfile(final Admin admin)
+    {
+        final UpdateAdminUpdate updateAdminUpdate = new UpdateAdminUpdate(admin, sAdminTableName);
+        return super.updateData(updateAdminUpdate);
     }
 
     // public Admin queryAccountByAdminEmail(final String adminEmail)
@@ -100,6 +125,40 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         QueryAccountByAdminIdQuery(final String adminId)
         {
             super(new Admin(), AdminDAO.sAdminTableName, Admin.DB_KEY_ADMIN_ID, adminId);
+        }
+    }
+
+    private class AddAdminInsert implements LogpieDataInsert<Admin>
+    {
+        private Admin mAdmin;
+
+        AddAdminInsert(final Admin admin)
+        {
+            mAdmin = admin;
+        }
+
+        @Override
+        public String getInsertTable()
+        {
+            return sAdminTableName;
+        }
+
+        @Override
+        public Map<String, Object> getInsertValues()
+        {
+            return mAdmin.getModelMap();
+        }
+    }
+
+    private class UpdateAdminUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Admin>
+    {
+        /**
+         * @param model
+         * @param tableName
+         */
+        public UpdateAdminUpdate(LogpieModel model, String tableName)
+        {
+            super(model, tableName);
         }
     }
 

@@ -1,14 +1,12 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.logpie.shopping.management.model.Brand;
-import com.logpie.shopping.management.model.Image;
+import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.util.CollectionUtils;
 
@@ -61,7 +59,19 @@ public class ProductDAO extends LogpieBaseDAO<Product>
             return null;
         }
         return productList.get(0);
+    }
 
+    /**
+     * Update the product profile
+     * 
+     * @param product
+     * @return
+     */
+    public boolean updateProductProfile(final Product product)
+    {
+        final UpdateProductUpdate updateProductUpdate = new UpdateProductUpdate(product,
+                sProductTableName);
+        return super.updateData(updateProductUpdate);
     }
 
     private class AddProductInsert implements LogpieDataInsert<Product>
@@ -82,27 +92,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         @Override
         public Map<String, Object> getInsertValues()
         {
-            final String productName = mProduct.getProductName();
-            final String productDescription = mProduct.getProductDescription();
-            final String productLink = mProduct.getProductLink();
-            final Image productImage = mProduct.getProductImage();
-            final String productImageId = productImage.getImageId();
-            final Integer productWeight = mProduct.getProductWeight();
-            final Boolean productIsActivated = mProduct.getProductIsActivated();
-            final String productPostDate = mProduct.getProductPostDate();
-            final Brand productBrand = mProduct.getProductBrand();
-            final String productBrandId = productBrand.getBrandId();
-
-            final Map<String, Object> insertValues = new HashMap<String, Object>();
-            insertValues.put(Product.DB_KEY_PRODUCT_NAME, productName);
-            insertValues.put(Product.DB_KEY_PRODUCT_DESCRIPTION, productDescription);
-            insertValues.put(Product.DB_KEY_PRODUCT_LINK, productLink);
-            insertValues.put(Product.DB_KEY_PRODUCT_IMAGE_ID, productImageId);
-            insertValues.put(Product.DB_KEY_PRODUCT_WEIGHT, productWeight);
-            insertValues.put(Product.DB_KEY_PRODUCT_IS_ACTIVATED, productIsActivated);
-            insertValues.put(Product.DB_KEY_PRODUCT_POST_DATE, productPostDate);
-            insertValues.put(Product.DB_KEY_PRODUCT_BRAND_ID, productBrandId);
-            return insertValues;
+            return mProduct.getModelMap();
         }
     }
 
@@ -119,6 +109,18 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         GetProductByIdQuery(final String productId)
         {
             super(new Product(), ProductDAO.sProductTableName, Product.DB_KEY_PRODUCT_ID, productId);
+        }
+    }
+
+    private class UpdateProductUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Product>
+    {
+        /**
+         * @param model
+         * @param tableName
+         */
+        public UpdateProductUpdate(LogpieModel model, String tableName)
+        {
+            super(model, tableName);
         }
     }
 
