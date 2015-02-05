@@ -23,6 +23,8 @@ public class LogpieBaseDAO<T>
     private static final String sBaseInsertSQL = "INSERT INTO ";
     private static final String sBaseUpdateSQL = "UPDATE ";
 
+    public static final String sNonAliasPrefix = "LogpieNoAlias";
+
     public LogpieBaseDAO()
     {
     }
@@ -117,13 +119,15 @@ public class LogpieBaseDAO<T>
         int i = 0;
         for (final Map.Entry<String, String> tableEntry : queryTables.entrySet())
         {
-            queryTablesBuilder.append(tableEntry.getKey());
+            // value is the real table name
+            queryTablesBuilder.append(tableEntry.getValue());
             // Append table name alias, which is used in multiple foreign keys
             // connections
-            if (tableEntry.getValue() != null)
+            if (!tableEntry.getKey().startsWith(sNonAliasPrefix))
             {
                 queryTablesBuilder.append(" AS ");
-                queryTablesBuilder.append(tableEntry.getValue());
+                // key is the alias name, alias names won't be duplicate
+                queryTablesBuilder.append(tableEntry.getKey());
             }
             if (++i < countTables)
             {

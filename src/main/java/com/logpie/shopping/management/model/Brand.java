@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import com.logpie.shopping.management.storage.BrandDAO;
+
 public class Brand implements RowMapper<Brand>, LogpieModel
 {
     public static final String DB_KEY_BRAND_ID = "BrandId";
@@ -59,13 +61,14 @@ public class Brand implements RowMapper<Brand>, LogpieModel
             return null;
         }
         final String brandId = rs.getString(DB_KEY_BRAND_ID);
-        final Image brandImage = Image.getImageByResultSet(rs, rowNum, "BrandImage");
+        final Image brandImage = Image.getImageByResultSet(rs, rowNum,
+                BrandDAO.sBrandImageTableAlias);
         final String brandNameEN = rs.getString(DB_KEY_BRAND_ENGLISH_NAME);
         final String brandNameCN = rs.getString(DB_KEY_BRAND_CHINESE_NAME);
         // TODO: Here will produce a bug since there are two foreign keys in the
         // result
         final Image brandSizeChartImage = Image.getImageByResultSet(rs, rowNum,
-                "BrandSizeChartImage");
+                BrandDAO.sBrandSizeChartImageAlias);
         final Category brandCategory = Category.getCategoryByResultSet(rs, rowNum);
         final boolean brandIsActivated = rs.getBoolean(DB_KEY_BRAND_IS_ACTIVATED);
 

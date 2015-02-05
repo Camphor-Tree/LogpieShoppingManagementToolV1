@@ -1,13 +1,19 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.LogpieModel;
+import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -17,7 +23,7 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class OrderDAO extends LogpieBaseDAO<Order>
 {
     private static final Logger LOG = Logger.getLogger(OrderDAO.class);
-    private static final String sOrderTableName = "Orders";
+    public static final String sOrderTableName = "Orders";
 
     /**
      * For adding a new order into the database
@@ -60,9 +66,15 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         return orderList.get(0);
     }
 
-    public boolean updateOrderProfile(final Order admin)
+    /**
+     * Update the order profile
+     * 
+     * @param order
+     * @return
+     */
+    public boolean updateOrderProfile(final Order order)
     {
-        final UpdateOrderUpdate updateOrderUpdate = new UpdateOrderUpdate(admin, sOrderTableName);
+        final UpdateOrderUpdate updateOrderUpdate = new UpdateOrderUpdate(order, sOrderTableName);
         return super.updateData(updateOrderUpdate);
     }
 
@@ -94,6 +106,19 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         {
             super(new Order(), OrderDAO.sOrderTableName);
         }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
     }
 
     private class GetPackageByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Order>
@@ -101,6 +126,19 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         GetPackageByIdQuery(final String orderId)
         {
             super(new Order(), OrderDAO.sOrderTableName, Order.DB_KEY_ORDER_PACKAGE_ID, orderId);
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
         }
     }
 
@@ -116,4 +154,27 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
     }
 
+    private static Set<String> getForeignKeyConnectionConditions()
+    {
+        final Set<String> conditions = new HashSet<String>();
+        conditions
+                .add(String.format("%s = %s", Order.DB_KEY_ORDER_PROXY_ID, Admin.DB_KEY_ADMIN_ID));
+        conditions.add(String.format("%s = %s", Order.DB_KEY_ORDER_PACKAGE_ID,
+                LogpiePackage.DB_KEY_PACKAGE_ID));
+        conditions.add(String.format("%s = %s", Order.DB_KEY_ORDER_PRODUCT_ID,
+                Product.DB_KEY_PRODUCT_ID));
+        return null;
+    }
+
+    private static Map<String, String> getForeignKeyConnectionTables()
+    {
+        final Map<String, String> tableMap = new HashMap<String, String>();
+        tableMap.put(sNonAliasPrefix + sOrderTableName, sOrderTableName);
+        // alias for multiple foreign key connection
+        tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
+        tableMap.put(sNonAliasPrefix + LogpiePackageDAO.sPackageTableName,
+                LogpiePackageDAO.sPackageTableName);
+        tableMap.put(sNonAliasPrefix + ProductDAO.sProductTableName, ProductDAO.sProductTableName);
+        return tableMap;
+    }
 }

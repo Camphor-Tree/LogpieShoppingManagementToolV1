@@ -17,7 +17,7 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
 {
     private static final Logger LOG = Logger.getLogger(LogpiePackageDAO.class);
-    private static final String sPackageTableName = "Packages";
+    public static final String sPackageTableName = "Packages";
 
     /**
      * For adding a new package into the database

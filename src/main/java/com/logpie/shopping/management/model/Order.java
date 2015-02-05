@@ -18,8 +18,8 @@ public class Order implements RowMapper<Order>, LogpieModel
 {
     public static final String DB_KEY_ORDER_ID = "OrderId";
     public static final String DB_KEY_ORDER_DATE = "OrderDate";
-    public static final String DB_KEY_PRODUCT_ID = "OrderProductId";
-    public static final String DB_KEY_PRODUCT_COUNT = "OrderProductCount";
+    public static final String DB_KEY_ORDER_PRODUCT_ID = "OrderProductId";
+    public static final String DB_KEY_ORDER_PRODUCT_COUNT = "OrderProductCount";
     public static final String DB_KEY_ORDER_BUYER_NAME = "OrderBuyerName";
     public static final String DB_KEY_ORDER_PROXY_ID = "OrderProxyId";
     public static final String DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE = "OrderProxyProfitPercentage";
@@ -117,7 +117,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderDateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 .format(orderDate);
         final Product product = Product.getProductByResultSet(rs, row);
-        final Integer productCount = rs.getInt(DB_KEY_PRODUCT_COUNT);
+        final Integer productCount = rs.getInt(DB_KEY_ORDER_PRODUCT_COUNT);
         final String orderBuyerName = rs.getString(DB_KEY_ORDER_BUYER_NAME);
         final Admin orderProxy = Admin.getAdminByResultSet(rs, row);
         final Float proxyProfitPercentage = rs.getFloat(DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE);
@@ -143,8 +143,8 @@ public class Order implements RowMapper<Order>, LogpieModel
     {
         final Map<String, Object> modelMap = new HashMap<String, Object>();
         modelMap.put(Order.DB_KEY_ORDER_DATE, mOrderDate);
-        modelMap.put(Order.DB_KEY_PRODUCT_ID, mOrderProduct.getProductId());
-        modelMap.put(Order.DB_KEY_PRODUCT_COUNT, mOrderProductCount);
+        modelMap.put(Order.DB_KEY_ORDER_PRODUCT_ID, mOrderProduct.getProductId());
+        modelMap.put(Order.DB_KEY_ORDER_PRODUCT_COUNT, mOrderProductCount);
         modelMap.put(Order.DB_KEY_ORDER_BUYER_NAME, mOrderBuyerName);
         modelMap.put(Order.DB_KEY_ORDER_PROXY_ID, mOrderProxy.getAdminId());
         modelMap.put(Order.DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE, mOrderProxyProfitPercentage);

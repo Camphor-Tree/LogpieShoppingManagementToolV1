@@ -17,7 +17,7 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class ImageDAO extends LogpieBaseDAO<Image>
 {
     private static final Logger LOG = Logger.getLogger(ImageDAO.class);
-    private static final String sImageTableName = "Images";
+    public static final String sImageTableName = "Images";
 
     /**
      * For adding a new image into the database

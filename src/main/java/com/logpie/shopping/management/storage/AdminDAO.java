@@ -22,7 +22,7 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
 {
     private static final Logger LOG = Logger.getLogger(AdminDAO.class);
 
-    private static final String sAdminTableName = "Admins";
+    public static final String sAdminTableName = "Admins";
 
     /**
      * This API is used to authenticate account.
@@ -114,7 +114,7 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         public Map<String, String> getQueryTables()
         {
             final Map<String, String> tableMap = new HashMap<String, String>();
-            tableMap.put(AdminDAO.sAdminTableName, null);
+            tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
             return tableMap;
         }
     }

@@ -17,7 +17,7 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class CategoryDAO extends LogpieBaseDAO<Category>
 {
     private static final Logger LOG = Logger.getLogger(CategoryDAO.class);
-    private static final String sCategoryTableName = "Categories";
+    public static final String sCategoryTableName = "Categories";
 
     /**
      * For adding a new category into the database

@@ -1,11 +1,16 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Brand;
+import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -17,7 +22,7 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class ProductDAO extends LogpieBaseDAO<Product>
 {
     private static final Logger LOG = Logger.getLogger(ProductDAO.class);
-    private static final String sProductTableName = "Products";
+    public static final String sProductTableName = "Products";
 
     /**
      * For adding a new product into the database
@@ -102,6 +107,19 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         {
             super(new Product(), ProductDAO.sProductTableName);
         }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
     }
 
     private class GetProductByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Product>
@@ -109,6 +127,19 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         GetProductByIdQuery(final String productId)
         {
             super(new Product(), ProductDAO.sProductTableName, Product.DB_KEY_PRODUCT_ID, productId);
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
         }
     }
 
@@ -124,4 +155,23 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         }
     }
 
+    private static Set<String> getForeignKeyConnectionConditions()
+    {
+        final Set<String> conditions = new HashSet<String>();
+        conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_BRAND_ID,
+                Brand.DB_KEY_BRAND_ID));
+        conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+                Image.DB_KEY_IMAGE_ID));
+        return null;
+    }
+
+    private static Map<String, String> getForeignKeyConnectionTables()
+    {
+        final Map<String, String> tableMap = new HashMap<String, String>();
+        tableMap.put(sNonAliasPrefix + sProductTableName, sProductTableName);
+        // alias for multiple foreign key connection
+        tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, sProductTableName);
+        tableMap.put(sNonAliasPrefix + ImageDAO.sImageTableName, sProductTableName);
+        return tableMap;
+    }
 }

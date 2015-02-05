@@ -46,7 +46,7 @@ public class LogpieBaseQuerySingleRecordByIdTemplateQuery<T> implements LogpieDa
     public Map<String, String> getQueryTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(mTableName, null);
+        tableMap.put(LogpieBaseDAO.sNonAliasPrefix + mTableName, mTableName);
         return tableMap;
     }
 

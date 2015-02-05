@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.jdbc.core.RowMapper;
 
 public class Category implements RowMapper<Category>, LogpieModel
@@ -67,5 +69,15 @@ public class Category implements RowMapper<Category>, LogpieModel
         final Map<String, Object> modelMap = new HashMap<String, Object>();
         modelMap.put(Category.DB_KEY_CATEGORY_NAME, mCategoryName);
         return modelMap;
+    }
+
+    public static Category readNewCategoryFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String categoryName = request.getParameter("CategoryName");
+        return new Category(categoryName);
     }
 }

@@ -5,8 +5,11 @@
         <div class="row">
             <h3>欢迎来到 订单管理</h3>
         </div>
+        <div class="alert alert-success" role="alert">
+        <strong>${action_message}</strong>
+      	</div>
         <div class="row">
-            <p><a class="btn btn-xs btn-success" href="create.php">Create</a></p>
+            <p><a class="btn btn-xs btn-success" href="./category/create">Create</a></p>
         <table class="table table-striped table-bordered table-hover">
         <tr>
         <th>订单序号</th>

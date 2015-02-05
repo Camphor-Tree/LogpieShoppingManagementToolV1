@@ -1,12 +1,17 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Brand;
+import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
 
@@ -17,7 +22,9 @@ import com.logpie.shopping.management.util.CollectionUtils;
 public class BrandDAO extends LogpieBaseDAO<Brand>
 {
     private static final Logger LOG = Logger.getLogger(BrandDAO.class);
-    private static final String sBrandTableName = "Brands";
+    public static final String sBrandTableName = "Brands";
+    public static final String sBrandImageTableAlias = "BrandImage";
+    public static final String sBrandSizeChartImageAlias = "BrandSizeChartImage";
 
     /**
      * For adding a new brand into the database
@@ -100,6 +107,19 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         {
             super(new Brand(), BrandDAO.sBrandTableName);
         }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
     }
 
     private class GetBrandByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Brand>
@@ -108,6 +128,20 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         {
             super(new Brand(), BrandDAO.sBrandTableName, Brand.DB_KEY_BRAND_ID, brandId);
         }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+
     }
 
     private class UpdateBrandUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Brand>
@@ -120,6 +154,30 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         {
             super(model, tableName);
         }
+    }
+
+    private static Set<String> getForeignKeyConnectionConditions()
+    {
+        final Set<String> conditions = new HashSet<String>();
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_IMAGE_ID,
+                sBrandImageTableAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_SIZE_CHART_ID,
+                sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
+                Category.DB_KEY_CATEGORY_ID));
+        return null;
+    }
+
+    private static Map<String, String> getForeignKeyConnectionTables()
+    {
+        final Map<String, String> tableMap = new HashMap<String, String>();
+        tableMap.put(sNonAliasPrefix + sBrandTableName, sBrandTableName);
+        // alias for multiple foreign key connection
+        tableMap.put(sBrandImageTableAlias, ImageDAO.sImageTableName);
+        tableMap.put(sBrandSizeChartImageAlias, ImageDAO.sImageTableName);
+        tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,
+                CategoryDAO.sCategoryTableName);
+        return tableMap;
     }
 
 }
