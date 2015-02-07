@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.jdbc.core.RowMapper;
 
 /**
@@ -82,6 +84,17 @@ public class Image implements RowMapper<Image>, LogpieModel
         modelMap.put(Image.DB_KEY_IMAGE_DESCRIPTION, mImageDescription);
         modelMap.put(Image.DB_KEY_IMAGE_URL, mImageUrl);
         return modelMap;
+    }
+
+    public static Image readNewImageFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String imageUrl = request.getParameter("ImageUrl");
+        final String imageDescription = request.getParameter("ImageDescripion");
+        return new Image(imageUrl, imageDescription);
     }
 
     /**

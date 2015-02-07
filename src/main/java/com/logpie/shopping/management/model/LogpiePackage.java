@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.jdbc.core.RowMapper;
 
 /**
@@ -51,6 +53,40 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
     }
 
     /**
+     * @param packgeProxyName
+     * @param trackingNumber
+     * @param packageReceiver
+     * @param packageDestination
+     * @param packageDate
+     * @param packageWeight
+     * @param packgeShippingFee
+     * @param packageAdditionalCustomTaxFee
+     * @param packageAdditionalInsuranceFee
+     * @param packageIsShipped
+     * @param packageIsDelivered
+     * @param packageNote
+     */
+    public LogpiePackage(String packageProxyName, String packageTrackingNumber,
+            String packageReceiver, String packageDestination, String packageDate,
+            Integer packageWeight, Integer packgeShippingFee,
+            Integer packageAdditionalCustomTaxFee, Integer packageAdditionalInsuranceFee,
+            Boolean packageIsShipped, Boolean packageIsDelivered, String packageNote)
+    {
+        mPackageProxyName = packageProxyName;
+        mPackageTrackingNumber = packageTrackingNumber;
+        mPackageReceiver = packageReceiver;
+        mPackageDestination = packageDestination;
+        mPackageDate = packageDate;
+        mPackageWeight = packageWeight;
+        mPackgeShippingFee = packgeShippingFee;
+        mPackageAdditionalCustomTaxFee = packageAdditionalCustomTaxFee;
+        mPackageAdditionalInsuranceFee = packageAdditionalInsuranceFee;
+        mPackageIsShipped = packageIsShipped;
+        mPackageIsDelivered = packageIsDelivered;
+        mPackageNote = packageNote;
+    }
+
+    /**
      * @param packageId
      * @param packgeProxyName
      * @param trackingNumber
@@ -71,7 +107,6 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
             Integer packageAdditionalCustomTaxFee, Integer packageAdditionalInsuranceFee,
             Boolean packageIsShipped, Boolean packageIsDelivered, String packageNote)
     {
-        super();
         mPackageId = packageId;
         mPackageProxyName = packageProxyName;
         mPackageTrackingNumber = packageTrackingNumber;
@@ -145,6 +180,35 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         modelMap.put(LogpiePackage.DB_KEY_PACKAGE_IS_DELIVERED, mPackageIsDelivered);
         modelMap.put(LogpiePackage.DB_KEY_PACKAGE_NOTE, mPackageNote);
         return modelMap;
+    }
+
+    public static LogpiePackage readNewLogpiePackageFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String packageProxyName = request.getParameter("PackageProxyName");
+        final String packageTrackingNumber = request.getParameter("PackageTrackingNumber");
+        final String packageReceiver = request.getParameter("PackageReceiver");
+        final String packageDestination = request.getParameter("PackageDestination");
+        final String packageDate = request.getParameter("PackageDate");
+        final Integer packageWeight = Integer.parseInt(request.getParameter("PackageWeight"));
+        final Integer packgeShippingFee = Integer.parseInt(request
+                .getParameter("PackgeShippingFee"));
+        final Integer packageAdditionalCustomTaxFee = Integer.parseInt(request
+                .getParameter("PackageAdditionalCustomTaxFee"));
+        final Integer packageAdditionalInsuranceFee = Integer.parseInt(request
+                .getParameter("PackageAdditionalInsuranceFee"));
+        final Boolean packageIsShipped = Boolean.parseBoolean(request
+                .getParameter("PackageIsShipped"));
+        final Boolean packageIsDelivered = Boolean.parseBoolean(request
+                .getParameter("PackageIsDelivered"));
+        final String packageNote = request.getParameter("PackageNote");
+        return new LogpiePackage(packageProxyName, packageTrackingNumber, packageReceiver,
+                packageDestination, packageDate, packageWeight, packgeShippingFee,
+                packageAdditionalCustomTaxFee, packageAdditionalInsuranceFee, packageIsShipped,
+                packageIsDelivered, packageNote);
     }
 
     /**

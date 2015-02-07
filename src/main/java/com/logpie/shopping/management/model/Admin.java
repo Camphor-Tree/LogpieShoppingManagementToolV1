@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -44,6 +46,20 @@ public class Admin implements RowMapper<Admin>, LogpieModel
     public Admin()
     {
 
+    }
+
+    public Admin(final String name, final String email, final String qq, final String wechat,
+            final String phone, final String identityNumber, final String passVersion,
+            final String password)
+    {
+        mAdminName = name;
+        mAdminEmail = email;
+        mAdminQQ = qq;
+        mAdminWechat = wechat;
+        mAdminPhone = phone;
+        mAdminIdentityNumber = identityNumber;
+        mAdminPassVersion = passVersion;
+        mAdminPassword = password;
     }
 
     public Admin(final String adminId, final String name, final String email, final String qq,
@@ -171,5 +187,23 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         final String adminPassVersion = "1";
         return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
                 adminIdentityNumber, adminPassVersion, "fakePassword");
+    }
+
+    public static Admin readNewAdminFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String adminName = request.getParameter("AdminName");
+        final String adminEmail = request.getParameter("AdminEmail");
+        final String adminQQ = request.getParameter("AdminQQ");
+        final String adminWechat = request.getParameter("AdminWechat");
+        final String adminPhone = request.getParameter("AdminPhone");
+        final String adminIdentityNumber = request.getParameter("AdminIdentityNumber");
+        final String adminPassVersion = "1";
+        final String adminPassword = request.getParameter("AdminPassword");
+        return new Admin(adminName, adminEmail, adminQQ, adminWechat, adminPhone,
+                adminIdentityNumber, adminPassVersion, adminPassword);
     }
 }
