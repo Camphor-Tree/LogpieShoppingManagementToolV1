@@ -36,7 +36,7 @@
         </tr>
         <c:forEach items="${orderList}" var="order">
         <tr>
-        <td>${order.orderId}</td>
+        <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
         <td>${order.orderDate}</td>
         <td>${order.orderProduct.productName}</td>
         <td>${order.orderProductCount}</td>

@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <tag:logpie_common_template>
     <jsp:body>
+    	<c:if test="${logpiePackage !=null}">
         <div class="row">
             <h3>包裹信息</h3>
         </div>
@@ -21,6 +22,12 @@
 		   <strong>包裹已到达: </strong><c:out value="${logpiePackage.packageIsDelivered}"/><br />
 		   <strong>包裹备注: </strong><c:out value="${logpiePackage.packageNote}"/><br />
         </div>
+        </c:if>
+        <c:if test="${logpiePackage ==null}">
+  	        <div class="alert alert-danger" role="alert">
+                    <strong>抱歉!查无此包裹 请检查你url中的包裹id是否有效</strong>
+            </div>
+        </c:if>
 
     </jsp:body>
 </tag:logpie_common_template>

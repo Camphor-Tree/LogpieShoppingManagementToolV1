@@ -16,8 +16,8 @@ public class LogpieBaseQuerySingleRecordByIdTemplateQuery<T> implements LogpieDa
 {
     private RowMapper<T> mRowMapper;
     private String mTableName;
-    private String mKeyForId;
-    private String mValueForId;
+    protected String mKeyForId;
+    protected String mValueForId;
 
     public LogpieBaseQuerySingleRecordByIdTemplateQuery(final RowMapper<T> rowMapper,
             final String tableName, final String keyForId, final String valueForId)

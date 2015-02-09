@@ -31,7 +31,7 @@ public class PackageController
      * @return
      */
     @RequestMapping(value = "/package", method = RequestMethod.GET)
-    public Object showOrderManagementPage(final HttpServletRequest request,
+    public Object showPackageDetailPage(final HttpServletRequest request,
             @RequestParam("id") String packageId)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
@@ -41,7 +41,10 @@ public class PackageController
             final ModelAndView packageDetailPage = new ModelAndView("package_detail");
             final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
             final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
-            packageDetailPage.addObject("logpiePackage", logpiePackage);
+            if (logpiePackage != null)
+            {
+                packageDetailPage.addObject("logpiePackage", logpiePackage);
+            }
             return packageDetailPage;
         }
         return "redirect:/signin";

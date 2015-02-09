@@ -55,11 +55,11 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * For querying specific Package by PackageId
      * 
      * @param orderId
-     * @return Package corresponding to the PackageId
+     * @return Order corresponding to the orderId
      */
-    public Order getPackageById(final String orderId)
+    public Order getOrderById(final String orderId)
     {
-        GetPackageByIdQuery getPackageByIdQuery = new GetPackageByIdQuery(orderId);
+        GetOrderByIdQuery getPackageByIdQuery = new GetOrderByIdQuery(orderId);
         List<Order> orderList = super.queryResult(getPackageByIdQuery);
         if (CollectionUtils.isEmpty(orderList) || orderList.size() > 1)
         {
@@ -124,9 +124,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
     }
 
-    private class GetPackageByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Order>
+    private class GetOrderByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Order>
     {
-        GetPackageByIdQuery(final String orderId)
+        GetOrderByIdQuery(final String orderId)
         {
             super(new Order(), OrderDAO.sOrderTableName, Order.DB_KEY_ORDER_PACKAGE_ID, orderId);
         }
@@ -135,7 +135,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         @Override
         public Set<String> getQueryConditions()
         {
-            return getForeignKeyConnectionConditions();
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            conditions.add(super.mKeyForId + "=\"" + super.mValueForId + "\"");
+            return conditions;
         }
 
         @Override

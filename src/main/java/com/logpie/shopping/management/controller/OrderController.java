@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -78,6 +79,33 @@ public class OrderController
             }
 
             return "redirect:/order_management";
+        }
+        return "redirect:/signin";
+    }
+
+    /**
+     * Show singple order information
+     * 
+     * @param request
+     * @param packageId
+     * @return
+     */
+    @RequestMapping(value = "/order", method = RequestMethod.GET)
+    public Object showOrderManagementPage(final HttpServletRequest request,
+            @RequestParam("id") String orderId)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to order page.");
+            final ModelAndView packageDetailPage = new ModelAndView("order_detail");
+            final OrderDAO orderDAO = new OrderDAO();
+            final Order order = orderDAO.getOrderById(orderId);
+            if (order != null)
+            {
+                packageDetailPage.addObject("order", order);
+            }
+            return packageDetailPage;
         }
         return "redirect:/signin";
     }
