@@ -64,6 +64,10 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
      */
     public LogpiePackage getPackageById(final String packageId)
     {
+        if (packageId == null)
+        {
+            return null;
+        }
         GetPackageByIdQuery getPackageByIdQuery = new GetPackageByIdQuery(packageId);
         List<LogpiePackage> packageList = super.queryResult(getPackageByIdQuery);
         if (CollectionUtils.isEmpty(packageList) || packageList.size() > 1)

@@ -168,7 +168,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         return null;
     }
 
-    private static Map<String, String> getForeignKeyConnectionTables()
+    public static Map<String, String> getForeignKeyConnectionTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
         tableMap.put(sNonAliasPrefix + sBrandTableName, sBrandTableName);

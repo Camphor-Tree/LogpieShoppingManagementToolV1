@@ -25,7 +25,7 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
     public static String DB_KEY_PACKAGE_DESTINATION = "PackageDestination";
     public static String DB_KEY_PACKAGE_DATE = "PackageDate";
     public static String DB_KEY_PACKAGE_WEIGHT = "PackageWeight";
-    public static String DB_KEY_PACKAGE_SHIPPING_FEE = "PackgeShippingFee";
+    public static String DB_KEY_PACKAGE_SHIPPING_FEE = "PackageShippingFee";
     public static String DB_KEY_PACKAGE_ADDITIONAL_CUSTOM_TAX_FEE = "PackageAdditionalCustomTaxFee";
     public static String DB_KEY_PACKAGE_ADDITIONAL_INSURANCE_FEE = "PackageAdditionalInsuranceFee";
     public static String DB_KEY_PACKAGE_IS_SHIPPED = "PackageIsShipped";

@@ -65,6 +65,7 @@ dependencies {
     compile("mysql:mysql-connector-java:5.1.16")
     compile("org.springframework:spring-jdbc")
     compile("org.json:json:20090211")
+    compile("javax.servlet:jstl:1.2")
 }
 
 task wrapper(type: Wrapper) {

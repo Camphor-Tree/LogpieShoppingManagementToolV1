@@ -39,7 +39,7 @@ public class LogpieBaseQueryAllTemplateQuery<T> implements LogpieDataQuery<T>
     public Map<String, String> getQueryTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(mTableName, null);
+        tableMap.put(LogpieBaseDAO.sNonAliasPrefix + mTableName, mTableName);
         return tableMap;
     }
 

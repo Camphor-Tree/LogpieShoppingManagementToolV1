@@ -1,6 +1,8 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,26 @@ import com.logpie.shopping.management.storage.LogpiePackageDAO;
 public class SimpleCreateController
 {
     private static final Logger LOG = Logger.getLogger(OrderController.class);
+
+    @RequestMapping(value = "/category", method = RequestMethod.GET)
+    public Object showAllCategories(final HttpServletRequest request,
+            final HttpServletResponse httpResponse)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            final ModelAndView createCategoryPage = new ModelAndView("show_all_categories");
+            final CategoryDAO categoryDAO = new CategoryDAO();
+            final List<Category> categoryList = categoryDAO.getAllCategory();
+            // final Map<String, Object> modelMap = new HashMap<String,
+            // Object>();
+            // modelMap.put("categories", categoryList);
+            createCategoryPage.addObject("categoryList", categoryList);
+
+            return createCategoryPage;
+        }
+        return "redirect:/signin";
+    }
 
     @RequestMapping(value = "/category/create", method = RequestMethod.GET)
     public Object showCreateCategoryPage(final HttpServletRequest request,
@@ -156,7 +178,8 @@ public class SimpleCreateController
         if (authSuccess)
         {
             LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-            final LogpiePackage newLogpiePackage = LogpiePackage.readNewLogpiePackageFromRequest(request);
+            final LogpiePackage newLogpiePackage = LogpiePackage
+                    .readNewLogpiePackageFromRequest(request);
             boolean createLogpiePackageSuccess = false;
             if (newLogpiePackage != null)
             {

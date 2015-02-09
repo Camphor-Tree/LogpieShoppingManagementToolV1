@@ -45,6 +45,10 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
 
     public Admin queryAccountByAdminId(final String adminId)
     {
+        if (adminId == null)
+        {
+            return null;
+        }
         LogpieDataQuery<Admin> queryAccountByIdQuery = new QueryAccountByAdminIdQuery(adminId);
         List<Admin> queryResult = super.queryResult(queryAccountByIdQuery);
         if (CollectionUtils.isEmpty(queryResult) || queryResult.size() > 1)

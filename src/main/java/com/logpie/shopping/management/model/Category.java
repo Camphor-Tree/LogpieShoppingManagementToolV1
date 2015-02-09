@@ -16,7 +16,7 @@ public class Category implements RowMapper<Category>, LogpieModel
     public static final String DB_KEY_CATEGORY_NAME = "CategoryName";
 
     private String mCategoryId;
-    private String mCategoryName;
+    public String mCategoryname;
 
     // For RowMapper
     public Category()
@@ -26,13 +26,13 @@ public class Category implements RowMapper<Category>, LogpieModel
     // For creating a new category
     public Category(String categoryName)
     {
-        this.mCategoryName = categoryName;
+        this.mCategoryname = categoryName;
     }
 
     public Category(String categoryId, String categoryName)
     {
         this.mCategoryId = categoryId;
-        this.mCategoryName = categoryName;
+        this.mCategoryname = categoryName;
     }
 
     @Override
@@ -60,14 +60,14 @@ public class Category implements RowMapper<Category>, LogpieModel
 
     public String getCategoryName()
     {
-        return mCategoryName;
+        return mCategoryname;
     }
 
     @Override
     public Map<String, Object> getModelMap()
     {
         final Map<String, Object> modelMap = new HashMap<String, Object>();
-        modelMap.put(Category.DB_KEY_CATEGORY_NAME, mCategoryName);
+        modelMap.put(Category.DB_KEY_CATEGORY_NAME, mCategoryname);
         return modelMap;
     }
 
@@ -79,5 +79,23 @@ public class Category implements RowMapper<Category>, LogpieModel
         }
         final String categoryName = request.getParameter("CategoryName");
         return new Category(categoryName);
+    }
+
+    /**
+     * @param categoryId
+     *            the categoryId to set
+     */
+    public void setCategoryId(String categoryId)
+    {
+        mCategoryId = categoryId;
+    }
+
+    /**
+     * @param categoryName
+     *            the categoryName to set
+     */
+    public void setCategoryName(String categoryName)
+    {
+        mCategoryname = categoryName;
     }
 }

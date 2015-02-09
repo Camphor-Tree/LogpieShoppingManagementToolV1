@@ -10,6 +10,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.Brand;
+import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
@@ -31,7 +34,7 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * @param order
      * @return true if adding order successfully. false if adding order fails
      */
-    public boolean addPackage(final Order order)
+    public boolean addOrder(final Order order)
     {
         final LogpieDataInsert<Order> addPackageInsert = new AddPackageInsert(order);
         return super.insertData(addPackageInsert);
@@ -42,9 +45,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * 
      * @return All existing categories
      */
-    public List<Order> getAllPackage()
+    public List<Order> getAllOrders()
     {
-        GetAllPackageQuery getAllPackageQuery = new GetAllPackageQuery();
+        GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery();
         return super.queryResult(getAllPackageQuery);
     }
 
@@ -100,9 +103,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
     }
 
-    private class GetAllPackageQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    private class GetAllOrdersQuery extends LogpieBaseQueryAllTemplateQuery<Order>
     {
-        GetAllPackageQuery()
+        GetAllOrdersQuery()
         {
             super(new Order(), OrderDAO.sOrderTableName);
         }
@@ -163,7 +166,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
                 LogpiePackage.DB_KEY_PACKAGE_ID));
         conditions.add(String.format("%s = %s", Order.DB_KEY_ORDER_PRODUCT_ID,
                 Product.DB_KEY_PRODUCT_ID));
-        return null;
+        conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+                ProductDAO.sProductImageTableAlias, Image.DB_KEY_IMAGE_ID));
+        // Brand need to connect to Image
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_IMAGE_ID,
+                BrandDAO.sBrandImageTableAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_SIZE_CHART_ID,
+                BrandDAO.sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
+                Category.DB_KEY_CATEGORY_ID));
+        return conditions;
     }
 
     private static Map<String, String> getForeignKeyConnectionTables()
@@ -175,6 +187,12 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         tableMap.put(sNonAliasPrefix + LogpiePackageDAO.sPackageTableName,
                 LogpiePackageDAO.sPackageTableName);
         tableMap.put(sNonAliasPrefix + ProductDAO.sProductTableName, ProductDAO.sProductTableName);
+        tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, BrandDAO.sBrandTableName);
+        tableMap.put(ProductDAO.sProductImageTableAlias, ImageDAO.sImageTableName);
+        tableMap.put(BrandDAO.sBrandImageTableAlias, ImageDAO.sImageTableName);
+        tableMap.put(BrandDAO.sBrandSizeChartImageAlias, ImageDAO.sImageTableName);
+        tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,
+                CategoryDAO.sCategoryTableName);
         return tableMap;
     }
 }

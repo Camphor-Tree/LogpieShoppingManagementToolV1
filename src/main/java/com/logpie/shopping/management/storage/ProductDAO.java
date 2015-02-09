@@ -23,6 +23,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
 {
     private static final Logger LOG = Logger.getLogger(ProductDAO.class);
     public static final String sProductTableName = "Products";
+    public static final String sProductImageTableAlias = "ProductImage";
 
     /**
      * For adding a new product into the database
@@ -56,6 +57,10 @@ public class ProductDAO extends LogpieBaseDAO<Product>
      */
     public Product getProductById(final String productId)
     {
+        if (productId == null)
+        {
+            return null;
+        }
         GetProductByIdQuery getProductByIdQuery = new GetProductByIdQuery(productId);
         List<Product> productList = super.queryResult(getProductByIdQuery);
         if (CollectionUtils.isEmpty(productList) || productList.size() > 1)
@@ -155,7 +160,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         }
     }
 
-    private static Set<String> getForeignKeyConnectionConditions()
+    public static Set<String> getForeignKeyConnectionConditions()
     {
         final Set<String> conditions = new HashSet<String>();
         conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_BRAND_ID,
@@ -165,13 +170,13 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         return null;
     }
 
-    private static Map<String, String> getForeignKeyConnectionTables()
+    public static Map<String, String> getForeignKeyConnectionTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
         tableMap.put(sNonAliasPrefix + sProductTableName, sProductTableName);
         // alias for multiple foreign key connection
-        tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, sProductTableName);
-        tableMap.put(sNonAliasPrefix + ImageDAO.sImageTableName, sProductTableName);
+        tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, BrandDAO.sBrandTableName);
+        tableMap.put(sNonAliasPrefix + ImageDAO.sImageTableName, ImageDAO.sImageTableName);
         return tableMap;
     }
 }

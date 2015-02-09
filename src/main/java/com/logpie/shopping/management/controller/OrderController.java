@@ -1,6 +1,8 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
+import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.storage.OrderDAO;
 
 /**
  * @author zhoyilei
@@ -24,7 +28,7 @@ public class OrderController
     private static final Logger LOG = Logger.getLogger(OrderController.class);
 
     @RequestMapping(value = "/order_management", method = RequestMethod.GET)
-    public Object showSignInPage(final HttpServletRequest request,
+    public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
@@ -38,9 +42,44 @@ public class OrderController
                         LogpiePageAlertMessage.KEY_ACTION_MESSAGE);
                 orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, message);
             }
+            final OrderDAO orderDAO = new OrderDAO();
+            final List<Order> orderList = orderDAO.getAllOrders();
+            orderManagementPage.addObject("orderList", orderList);
             return orderManagementPage;
         }
         return "redirect:/signin";
-
     }
+
+    @RequestMapping(value = "/order/create", method = RequestMethod.POST)
+    public Object createNewOrder(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to create a new order.");
+            final Order newOrder = Order.readNewOrderFromRequest(request);
+            boolean createOrderSuccess = false;
+            if (newOrder != null)
+            {
+                final OrderDAO orderDAO = new OrderDAO();
+                createOrderSuccess = orderDAO.addOrder(newOrder);
+            }
+
+            if (createOrderSuccess)
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "create new order for " + newOrder.getOrderBuyerName() + " successfully!");
+            }
+            else
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "create new order for" + newOrder.getOrderBuyerName() + " fail!");
+            }
+
+            return "redirect:/order_management";
+        }
+        return "redirect:/signin";
+    }
+
 }

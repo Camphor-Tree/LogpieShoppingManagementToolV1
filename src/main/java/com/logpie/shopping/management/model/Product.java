@@ -72,6 +72,8 @@ public class Product implements RowMapper<Product>, LogpieModel
             return null;
         }
         final String productId = rs.getString(DB_KEY_PRODUCT_ID);
+        // final ProductDAO productDAO = new ProductDAO();
+        // return productDAO.getProductById(productId);
         final String productName = rs.getString(DB_KEY_PRODUCT_NAME);
         final String productDescription = rs.getString(DB_KEY_PRODUCT_DESCRIPTION);
         final String productLink = rs.getString(DB_KEY_PRODUCT_LINK);
