@@ -46,7 +46,7 @@
         <td>${order.orderProxyProfitPercentage}</td>
         <td>${order.orderActualCost}</td>
         <td>${order.orderCurrencyRate}</td>
-        <td>${order.orderPackage.packageId}</td>
+        <td><a href="./package?id=${order.orderPackage.packageId}">${order.orderPackage.packageId}</a></td>
         <td>${order.orderEstimatedShippingFee}</td>
         <td>${order.orderActualShippingFee}</td>
         <td>${order.orderSellingPrice}</td>

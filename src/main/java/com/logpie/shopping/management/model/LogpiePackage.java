@@ -229,20 +229,20 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
     }
 
     /**
-     * @return the packgeProxyName
+     * @return the packageProxyName
      */
-    public String getPackgeProxyName()
+    public String getPackageProxyName()
     {
         return mPackageProxyName;
     }
 
     /**
-     * @param packgeProxyName
-     *            the packgeProxyName to set
+     * @param packageProxyName
+     *            the packageProxyName to set
      */
-    public void setPackgeProxyName(String packgeProxyName)
+    public void setPackageProxyName(String packageProxyName)
     {
-        mPackageProxyName = packgeProxyName;
+        mPackageProxyName = packageProxyName;
     }
 
     /**
