@@ -93,7 +93,7 @@ public class Image implements RowMapper<Image>, LogpieModel
             return null;
         }
         final String imageUrl = request.getParameter("ImageUrl");
-        final String imageDescription = request.getParameter("ImageDescripion");
+        final String imageDescription = request.getParameter("ImageDescription");
         return new Image(imageUrl, imageDescription);
     }
 
