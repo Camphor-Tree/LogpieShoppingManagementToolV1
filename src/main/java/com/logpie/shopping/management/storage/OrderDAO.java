@@ -177,6 +177,8 @@ public class OrderDAO extends LogpieBaseDAO<Order>
                 BrandDAO.sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
         conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
                 Category.DB_KEY_CATEGORY_ID));
+        conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_BRAND_ID,
+                Brand.DB_KEY_BRAND_ID));
         return conditions;
     }
 

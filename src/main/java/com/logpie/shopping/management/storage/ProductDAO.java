@@ -138,7 +138,9 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         @Override
         public Set<String> getQueryConditions()
         {
-            return getForeignKeyConnectionConditions();
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            conditions.add(super.mKeyForId + "=\"" + super.mValueForId + "\"");
+            return conditions;
         }
 
         @Override

@@ -6,9 +6,14 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.logpie.shopping.management.storage.BrandDAO;
+import com.logpie.shopping.management.storage.CategoryDAO;
+import com.logpie.shopping.management.storage.ImageDAO;
 
 public class Brand implements RowMapper<Brand>, LogpieModel
 {
@@ -19,6 +24,8 @@ public class Brand implements RowMapper<Brand>, LogpieModel
     public static final String DB_KEY_BRAND_IS_ACTIVATED = "BrandIsActivated";
     public static final String DB_KEY_BRAND_SIZE_CHART_ID = "BrandSizeChartId";
     public static final String DB_KEY_BRAND_CATEGORY_ID = "BrandCategoryId";
+
+    private static Logger LOG = Logger.getLogger(Brand.class);
 
     private String mBrandId;
     private Image mBrandImage;
@@ -34,9 +41,22 @@ public class Brand implements RowMapper<Brand>, LogpieModel
 
     }
 
+    // For create a new brand
+    public Brand(final Image brandImage, final String brandEnglishName,
+            final String brandChineseName, final Image brandSizeChartImage,
+            final Category brandCategory, final Boolean brandIsActivated)
+    {
+        this.mBrandImage = brandImage;
+        this.mBrandEnglishName = brandEnglishName;
+        this.mBrandChineseName = brandChineseName;
+        this.mBrandSizeChartImage = brandSizeChartImage;
+        this.mBrandCategory = brandCategory;
+        this.mBrandIsActivated = brandIsActivated;
+    }
+
     public Brand(final String brandId, final Image brandImage, final String brandEnglishName,
             final String brandChineseName, final Image brandSizeChartImage,
-            final Category brandCategory, final Boolean isActivated)
+            final Category brandCategory, final Boolean brandIsActivated)
     {
         this.mBrandId = brandId;
         this.mBrandImage = brandImage;
@@ -44,7 +64,7 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         this.mBrandChineseName = brandChineseName;
         this.mBrandSizeChartImage = brandSizeChartImage;
         this.mBrandCategory = brandCategory;
-        this.mBrandIsActivated = isActivated;
+        this.mBrandIsActivated = brandIsActivated;
     }
 
     @Override
@@ -87,6 +107,31 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         modelMap.put(Brand.DB_KEY_BRAND_CATEGORY_ID, mBrandCategory.getCategoryId());
         modelMap.put(Brand.DB_KEY_BRAND_IS_ACTIVATED, mBrandIsActivated);
         return modelMap;
+    }
+
+    public static Brand readNewBrandFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final ImageDAO imageDAO = new ImageDAO();
+        final CategoryDAO categoryDAO = new CategoryDAO();
+
+        final String brandImageId = request.getParameter("BrandImageId");
+        final Image brandImage = imageDAO.getImageById(brandImageId);
+        final String brandEnglishName = request.getParameter("BrandEnglishName");
+        final String brandChineseName = request.getParameter("BrandChineseName");
+        final String brandSizeChartImageId = request.getParameter("BrandSizeChartImageId");
+        final Image brandSizeChartImage = imageDAO.getImageById(brandSizeChartImageId);
+        final Category brandCategory = categoryDAO.getCategoryById(request
+                .getParameter("BrandCategoryId"));
+        LOG.debug("yilei" + request.getParameter("BrandIsActivated"));
+        final Boolean brandIsActivated = Boolean.parseBoolean(request
+                .getParameter("BrandIsActivated"));
+
+        return new Brand(brandImage, brandEnglishName, brandChineseName, brandSizeChartImage,
+                brandCategory, brandIsActivated);
     }
 
     /**

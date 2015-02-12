@@ -3,7 +3,8 @@
 
 <tag:logpie_common_template>
     <jsp:body>
-        <p>Hi, ${AdminName}</p>
+        <h3>你好, ${AdminName} 欢迎来到Logpie内部管理工具</h3>
+        <p></p>
     </jsp:body>
 </tag:logpie_common_template>
 

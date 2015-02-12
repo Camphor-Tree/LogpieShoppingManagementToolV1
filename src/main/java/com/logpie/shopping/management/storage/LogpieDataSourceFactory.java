@@ -17,6 +17,7 @@ public class LogpieDataSourceFactory
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
         dataSource.setUrl("jdbc:mysql://localhost:8889/Logpie");
+        // dataSource.setUrl("jdbc:mysql://localhost:3306/Logpie");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
         return dataSource;

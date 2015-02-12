@@ -8,7 +8,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.jdbc.core.RowMapper;
+
+import com.logpie.shopping.management.storage.BrandDAO;
+import com.logpie.shopping.management.storage.ImageDAO;
 
 /**
  * @author zhoyilei
@@ -42,10 +47,25 @@ public class Product implements RowMapper<Product>, LogpieModel
 
     }
 
+    // For create a new product
+    // Product id and postdate are all created by database
+    public Product(final String productName, final String productDescription,
+            final String productLink, final Image productImage, final Integer productWeight,
+            final Boolean productIsActivated, final Brand productBrand)
+    {
+        mProductName = productName;
+        mProductDescription = productDescription;
+        mProductLink = productLink;
+        mProductImage = productImage;
+        mProductWeight = productWeight;
+        mProductIsActivated = productIsActivated;
+        mProductBrand = productBrand;
+    }
+
     public Product(final String productId, final String productName,
             final String productDescription, final String productLink, final Image productImage,
-            final Integer productWeight, final Boolean isActivated, final String postDate,
-            final Brand brand)
+            final Integer productWeight, final Boolean productIsActivated,
+            final String productPostDate, final Brand productBrand)
     {
         mProductId = productId;
         mProductName = productName;
@@ -53,9 +73,9 @@ public class Product implements RowMapper<Product>, LogpieModel
         mProductLink = productLink;
         mProductImage = productImage;
         mProductWeight = productWeight;
-        mProductIsActivated = isActivated;
-        mProductPostDate = postDate;
-        mProductBrand = brand;
+        mProductIsActivated = productIsActivated;
+        mProductPostDate = productPostDate;
+        mProductBrand = productBrand;
     }
 
     @Override
@@ -98,9 +118,35 @@ public class Product implements RowMapper<Product>, LogpieModel
         modelMap.put(Product.DB_KEY_PRODUCT_IMAGE_ID, mProductImage.getImageId());
         modelMap.put(Product.DB_KEY_PRODUCT_WEIGHT, mProductWeight);
         modelMap.put(Product.DB_KEY_PRODUCT_IS_ACTIVATED, mProductIsActivated);
-        modelMap.put(Product.DB_KEY_PRODUCT_POST_DATE, mProductPostDate);
+        // It will default to current date
+        // modelMap.put(Product.DB_KEY_PRODUCT_POST_DATE, mProductPostDate);
         modelMap.put(Product.DB_KEY_PRODUCT_BRAND_ID, mProductBrand.getBrandId());
         return modelMap;
+    }
+
+    public static Product readNewProductFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final ImageDAO imageDAO = new ImageDAO();
+        final BrandDAO brandDAO = new BrandDAO();
+
+        final String productName = request.getParameter("ProductName");
+        final String productDescription = request.getParameter("ProductDescription");
+        final String productLink = request.getParameter("ProductLink");
+        final String productImageId = request.getParameter("ProductImageId");
+        final Image productImage = imageDAO.getImageById(productImageId);
+        final Integer productWeight = Integer.parseInt(request.getParameter("ProductWeight"));
+        final Boolean productIsActivated = Boolean.parseBoolean(request
+                .getParameter("ProductIsActivated"));
+        // final String productPostDate =
+        // request.getParameter("ProductPostDate");
+        final Brand productBrand = brandDAO.getBrandById(request.getParameter("ProductBrandId"));
+
+        return new Product(productName, productDescription, productLink, productImage,
+                productWeight, productIsActivated, productBrand);
     }
 
     /**

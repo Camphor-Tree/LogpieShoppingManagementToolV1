@@ -133,7 +133,9 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         @Override
         public Set<String> getQueryConditions()
         {
-            return getForeignKeyConnectionConditions();
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            conditions.add(super.mKeyForId + "=\"" + super.mValueForId + "\"");
+            return conditions;
         }
 
         @Override
@@ -165,7 +167,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
                 sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
         conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
                 Category.DB_KEY_CATEGORY_ID));
-        return null;
+        return conditions;
     }
 
     public static Map<String, String> getForeignKeyConnectionTables()

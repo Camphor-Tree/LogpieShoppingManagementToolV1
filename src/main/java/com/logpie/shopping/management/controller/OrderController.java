@@ -16,9 +16,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
+import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
+import com.logpie.shopping.management.storage.ImageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
 
 /**
@@ -53,6 +57,13 @@ public class OrderController
             final List<Category> categoryList = categoryDAO.getAllCategory();
             orderManagementPage.addObject("categoryList", categoryList);
 
+            final ImageDAO imageDAO = new ImageDAO();
+            final List<Image> imageList = imageDAO.getAllImage();
+            orderManagementPage.addObject("imageList", imageList);
+
+            final BrandDAO brandDAO = new BrandDAO();
+            final List<Brand> brandList = brandDAO.getAllBrand();
+            orderManagementPage.addObject("brandList", brandList);
             return orderManagementPage;
         }
         return "redirect:/signin";

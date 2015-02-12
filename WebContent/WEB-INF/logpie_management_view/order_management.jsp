@@ -33,6 +33,7 @@
         <th>订单最终利润</th>
         <th>订单利润已结算</th>
         <th>订单备注</th>
+        <th>修改</th>
         </tr>
         <c:forEach items="${orderList}" var="order">
         <tr>
@@ -54,14 +55,12 @@
         <td>${order.orderFinalProfit}</td>
         <td>${order.orderIsProfitPaid}</td>
         <td>${order.orderNote}</td>
+        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}">修改</a></td>
         </tr>
         </c:forEach>
-        
-        
         <tbody>
         </tbody>
         </table>
-        </div><!-- /row -->
         
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -105,18 +104,18 @@
             </div>
             <div id="section-brand" class="tab-pane fade" style="padding:20px">
               <h3>新建一个品牌</h3>
-              <form role="form" style="padding:20px" id="brand_creation_form"brand_creation_form">
+              <form role="form" style="padding:20px" action="./brand/create" method="POST" id="brand_creation_form">
                 <div class="form-group">
                   <label for="brand_en">品牌英文名称：</label>
-                  <input class="form-control" id="brand_en">
+                  <input class="form-control" id="brand_en" name="BrandEnglishName">
                 </div>
                 <div class="form-group">
                   <label for="brand_cn">品牌中文名称：</label>
-                  <input class="form-control" id="brand_cn">
+                  <input class="form-control" id="brand_cn" name="BrandChineseName">
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
                   <label for="brand_category">品牌所属类别：</label>
-						<select class="form-control" form="brand_creation_form">
+						<select class="form-control" form="brand_creation_form" name="BrandCategoryId">
 						   <c:forEach items="${categoryList}" var="category">
 						    <option value="${category.categoryId}">${category.categoryName}</option>
 						    </c:forEach>
@@ -125,90 +124,66 @@
                 <div class="row">
                   <div class="dropdown col-sm-5" style="margin-bottom:10px">
                     <label for="brand_image">品牌图片：</label>
-                    <button class="btn btn-default dropdown-toggle" type="button" id="brand_image" data-toggle="dropdown">已有图片&nbsp;<span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="brand_image">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片1</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片2</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片3</a></li>
-                      <li role="presentation" class="divider"></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片4</a></li>
-                    </ul>
+						<select class="form-control" form="brand_creation_form" name="BrandImageId">
+						   <c:forEach items="${imageList}" var="brandImage">
+						    <option value="${brandImage.imageId}">${brandImage.imageDescription}</option>
+						    </c:forEach>
+						</select>
                   </div>
                   <div class="dropdown col-sm-7" style="margin-bottom:10px">
                     <label for="brand_image">相关尺寸图片(可选)：</label>
-                    <button class="btn btn-default dropdown-toggle" type="button" id="brand_size_image" data-toggle="dropdown">已有图片&nbsp;<span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="brand_size_image">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片5</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片6</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片7</a></li>
-                    </ul>
+						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId">
+						   <c:forEach items="${imageList}" var="sizeChartImage">
+						    <option value="${sizeChartImage.imageId}">${sizeChartImage.imageDescription}</option>
+						   </c:forEach>
+						</select>
                   </div>
                 </div>
                 <div class="checkbox" style="padding-left:20px">
-                  <label><input type="checkbox" checked="checked" id="brand_is_activated"/>是否显示在页面</label>
+                  <label><input type="checkbox" checked="checked" id="brand_is_activated" name="BrandIsActivated" value="True"/>是否激活</label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>
             <div id="section-product" class="tab-pane fade" style="padding:20px">
               <h3>新建一个产品</h3>
-              <form role="form" style="padding:20px">
+              <form role="form" style="padding:20px" id="product_creation_form" action="./product/create" method="POST">
                 <div class="form-group">
                   <label for="product-name">产品名称：</label>
-                  <input class="form-control" id="product-name">
+                  <input class="form-control" id="product-name" name="ProductName">
                 </div>
                 <div class="form-group">
                   <label for="product-description">产品描述：</label>
-                  <input class="form-control" id="product-description">
+                  <input class="form-control" id="product-description" name="ProductDescription">
                 </div>
                 <div class="form-group">
                   <label for="product-link">产品链接：</label>
-                  <input class="form-control" id="product-link">
+                  <input class="form-control" id="product-link" name="ProductLink">
                 </div>
                 <div class="form-group">
                   <label for="product-weight">产品重量：</label>
-                  <input class="form-control" id="product-weight">
+                  <input class="form-control" id="product-weight" name="ProductWeight">
                 </div>
                 <div class="row">
                   <div class="dropdown col-sm-5" style="margin-bottom:10px">
                     <label for="product_brand">所属品牌：</label>
-                    <button class="btn btn-default dropdown-toggle" type="button" id="product_brnad" data-toggle="dropdown">已有品牌&nbsp;<span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="brand_size_image">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">品牌1</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">品牌2</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">品牌3</a></li>
-                    </ul>
+						<select class="form-control" form="product_creation_form" name="ProductBrandId">
+						   <c:forEach items="${brandList}" var="brand">
+						    <option value="${brand.brandId}">${brand.brandEnglishName}</option>
+						    </c:forEach>
+						</select>
                   </div>
                   <div class="dropdown col-sm-5" style="margin-bottom:10px">
                     <label for="product_image">产品图片：</label>
-                    <button class="btn btn-default dropdown-toggle" type="button" id="product_image" data-toggle="dropdown">已有图片&nbsp;<span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="brand_image">
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片1</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片2</a></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片3</a></li>
-                      <li role="presentation" class="divider"></li>
-                      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">图片4</a></li>
-                    </ul>
+						<select class="form-control" form="product_creation_form" name="ProductImageId">
+						   <c:forEach items="${imageList}" var="productImage">
+						    <option value="${productImage.imageId}">${productImage.imageDescription}</option>
+						    </c:forEach>
+						</select>
                   </div>
-                </div>
-                <div class="row" style="margin-top:10px">
-                  <div class="col-sm-2"><label>发布日期</label></div>
-                  <div class="col-sm-6">
-                    <div class="form-group">
-                      <div class="input-group date" id="datetimepicker">
-                        <input type="text" class="form-control" />
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                      </div>
-                    </div>
-                  </div>
-                  <script type="text/javascript">
-                    $(function(){
-                      $('#datetimepicker').datetimepicker();
-                    });
-                  </script>
                 </div>
                 <div class="checkbox" style="padding-left:20px">
-                  <label><input type="checkbox" checked="checked" id="product_is_activated"/>是否显示在页面</label>
+                  <label><input type="checkbox" checked="checked" id="product_is_activated" name="ProductIsActivated" value="True"/>是否显示在页面</label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>

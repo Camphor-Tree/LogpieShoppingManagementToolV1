@@ -16,13 +16,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
-import com.logpie.shopping.management.model.LogpiePackage;
+import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.storage.AdminDAO;
+import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
 import com.logpie.shopping.management.storage.ImageDAO;
-import com.logpie.shopping.management.storage.LogpiePackageDAO;
+import com.logpie.shopping.management.storage.ProductDAO;
 
 /**
  * @author zhoyilei
@@ -170,34 +172,35 @@ public class SimpleCreateController
         return "redirect:/signin";
     }
 
-    @RequestMapping(value = "/package/create", method = RequestMethod.POST)
-    public Object createPackage(final HttpServletRequest request,
+    @RequestMapping(value = "/brand/create", method = RequestMethod.POST)
+    public Object createBrand(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
         if (authSuccess)
         {
             LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-            final LogpiePackage newLogpiePackage = LogpiePackage
-                    .readNewLogpiePackageFromRequest(request);
-            boolean createLogpiePackageSuccess = false;
-            if (newLogpiePackage != null)
+            final Brand newBrand = Brand.readNewBrandFromRequest(request);
+            boolean createBrandSuccess = false;
+            if (newBrand != null)
             {
-                final LogpiePackageDAO logpiePackageDAO = new LogpiePackageDAO();
-                createLogpiePackageSuccess = logpiePackageDAO.addPackage(newLogpiePackage);
+                final BrandDAO brandDAO = new BrandDAO();
+                createBrandSuccess = brandDAO.addBrand(newBrand);
             }
 
-            if (createLogpiePackageSuccess)
+            if (createBrandSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new logpiePackage to " + newLogpiePackage.getPackageDestination()
-                                + " successfully!");
+                redirectAttrs.addFlashAttribute(
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "create new brand:" + newBrand.getBrandEnglishName() + "/"
+                                + newBrand.getBrandChineseName() + " successfully!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new logpiePackage to " + newLogpiePackage.getPackageDestination()
-                                + " fail!");
+                redirectAttrs.addFlashAttribute(
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "create new brand:" + newBrand.getBrandEnglishName() + "/"
+                                + newBrand.getBrandChineseName() + " fail!");
             }
 
             return "redirect:/order_management";
@@ -205,4 +208,35 @@ public class SimpleCreateController
         return "redirect:/signin";
     }
 
+    @RequestMapping(value = "/product/create", method = RequestMethod.POST)
+    public Object createProduct(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+            final Product newProduct = Product.readNewProductFromRequest(request);
+            boolean createNewProductSuccess = false;
+            if (newProduct != null)
+            {
+                final ProductDAO productDAO = new ProductDAO();
+                createNewProductSuccess = productDAO.addProduct(newProduct);
+            }
+
+            if (createNewProductSuccess)
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "create new product:" + newProduct.getProductName() + " successfully!");
+            }
+            else
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "create new product:" + newProduct.getProductName() + " fail!");
+            }
+
+            return "redirect:/order_management";
+        }
+        return "redirect:/signin";
+    }
 }
