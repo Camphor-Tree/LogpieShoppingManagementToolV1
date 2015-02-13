@@ -32,4 +32,10 @@ public class HomeController
         }
         return "redirect:/signin";
     }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public Object redirectToHomePage(HttpServletRequest request, HttpServletResponse httpResponse)
+    {
+        return "redirect:/home";
+    }
 }
