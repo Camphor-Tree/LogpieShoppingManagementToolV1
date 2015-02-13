@@ -16,7 +16,7 @@
   <body>
 
     <div class="container">
-      <form class="form-signin" action="/LogpieShopping/signin" method="post">
+      <form class="form-signin" action="/signin" method="post">
         <h2 class="form-signin-heading">登陆logpie管理系统</h2>
         <label for="inputEmail" class="sr-only">管理员email</label>
         <input type="email" id="inputEmail" name="email" class="form-control" placeholder="管理员 email" required autofocus>

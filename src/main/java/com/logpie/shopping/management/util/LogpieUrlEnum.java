@@ -7,7 +7,7 @@ package com.logpie.shopping.management.util;
  */
 public class LogpieUrlEnum
 {
-    public static final String LogpieBaseURL = "/LogpieShopping/";
+    public static final String LogpieBaseURL = "/";
 
     /**
      * Signin page

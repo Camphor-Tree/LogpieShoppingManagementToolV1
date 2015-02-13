@@ -16,9 +16,10 @@ public class LogpieDataSourceFactory
     {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
-        dataSource
-                .setUrl("jdbc:mysql://localhost:8889/Logpie?useUnicode=yes&characterEncoding=UTF-8");
-        // dataSource.setUrl("jdbc:mysql://localhost:3306/Logpie");
+        // dataSource.setUrl("jdbc:mysql://localhost:8889/Logpie");
+        // remote server use port 3306. Amazon Linux
+        dataSource.setUrl(
+                "jdbc:mysql://localhost:3306/Logpie?useUnicode=yes&characterEncoding=UTF-8");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
         return dataSource;

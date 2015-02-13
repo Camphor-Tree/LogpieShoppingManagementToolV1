@@ -72,7 +72,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
             else
             {
                 LOG.info("The authcookie is expired or invalid, redirecting to sign_in page");
-                response.sendRedirect("/LogpieShopping/signin");
+                response.sendRedirect("/signin");
                 return false;
             }
         } catch (SystemException e)
