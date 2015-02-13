@@ -68,7 +68,8 @@ public class ImageDAO extends LogpieBaseDAO<Image>
      */
     public boolean updateImageProfile(final Image image)
     {
-        final UpdateImageUpdate updateImageUpdate = new UpdateImageUpdate(image, sImageTableName);
+        final UpdateImageUpdate updateImageUpdate = new UpdateImageUpdate(image, sImageTableName,
+                image.getImageId());
         return super.updateData(updateImageUpdate);
     }
 
@@ -116,9 +117,9 @@ public class ImageDAO extends LogpieBaseDAO<Image>
          * @param model
          * @param tableName
          */
-        public UpdateImageUpdate(LogpieModel model, String tableName)
+        public UpdateImageUpdate(LogpieModel model, String tableName, final String imageId)
         {
-            super(model, tableName);
+            super(model, tableName, Image.DB_KEY_IMAGE_ID, imageId);
         }
     }
 

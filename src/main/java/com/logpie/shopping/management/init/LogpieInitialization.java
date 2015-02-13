@@ -1,10 +1,15 @@
 package com.logpie.shopping.management.init;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.LogpieDataSourceFactory;
+import com.logpie.shopping.management.util.CollectionUtils;
 
 public class LogpieInitialization
 {
@@ -15,6 +20,7 @@ public class LogpieInitialization
         try
         {
             initDatabase();
+            initSuperAdminAccount();
         } catch (Exception e)
         {
             LOG.error("error happens when init the database", e);
@@ -46,7 +52,7 @@ public class LogpieInitialization
         jdbcTemplate
                 .execute("create table if not exists Admins(AdminId serial primary key, AdminName text not null, AdminPassword text not null, AdminEmail text not null, AdminQQ int, AdminWechat text, AdminPhone int not null, AdminIdentityNumber int)");
         jdbcTemplate
-                .execute("create table if not exists Orders(OrderId serial primary key, OrderDate timestamp not null default current_timestamp, OrderProductId bigint unsigned not null, OrderProductCount int not null, OrderBuyerName text not null, OrderProxyId bigint unsigned, OrderProxyProfitPercentage float not null, OrderActualCost float, OrderCurrencyRate float not null, OrderPackageId bigint unsigned, OrderEstimatedShippingFee float not null, OrderActualShippingFee float, OrderSellingPrice float not null, OrderCustomerPaidMoney float not null, OrderIsProfitPaid boolean not null default false, OrderNote text, foreign key (OrderPackageId) references Packages(PackageId) on update cascade on delete cascade, foreign key (OrderProxyId) references Admins(AdminId) on update cascade on delete cascade, foreign key (OrderProductId) references Products(ProductId) on update cascade on delete cascade)");
+                .execute("create table if not exists Orders(OrderId serial primary key, OrderDate timestamp not null default current_timestamp, OrderProductId bigint unsigned not null, OrderProductCount int not null, OrderBuyerName text not null, OrderProxyId bigint unsigned, OrderProxyProfitPercentage float not null, OrderActualCost float, OrderCurrencyRate float not null, OrderPackageId bigint unsigned, OrderEstimatedShippingFee float not null, OrderActualShippingFee float, OrderSellingPrice float not null, OrderCustomerPaidMoney float, OrderCompanyReceivedMoney float, OrderIsProfitPaid boolean not null default false, OrderNote text, foreign key (OrderPackageId) references Packages(PackageId) on update cascade on delete cascade, foreign key (OrderProxyId) references Admins(AdminId) on update cascade on delete cascade, foreign key (OrderProductId) references Products(ProductId) on update cascade on delete cascade)");
         // jdbcTemplate
         // .execute("create table if not exists ExchangeRate(Date timestamp primary key default current_timestamp, Rate float not null)");
         // jdbcTemplate
@@ -56,6 +62,23 @@ public class LogpieInitialization
         // jdbcTemplate
         // .execute("create table if not exists AuthorizationOwner(AuthorizationOwnerId serial primary key, AdminId bigint unsigned not null, AuthorizationId bigint unsigned not null, foreign key (AdminId) references Admins(AdminId) on update cascade on delete cascade, foreign key (AuthorizationId) references Authorization(AuthorizationId) on update cascade on delete cascade)");
         LOG.debug("Finish creating tables...");
+    }
+
+    private void initSuperAdminAccount()
+    {
+        final AdminDAO adminDAO = new AdminDAO();
+        final List<Admin> adminList = adminDAO.getAllAdmins();
+        // If there is no account, then create a super admin
+        if (CollectionUtils.isEmpty(adminList))
+        {
+            final Admin superAdmin = new Admin("SuperAdmin", "admin@logpie.com", "313541388",
+                    "logpiezxqy", "2065197113", "123456", "1", "haohaoxuexi");
+            final boolean initAdminSuccess = adminDAO.addAdmin(superAdmin);
+            if (initAdminSuccess)
+            {
+                LOG.debug("init super admin success");
+            }
+        }
 
     }
 }

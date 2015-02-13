@@ -147,4 +147,66 @@ public class OrderController
         return "redirect:/signin";
     }
 
+    @RequestMapping(value = "/order/edit", method = RequestMethod.GET)
+    public Object showModifyOrderPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("id") String orderId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            final ModelAndView modifyOrderPage = new ModelAndView("order_edit");
+            final OrderDAO orderDAO = new OrderDAO();
+            final Order order = orderDAO.getOrderById(orderId);
+            modifyOrderPage.addObject("order", order);
+
+            final AdminDAO adminDAO = new AdminDAO();
+            final List<Admin> adminList = adminDAO.getAllAdmins();
+            modifyOrderPage.addObject("adminList", adminList);
+
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final List<LogpiePackage> packageList = packageDAO.getAllPackage();
+            modifyOrderPage.addObject("packageList", packageList);
+
+            final ProductDAO productDAO = new ProductDAO();
+            final List<Product> productList = productDAO.getAllProduct();
+            modifyOrderPage.addObject("productList", productList);
+
+            return modifyOrderPage;
+        }
+        return "redirect:/signin";
+    }
+
+    @RequestMapping(value = "/order/edit", method = RequestMethod.POST)
+    public Object modifyOrder(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to create a new order.");
+            final Order modifiedOrder = Order.readModifiedOrderFromRequest(request);
+            boolean updateOrderSuccess = false;
+            if (modifiedOrder != null)
+            {
+                final OrderDAO orderDAO = new OrderDAO();
+                updateOrderSuccess = orderDAO.updateOrderProfile(modifiedOrder);
+            }
+
+            if (updateOrderSuccess)
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "Update order for " + modifiedOrder.getOrderBuyerName() + " successfully!");
+            }
+            else
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "Update order for" + modifiedOrder.getOrderBuyerName() + " fail!");
+            }
+
+            return "redirect:/order_management";
+        }
+        return "redirect:/signin";
+    }
+
 }

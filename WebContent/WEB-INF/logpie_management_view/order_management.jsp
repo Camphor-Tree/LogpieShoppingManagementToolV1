@@ -31,6 +31,7 @@
         <th>订单售价</th>
         <th>实收账款</th>
         <th>订单最终利润</th>
+        <th>订单公司已收汇款(人民币)</th>
         <th>订单利润已结算</th>
         <th>订单备注</th>
         <th>修改</th>
@@ -53,6 +54,7 @@
         <td>${order.orderSellingPrice}</td>
         <td>${order.orderCustomerPaidMoney}</td>
         <td>${order.orderFinalProfit}</td>
+        <td>${order.orderCompanyReceivedMoney}</td>
         <td>${order.orderIsProfitPaid}</td>
         <td>${order.orderNote}</td>
         <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}">修改</a></td>
@@ -77,7 +79,7 @@
           <div class="tab-content">
           <div id="section-order" class="tab-pane fade in active"style="padding:20px">
               <h3>新建一个订单</h3>
-              <form role="form" style="padding:20px" id="order_creation_form" action="./order/create" method="POST" >
+              <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/create" />" method="POST" >
                 <div class="form-group">
                   <label for="order_buyer">订单购买者：</label>
                   <input class="form-control" id="order_buyer" name="OrderBuyerName">
@@ -141,12 +143,16 @@
                 
                 <div class="form-group">
                   <label for="order_package">所属包裹(可空缺)：</label>
-                  <select class="form-control" form="order_creation_form" name="OrderProductId">
+                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
                         <option value=""> </option>
 						<c:forEach items="${packageList}" var="logpiePackage">
 						    <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
 						</c:forEach>
 				  </select>
+                </div>
+                <div class="form-group">
+                  <label for="order_company_received_money">公司已收汇款(可空缺)：</label>
+                  <input class="form-control" id="order_company_received_money" name="OrderCompanyReceivedMoney">
                 </div>
                 <div class="form-group">
                   <label for="order_note">备注(可空缺)：</label>
@@ -160,7 +166,7 @@
             </div>
             <div id="section-package" class="tab-pane fade" style="padding:20px">
               <h3>新建一个包裹</h3>
-              <form role="form" style="padding:20px" id="package_creation_form"  action="./package/create" method="POST">
+              <form role="form" style="padding:20px" id="package_creation_form"  action="<c:url value="/package/create" />" method="POST">
                 <div class="form-group">
                   <label for="package_proxy">包裹代理机构：</label>
                    <input class="form-control" id="package_proxy" name="PackageProxyName">
@@ -210,7 +216,7 @@
             </div>
             <div id="section-category" class="tab-pane fade" style="padding:20px">
               <h3>新建一个类别</h3>
-              <form role="form" style="padding:20px" action="./category/create" method="post">
+              <form role="form" style="padding:20px" action="<c:url value="/category/create" />" method="post">
                 <div class="form-group">
                   <label for="category">类别名称：</label>
                   <input class="form-control" id="category" name="CategoryName" placeholder="输入新的类别名称" required autofocus>
@@ -220,7 +226,7 @@
             </div>
             <div id="section-image" class="tab-pane fade" style="padding:20px">
               <h3>上传一张图片</h3>
-              <form role="form" style="padding:20px" action="./image/create" method="POST">
+              <form role="form" style="padding:20px" action="<c:url value="/image/create" />" method="POST">
                 <div class="form-group">
                   <label for="img_url">图片地址：</label>
                   <input class="form-control" id="img_url" name="ImageUrl" placeholder="阿里云OSS 照片url地址">
@@ -234,7 +240,7 @@
             </div>
             <div id="section-brand" class="tab-pane fade" style="padding:20px">
               <h3>新建一个品牌</h3>
-              <form role="form" style="padding:20px" action="./brand/create" method="POST" id="brand_creation_form">
+              <form role="form" style="padding:20px" action="<c:url value="/brand/create" />" method="POST" id="brand_creation_form">
                 <div class="form-group">
                   <label for="brand_en">品牌英文名称：</label>
                   <input class="form-control" id="brand_en" name="BrandEnglishName">
@@ -277,7 +283,7 @@
             </div>
             <div id="section-product" class="tab-pane fade" style="padding:20px">
               <h3>新建一个产品</h3>
-              <form role="form" style="padding:20px" id="product_creation_form" action="./product/create" method="POST">
+              <form role="form" style="padding:20px" id="product_creation_form" action="<c:url value="/product/create" />" method="POST">
                 <div class="form-group">
                   <label for="product-name">产品名称：</label>
                   <input class="form-control" id="product-name" name="ProductName">

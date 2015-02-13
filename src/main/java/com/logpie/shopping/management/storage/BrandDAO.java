@@ -75,7 +75,8 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
      */
     public boolean updateBrandProfile(final Brand brand)
     {
-        final UpdateBrandUpdate updateBrandUpdate = new UpdateBrandUpdate(brand, sBrandTableName);
+        final UpdateBrandUpdate updateBrandUpdate = new UpdateBrandUpdate(brand, sBrandTableName,
+                brand.getBrandId());
         return super.updateData(updateBrandUpdate);
     }
 
@@ -152,9 +153,9 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
          * @param model
          * @param tableName
          */
-        public UpdateBrandUpdate(LogpieModel model, String tableName)
+        public UpdateBrandUpdate(LogpieModel model, String tableName, String brandId)
         {
-            super(model, tableName);
+            super(model, tableName, Brand.DB_KEY_BRAND_ID, brandId);
         }
     }
 

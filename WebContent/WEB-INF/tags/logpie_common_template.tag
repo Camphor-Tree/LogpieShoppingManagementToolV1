@@ -48,11 +48,11 @@ h2{
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="./home">主页</a></li>
-            <li><a href="./product_management">商品管理</a></li>
-			<li><a href="./order_management">订单管理</a></li>
-			<li><a href="./accounting">财务报表</a></li>
-			<li><a href="./logout">退出登录,${AdminName}</a></li>
+            <li class="active"><a href="/LogpieShopping/home">主页</a></li>
+            <li><a href="/LogpieShopping/product_management">商品管理</a></li>
+			<li><a href="/LogpieShopping/order_management">订单管理</a></li>
+			<li><a href="/LogpieShopping/accounting">财务报表</a></li>
+			<li><a href="/LogpieShopping/logout">退出登录,${AdminName}</a></li>
           </ul>
         </div>
       </div>

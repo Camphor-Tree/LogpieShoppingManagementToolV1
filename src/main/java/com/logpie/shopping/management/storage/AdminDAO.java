@@ -79,7 +79,8 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
      */
     public boolean updateAdminProfile(final Admin admin)
     {
-        final UpdateAdminUpdate updateAdminUpdate = new UpdateAdminUpdate(admin, sAdminTableName);
+        final UpdateAdminUpdate updateAdminUpdate = new UpdateAdminUpdate(admin, sAdminTableName,
+                admin.getAdminId());
         return super.updateData(updateAdminUpdate);
     }
 
@@ -167,9 +168,9 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
          * @param model
          * @param tableName
          */
-        public UpdateAdminUpdate(LogpieModel model, String tableName)
+        public UpdateAdminUpdate(LogpieModel model, String tableName, final String adminId)
         {
-            super(model, tableName);
+            super(model, tableName, Admin.DB_KEY_ADMIN_ID, adminId);
         }
     }
 

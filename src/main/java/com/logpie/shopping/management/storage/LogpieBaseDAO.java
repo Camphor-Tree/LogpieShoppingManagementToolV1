@@ -252,7 +252,10 @@ public class LogpieBaseDAO<T>
                 updateSqlBuilder.append(" ");
             }
         }
-        updateSqlBuilder.append(buildConditionsSQL(condition));
+        if (!CollectionUtils.isEmpty(condition))
+        {
+            updateSqlBuilder.append(buildConditionsSQL(condition));
+        }
         return updateSqlBuilder.toString();
     }
 }

@@ -38,6 +38,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     public static final String DB_KEY_ORDER_CUSTOMER_PAID_MONEY = "OrderCustomerPaidMoney";
     // public static final String DB_KEY_ORDER_FINAL_PROFIT =
     // "OrderFinalProfit";
+    public static final String DB_KEY_ORDER_COMPANY_RECEIVED_MONEY = "OrderCompanyReceivedMoney";
     public static final String DB_KEY_ORDER_IS_PROFIT_PAID = "OrderIsProfitPaid";
     public static final String DB_KEY_ORDER_NOTE = "OrderNote";
 
@@ -56,6 +57,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     private Float mOrderSellingPrice;
     private Float mOrderCustomerPaidMoney;// may be null
     private Float mOrderFinalProfit;// may be null
+    private Float mOrderCompanyReceivedMoney; // may be null
     private Boolean mOrderIsProfitPaid;
     private String mOrderNote;
 
@@ -86,7 +88,8 @@ public class Order implements RowMapper<Order>, LogpieModel
     public Order(Product product, Integer productCount, String orderBuyerName, Admin orderProxy,
             Float proxyProfitPercentage, Float orderActualCost, Float currencyRate,
             LogpiePackage package1, Float estimatedShippingFee, Float actualShippingFee,
-            Float sellingPrice, Float customerPaidMoney, Boolean isProfitPaid, String orderNote)
+            Float sellingPrice, Float customerPaidMoney, Float orderCompanyReceivedMoney,
+            Boolean isProfitPaid, String orderNote)
     {
         // OrderData is auto generated
         // mOrderDate = orderDate;
@@ -103,6 +106,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderSellingPrice = sellingPrice;
         mOrderCustomerPaidMoney = customerPaidMoney;
         // mOrderFinalProfit = finalProfit;
+        mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
         mOrderIsProfitPaid = isProfitPaid;
         mOrderNote = orderNote;
 
@@ -136,7 +140,8 @@ public class Order implements RowMapper<Order>, LogpieModel
             String orderBuyerName, Admin orderProxy, Float proxyProfitPercentage,
             Float orderActualCost, Float currencyRate, LogpiePackage package1,
             Float estimatedShippingFee, Float actualShippingFee, Float sellingPrice,
-            Float customerPaidMoney, Boolean isProfitPaid, String orderNote)
+            Float customerPaidMoney, Float orderCompanyReceivedMoney, Boolean isProfitPaid,
+            String orderNote)
     {
         mOrderId = orderId;
         mOrderDate = orderDate;
@@ -152,6 +157,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderActualShippingFee = actualShippingFee;
         mOrderSellingPrice = sellingPrice;
         mOrderCustomerPaidMoney = customerPaidMoney;
+        mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
         mOrderIsProfitPaid = isProfitPaid;
         mOrderNote = orderNote;
 
@@ -194,13 +200,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Float sellingPrice = rs.getFloat(DB_KEY_ORDER_SELLING_PRICE);
         final Float customerPaidMoney = rs.getFloat(DB_KEY_ORDER_CUSTOMER_PAID_MONEY);
         // final Integer finalProfit = rs.getInt(DB_KEY_ORDER_FINAL_PROFIT);
+        final Float orderCompanyReceivedMoney = rs.getFloat(DB_KEY_ORDER_COMPANY_RECEIVED_MONEY);
         final Boolean isProfitPaid = rs.getBoolean(DB_KEY_ORDER_IS_PROFIT_PAID);
         final String orderNote = rs.getString(DB_KEY_ORDER_NOTE);
 
         return new Order(orderId, orderDateString, product, productCount, orderBuyerName,
                 orderProxy, proxyProfitPercentage, orderActualCost, currencyRate, package1,
                 estimatedShippingFee, actualShippingFee, sellingPrice, customerPaidMoney,
-                isProfitPaid, orderNote);
+                orderCompanyReceivedMoney, isProfitPaid, orderNote);
     }
 
     @Override
@@ -213,6 +220,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         modelMap.put(Order.DB_KEY_ORDER_BUYER_NAME, mOrderBuyerName);
         modelMap.put(Order.DB_KEY_ORDER_PROXY_ID, mOrderProxy.getAdminId());
         modelMap.put(Order.DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE, mOrderProxyProfitPercentage);
+        modelMap.put(Order.DB_KEY_ORDER_ACTUAL_COST, mOrderActualCost);
         modelMap.put(Order.DB_KEY_ORDER_CURRENCY_RATE, mOrderCurrencyRate);
         modelMap.put(Order.DB_KEY_ORDER_PACKAGE_ID, mOrderPackage.getPackageId());
         modelMap.put(Order.DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE, mOrderEstimatedShippingFee);
@@ -220,6 +228,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         modelMap.put(Order.DB_KEY_ORDER_SELLING_PRICE, mOrderSellingPrice);
         modelMap.put(Order.DB_KEY_ORDER_CUSTOMER_PAID_MONEY, mOrderCustomerPaidMoney);
         // modelMap.put(Order.DB_KEY_ORDER_FINAL_PROFIT, mOrderFinalProfit);
+        modelMap.put(Order.DB_KEY_ORDER_COMPANY_RECEIVED_MONEY, mOrderCompanyReceivedMoney);
         modelMap.put(Order.DB_KEY_ORDER_IS_PROFIT_PAID, mOrderIsProfitPaid);
         modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
         return modelMap;
@@ -258,6 +267,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderCustomerPaidMoney"));
         // final Integer orderFinalProfit =
         // Integer.parseInt(request.getParameter("OrderFinalProfit"));
+        final Float orderCompanyReceivedMoney = Float.parseFloat(request
+                .getParameter("OrderCompanyReceivedMoney"));
         final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
                 .getParameter("OrderIsProfitPaid"));
         final String orderNote = request.getParameter("OrderNote");
@@ -265,7 +276,54 @@ public class Order implements RowMapper<Order>, LogpieModel
         return new Order(orderProduct, orderProductCount, orderBuyerName, orderProxy,
                 orderProxyProfitPercentage, orderActualCost, orderCurrencyRate, orderPackage,
                 orderEstimatedShippingFee, orderActualShippingFee, orderSellingPrice,
-                orderCustomerPaidMoney, orderIsProfitPaid, orderNote);
+                orderCustomerPaidMoney, orderCompanyReceivedMoney, orderIsProfitPaid, orderNote);
+    }
+
+    public static Order readModifiedOrderFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String orderId = request.getParameter("OrderId");
+        final String orderDate = request.getParameter("OrderDate");
+        // OrderData is auto generated
+        // final String orderDate = request.getParameter("OrderDate");
+        final String orderProductId = request.getParameter("OrderProductId");
+        final ProductDAO productDAO = new ProductDAO();
+        final Product orderProduct = productDAO.getProductById(orderProductId);
+        final Integer orderProductCount = Integer.parseInt(request
+                .getParameter("OrderProductCount"));
+        final String orderBuyerName = request.getParameter("OrderBuyerName");
+        final String orderProxyId = request.getParameter("OrderProxyId");
+        final AdminDAO adminDAO = new AdminDAO();
+        final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
+        final Float orderProxyProfitPercentage = Float.parseFloat(request
+                .getParameter("OrderProxyProfitPercentage"));
+        final Float orderActualCost = Float.parseFloat(request.getParameter("OrderActualCost"));
+        final Float orderCurrencyRate = Float.parseFloat(request.getParameter("OrderCurrencyRate"));
+        final String orderPackageId = request.getParameter("OrderPackageId");
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackage orderPackage = packageDAO.getPackageById(orderPackageId);
+        final Float orderEstimatedShippingFee = Float.parseFloat(request
+                .getParameter("OrderEstimatedShippingFee"));
+        final Float orderActualShippingFee = Float.parseFloat(request
+                .getParameter("OrderActualShippingFee"));
+        final Float orderSellingPrice = Float.parseFloat(request.getParameter("OrderSellingPrice"));
+        final Float orderCustomerPaidMoney = Float.parseFloat(request
+                .getParameter("OrderCustomerPaidMoney"));
+        // final Integer orderFinalProfit =
+        // Integer.parseInt(request.getParameter("OrderFinalProfit"));
+        final Float orderCompanyReceivedMoney = Float.parseFloat(request
+                .getParameter("OrderCompanyReceivedMoney"));
+        final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
+                .getParameter("OrderIsProfitPaid"));
+        final String orderNote = request.getParameter("OrderNote");
+
+        return new Order(orderId, orderDate, orderProduct, orderProductCount, orderBuyerName,
+                orderProxy, orderProxyProfitPercentage, orderActualCost, orderCurrencyRate,
+                orderPackage, orderEstimatedShippingFee, orderActualShippingFee, orderSellingPrice,
+                orderCustomerPaidMoney, orderCompanyReceivedMoney, orderIsProfitPaid, orderNote);
     }
 
     /**
@@ -555,6 +613,23 @@ public class Order implements RowMapper<Order>, LogpieModel
     public void setOrderNote(String orderNote)
     {
         mOrderNote = orderNote;
+    }
+
+    /**
+     * @return the orderCompanyReceivedMoney
+     */
+    public Float getOrderCompanyReceivedMoney()
+    {
+        return mOrderCompanyReceivedMoney;
+    }
+
+    /**
+     * @param orderCompanyReceivedMoney
+     *            the orderCompanyReceivedMoney to set
+     */
+    public void setOrderCompanyReceivedMoney(Float orderCompanyReceivedMoney)
+    {
+        mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
     }
 
 }

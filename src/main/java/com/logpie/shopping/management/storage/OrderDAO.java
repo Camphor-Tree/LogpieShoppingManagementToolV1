@@ -36,7 +36,7 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      */
     public boolean addOrder(final Order order)
     {
-        final LogpieDataInsert<Order> addPackageInsert = new AddPackageInsert(order);
+        final LogpieDataInsert<Order> addPackageInsert = new AddOrderInsert(order);
         return super.insertData(addPackageInsert);
     }
 
@@ -77,15 +77,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      */
     public boolean updateOrderProfile(final Order order)
     {
-        final UpdateOrderUpdate updateOrderUpdate = new UpdateOrderUpdate(order, sOrderTableName);
+        final ModifyOrderUpdate updateOrderUpdate = new ModifyOrderUpdate(order, sOrderTableName,
+                order.getOrderId());
         return super.updateData(updateOrderUpdate);
     }
 
-    private class AddPackageInsert implements LogpieDataInsert<Order>
+    private class AddOrderInsert implements LogpieDataInsert<Order>
     {
         private Order mOrder;
 
-        AddPackageInsert(final Order order)
+        AddOrderInsert(final Order order)
         {
             mOrder = order;
         }
@@ -128,7 +129,7 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     {
         GetOrderByIdQuery(final String orderId)
         {
-            super(new Order(), OrderDAO.sOrderTableName, Order.DB_KEY_ORDER_PACKAGE_ID, orderId);
+            super(new Order(), OrderDAO.sOrderTableName, Order.DB_KEY_ORDER_ID, orderId);
         }
 
         // foreign key connection
@@ -147,15 +148,15 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
     }
 
-    private class UpdateOrderUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Order>
+    private class ModifyOrderUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Order>
     {
         /**
          * @param model
          * @param tableName
          */
-        public UpdateOrderUpdate(LogpieModel model, String tableName)
+        public ModifyOrderUpdate(LogpieModel model, String tableName, String orderId)
         {
-            super(model, tableName);
+            super(model, tableName, Order.DB_KEY_ORDER_ID, orderId);
         }
     }
 

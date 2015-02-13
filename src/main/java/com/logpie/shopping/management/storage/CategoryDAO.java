@@ -70,7 +70,7 @@ public class CategoryDAO extends LogpieBaseDAO<Category>
     public boolean updateCategoryProfile(final Category category)
     {
         final UpdateCategoryUpdate updateCategoryUpdate = new UpdateCategoryUpdate(category,
-                sCategoryTableName);
+                sCategoryTableName, category.getCategoryId());
         return super.updateData(updateCategoryUpdate);
     }
 
@@ -120,9 +120,9 @@ public class CategoryDAO extends LogpieBaseDAO<Category>
          * @param model
          * @param tableName
          */
-        public UpdateCategoryUpdate(LogpieModel model, String tableName)
+        public UpdateCategoryUpdate(LogpieModel model, String tableName, String categoryId)
         {
-            super(model, tableName);
+            super(model, tableName, Category.DB_KEY_CATEGORY_ID, categoryId);
         }
     }
 }

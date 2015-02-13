@@ -52,7 +52,7 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
     public boolean updateLogpiePackageProfile(final LogpiePackage logpiePackage)
     {
         final UpdateLogpiePackageUpdate updateLogpiePackageUpdate = new UpdateLogpiePackageUpdate(
-                logpiePackage, sPackageTableName);
+                logpiePackage, sPackageTableName, logpiePackage.getPackageId());
         return super.updateData(updateLogpiePackageUpdate);
     }
 
@@ -126,9 +126,9 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
          * @param model
          * @param tableName
          */
-        public UpdateLogpiePackageUpdate(LogpieModel model, String tableName)
+        public UpdateLogpiePackageUpdate(LogpieModel model, String tableName, String packageId)
         {
-            super(model, tableName);
+            super(model, tableName, LogpiePackage.DB_KEY_PACKAGE_ID, packageId);
         }
     }
 

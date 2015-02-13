@@ -1,6 +1,7 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,11 +15,16 @@ public class LogpieBaseUpdateRecordTemplateUpdate<T> implements LogpieDataUpdate
 {
     private String mTableName;
     private LogpieModel mModel;
+    private String mIdKey;
+    private String mIdValue;
 
-    public LogpieBaseUpdateRecordTemplateUpdate(final LogpieModel model, final String tableName)
+    public LogpieBaseUpdateRecordTemplateUpdate(final LogpieModel model, final String tableName,
+            final String idKey, final String idValue)
     {
         mModel = model;
         mTableName = tableName;
+        mIdKey = idKey;
+        mIdValue = idValue;
     }
 
     @Override
@@ -38,7 +44,9 @@ public class LogpieBaseUpdateRecordTemplateUpdate<T> implements LogpieDataUpdate
     @Override
     public Set<String> getUpdateConditions()
     {
-        return null;
+        final Set<String> conditions = new HashSet<String>();
+        conditions.add(String.format("%s=%s", mIdKey, mIdValue));
+        return conditions;
     }
 
 }

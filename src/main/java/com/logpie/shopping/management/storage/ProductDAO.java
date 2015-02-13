@@ -81,7 +81,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
     public boolean updateProductProfile(final Product product)
     {
         final UpdateProductUpdate updateProductUpdate = new UpdateProductUpdate(product,
-                sProductTableName);
+                sProductTableName, product.getProductId());
         return super.updateData(updateProductUpdate);
     }
 
@@ -157,9 +157,9 @@ public class ProductDAO extends LogpieBaseDAO<Product>
          * @param model
          * @param tableName
          */
-        public UpdateProductUpdate(LogpieModel model, String tableName)
+        public UpdateProductUpdate(LogpieModel model, String tableName, String productId)
         {
-            super(model, tableName);
+            super(model, tableName, Product.DB_KEY_PRODUCT_ID, productId);
         }
     }
 
