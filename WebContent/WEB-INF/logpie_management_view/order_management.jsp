@@ -66,19 +66,149 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#section-category">类别</a></li>
+            <li class="active"><a data-toggle="tab" href="#section-order">订单</a></li>
+            <li><a data-toggle="tab" href="#section-package">包裹</a></li>
+            <li><a data-toggle="tab" href="#section-product">产品</a></li>
+            <li><a data-toggle="tab" href="#section-category">类别</a></li>
             <li><a data-toggle="tab" href="#section-image">图片</a></li>
             <li><a data-toggle="tab" href="#section-brand">品牌</a></li>
-            <li><a data-toggle="tab" href="#section-product">产品</a></li>
-            <li class="dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a data-toggle="tab" href="#dropdown1">Dropdown1</a></li>
-                <li><a data-toggle="tab" href="#dropdown2">Dropdown2</a></li>
-            </ul>
-            </li>
+            <!--<li><a data-toggle="tab" href="#section-admin">管理员</a></li>-->
           </ul>
           <div class="tab-content">
-            <div id="section-category" class="tab-pane fade in active" style="padding:20px">
+          <div id="section-order" class="tab-pane fade in active"style="padding:20px">
+              <h3>新建一个订单</h3>
+              <form role="form" style="padding:20px" id="order_creation_form" action="./order/create" method="POST" >
+                <div class="form-group">
+                  <label for="order_buyer">订单购买者：</label>
+                  <input class="form-control" id="order_buyer" name="OrderBuyerName">
+                </div>
+                <div class="form-group">
+                  <label for="order_proxy">订单代理人：</label>
+                  <select class="form-control" form="order_creation_form" name="OrderProxyId">
+						   <c:forEach items="${adminList}" var="admin">
+						    <option value="${admin.adminId}">${admin.adminName}</option>
+						    </c:forEach>
+				  </select>
+                </div>
+                <div class="dropdown" style="margin-bottom:20px">
+                  <label for="order_product">购买商品：</label>
+                  <select class="form-control" form="order_creation_form" name="OrderProductId">
+						<c:forEach items="${productList}" var="product">
+						    <option value="${product.productId}">${product.productName}</option>
+						</c:forEach>
+				  </select>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                  <label for="order_product_count">购买数量</label>
+                  <input class="form-control" id="order_product_count" name="OrderProductCount" value="1">
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="order_proxy_profit_percentage">代理分红百分比</label>
+                    <input class="form-control" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                      <label for="order_actual_cost">实际购买成本(美元)(可空缺)：</label>
+                      <input class="form-control" id="order_actual_cost" name="OrderActualCost">
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="order_currency_rate">订单当日汇率：</label>
+                    <input class="form-control" id="order_currency_rate" name="OrderCurrencyRate" value="6.23">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="estimated_shipping_fee">预计邮费：</label>
+                    <input class="form-control" id="estimated_shipping_fee" name="OrderEstimatedShippingFee">
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="actural_shipping_fee">实际邮费(人民币)(可空缺)：</label>
+                    <input class="form-control" id="actural_shipping_fee" name="OrderActualShippingFee">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                      <label for="selling_price">最终售价(人民币)：</label>
+                      <input class="form-control" id="selling_price" name="OrderSellingPrice">
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="order_buyer_paid_money">买家实际付款(人民币)(可空缺)</label>
+                    <input class="form-control" id="order_buyer_paid_money" name="OrderCustomerPaidMoney">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="order_package">所属包裹(可空缺)：</label>
+                  <select class="form-control" form="order_creation_form" name="OrderProductId">
+                        <option value=""> </option>
+						<c:forEach items="${packageList}" var="logpiePackage">
+						    <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
+						</c:forEach>
+				  </select>
+                </div>
+                <div class="form-group">
+                  <label for="order_note">备注(可空缺)：</label>
+                  <input class="form-control" id="order_note" name="OrderNote">
+                </div>
+                <div class="checkbox" style="padding-left:20px">
+                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid"/>利润是否已和代理结算</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+              </form>
+            </div>
+            <div id="section-package" class="tab-pane fade" style="padding:20px">
+              <h3>新建一个包裹</h3>
+              <form role="form" style="padding:20px" id="package_creation_form"  action="./package/create" method="POST">
+                <div class="form-group">
+                  <label for="package_proxy">包裹代理机构：</label>
+                   <input class="form-control" id="package_proxy" name="PackageProxyName">
+                </div>
+                <div class="form-group">
+                  <label for="package_receiver">收件人：</label>
+                  <input class="form-control" id="package_receiver" name="PackageReceiver">
+                </div>
+                <div class="form-group">
+                  <label for="package_destination">收件地址：</label>
+                  <input class="form-control" id="package_destination" name="PackageDestination">
+                </div>
+                <div class="form-group">
+                  <label for="tracking_number">包裹单号：</label>
+                  <input class="form-control" id="tracking_number" name="PackageTrackingNumber">
+                </div>
+                <div class="form-group">
+                  <label for="package_weight">包裹重量（g）：</label>
+                  <input class="form-control" id="package_weight" name="PackageWeight">
+                </div>
+                <div class="form-group">
+                  <label for="package_shipping_fee">邮寄费用：</label>
+                  <input class="form-control" id="package_shipping_fee" name="PackgeShippingFee">
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="package_custom_fee">额外海关费用：</label>
+                    <input class="form-control" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="0">
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="package_insurance_fee">额外保险费用：</label>
+                    <input class="form-control" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="0">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="package_notes">备注(可空缺)：</label>
+                  <input class="form-control" id="package_notes" name="PackageNote">
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" checked="checked" id="package_is_shipped" name="PackageIsShipped" value="True"/>是否寄出</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" id="package_is_delivered" name="PackageIsDelivered" value="True"/>是否签收</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+              </form>
+            </div>
+            <div id="section-category" class="tab-pane fade" style="padding:20px">
               <h3>新建一个类别</h3>
               <form role="form" style="padding:20px" action="./category/create" method="post">
                 <div class="form-group">
@@ -187,14 +317,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
-            </div>
-            <div id="dropdown1" class="tab-pane fade">
-              <h3>Dropdown 1</h3>
-              <p>WInteger convallis, nulla in sollicitudin placerat, ligula enim auctor lectus, in mollis diam dolor at lorem. Sed bibendum nibh sit amet dictum feugiat. Vivamus arcu sem, cursus a feugiat ut, iaculis at erat. Donec vehicula at ligula vitae venenatis. Sed nunc nulla, vehicula non porttitor in, pharetra et dolor. Fusce nec velit velit. Pellentesque consectetur eros.</p>
-            </div>
-            <div id="dropdown2" class="tab-pane fade">
-              <h3>Dropdown 2</h3>
-              <p>Donec vel placerat quam, ut euismod risus. Sed a mi suscipit, elementum sem a, hendrerit velit. Donec at erat magna. Sed dignissim orci nec eleifend egestas. Donec eget mi consequat massa vestibulum laoreet. Mauris et ultrices nulla, malesuada volutpat ante. Fusce ut orci lorem. Donec molestie libero in tempus imperdiet. Cum sociis natoque penatibus et magnis.</p>
             </div>
           </div>
         </div>

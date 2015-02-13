@@ -83,6 +83,13 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         return super.updateData(updateAdminUpdate);
     }
 
+    public List<Admin> getAllAdmins()
+    {
+        final GetAllAdminQuery getAllAdminQuery = new GetAllAdminQuery();
+        final List<Admin> adminList = super.queryResult(getAllAdminQuery);
+        return adminList;
+    }
+
     // public Admin queryAccountByAdminEmail(final String adminEmail)
     // {
     //
@@ -163,6 +170,14 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         public UpdateAdminUpdate(LogpieModel model, String tableName)
         {
             super(model, tableName);
+        }
+    }
+
+    private class GetAllAdminQuery extends LogpieBaseQueryAllTemplateQuery<Admin>
+    {
+        GetAllAdminQuery()
+        {
+            super(new Admin(), AdminDAO.sAdminTableName);
         }
     }
 

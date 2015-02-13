@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Brand;
+import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.Product;
@@ -167,9 +168,15 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         final Set<String> conditions = new HashSet<String>();
         conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_BRAND_ID,
                 Brand.DB_KEY_BRAND_ID));
-        conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_IMAGE_ID,
-                Image.DB_KEY_IMAGE_ID));
-        return null;
+        conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
+                Category.DB_KEY_CATEGORY_ID));
+        conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+                ProductDAO.sProductImageTableAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+                BrandDAO.sBrandImageTableAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+                BrandDAO.sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
+        return conditions;
     }
 
     public static Map<String, String> getForeignKeyConnectionTables()
@@ -178,7 +185,11 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         tableMap.put(sNonAliasPrefix + sProductTableName, sProductTableName);
         // alias for multiple foreign key connection
         tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, BrandDAO.sBrandTableName);
-        tableMap.put(sNonAliasPrefix + ImageDAO.sImageTableName, ImageDAO.sImageTableName);
+        tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,
+                CategoryDAO.sCategoryTableName);
+        tableMap.put(ProductDAO.sProductImageTableAlias, ImageDAO.sImageTableName);
+        tableMap.put(BrandDAO.sBrandImageTableAlias, ImageDAO.sImageTableName);
+        tableMap.put(BrandDAO.sBrandSizeChartImageAlias, ImageDAO.sImageTableName);
         return tableMap;
     }
 }

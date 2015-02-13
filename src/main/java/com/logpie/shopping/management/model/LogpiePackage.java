@@ -67,16 +67,17 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
      * @param packageNote
      */
     public LogpiePackage(String packageProxyName, String packageTrackingNumber,
-            String packageReceiver, String packageDestination, String packageDate,
-            Integer packageWeight, Integer packgeShippingFee,
-            Integer packageAdditionalCustomTaxFee, Integer packageAdditionalInsuranceFee,
-            Boolean packageIsShipped, Boolean packageIsDelivered, String packageNote)
+            String packageReceiver, String packageDestination, Integer packageWeight,
+            Integer packgeShippingFee, Integer packageAdditionalCustomTaxFee,
+            Integer packageAdditionalInsuranceFee, Boolean packageIsShipped,
+            Boolean packageIsDelivered, String packageNote)
     {
         mPackageProxyName = packageProxyName;
         mPackageTrackingNumber = packageTrackingNumber;
         mPackageReceiver = packageReceiver;
         mPackageDestination = packageDestination;
-        mPackageDate = packageDate;
+        // PackageDate is automated to current time
+        // mPackageDate = packageDate;
         mPackageWeight = packageWeight;
         mPackgeShippingFee = packgeShippingFee;
         mPackageAdditionalCustomTaxFee = packageAdditionalCustomTaxFee;
@@ -192,7 +193,8 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         final String packageTrackingNumber = request.getParameter("PackageTrackingNumber");
         final String packageReceiver = request.getParameter("PackageReceiver");
         final String packageDestination = request.getParameter("PackageDestination");
-        final String packageDate = request.getParameter("PackageDate");
+        // PackageDate is automated to current time
+        // final String packageDate = request.getParameter("PackageDate");
         final Integer packageWeight = Integer.parseInt(request.getParameter("PackageWeight"));
         final Integer packgeShippingFee = Integer.parseInt(request
                 .getParameter("PackgeShippingFee"));
@@ -206,7 +208,7 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
                 .getParameter("PackageIsDelivered"));
         final String packageNote = request.getParameter("PackageNote");
         return new LogpiePackage(packageProxyName, packageTrackingNumber, packageReceiver,
-                packageDestination, packageDate, packageWeight, packgeShippingFee,
+                packageDestination, packageWeight, packgeShippingFee,
                 packageAdditionalCustomTaxFee, packageAdditionalInsuranceFee, packageIsShipped,
                 packageIsDelivered, packageNote);
     }

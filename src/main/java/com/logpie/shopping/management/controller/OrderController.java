@@ -16,14 +16,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
+import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.model.Product;
+import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
 import com.logpie.shopping.management.storage.ImageDAO;
+import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
+import com.logpie.shopping.management.storage.ProductDAO;
 
 /**
  * @author zhoyilei
@@ -64,6 +70,19 @@ public class OrderController
             final BrandDAO brandDAO = new BrandDAO();
             final List<Brand> brandList = brandDAO.getAllBrand();
             orderManagementPage.addObject("brandList", brandList);
+
+            final AdminDAO adminDAO = new AdminDAO();
+            final List<Admin> adminList = adminDAO.getAllAdmins();
+            orderManagementPage.addObject("adminList", adminList);
+
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final List<LogpiePackage> packageList = packageDAO.getAllPackage();
+            orderManagementPage.addObject("packageList", packageList);
+
+            final ProductDAO productDAO = new ProductDAO();
+            final List<Product> productList = productDAO.getAllProduct();
+            orderManagementPage.addObject("productList", productList);
+
             return orderManagementPage;
         }
         return "redirect:/signin";
