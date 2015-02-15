@@ -20,8 +20,8 @@ public class CookieManager
     private static final Logger LOG = Logger.getLogger(CookieManager.class);
 
     public static final String AUTH_COOKIE_NAME = "logpie.auth_id";
-    // auth cookie expires in 1 hour
-    private static final int AUTH_COOKIE_DURATION = 60 * 60;
+    // auth cookie expires in 1 week
+    private static final int AUTH_COOKIE_DURATION = 7 * 24 * 60 * 60;
     private static final long AUTH_COOKIE_EXPIRATION_MILLIS = AUTH_COOKIE_DURATION * 1000;
     private final EncryptionManager mEncryptor;
 
