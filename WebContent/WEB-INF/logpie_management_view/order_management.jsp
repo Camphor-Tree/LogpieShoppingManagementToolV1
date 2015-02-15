@@ -82,11 +82,11 @@
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/create" />" method="POST" >
                 <div class="form-group">
                   <label for="order_buyer">订单购买者：</label>
-                  <input class="form-control" id="order_buyer" name="OrderBuyerName">
+                  <input class="form-control" id="order_buyer" name="OrderBuyerName" required autofocus>
                 </div>
                 <div class="form-group">
                   <label for="order_proxy">订单代理人：</label>
-                  <select class="form-control" form="order_creation_form" name="OrderProxyId">
+                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
 						   <c:forEach items="${adminList}" var="admin">
 						    <option value="${admin.adminId}">${admin.adminName}</option>
 						    </c:forEach>
@@ -103,41 +103,41 @@
                 <div class="row">
                   <div class="form-group col-sm-6">
                   <label for="order_product_count">购买数量</label>
-                  <input class="form-control" id="order_product_count" name="OrderProductCount" value="1">
+                  <input class="form-control" type="number" min="1" max="1000" id="order_product_count" name="OrderProductCount" value="1" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_proxy_profit_percentage">代理分红百分比</label>
-                    <input class="form-control" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4">
+                    <input class="form-control" type="number" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="order_actual_cost">实际购买成本(美元)(可空缺)：</label>
-                      <input class="form-control" id="order_actual_cost" name="OrderActualCost">
+                      <input class="form-control" type="number" id="order_actual_cost" name="OrderActualCost">
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率：</label>
-                    <input class="form-control" id="order_currency_rate" name="OrderCurrencyRate" value="6.23">
+                    <input class="form-control" type="number" id="order_currency_rate" name="OrderCurrencyRate" value="6.23" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="estimated_shipping_fee">预计邮费：</label>
-                    <input class="form-control" id="estimated_shipping_fee" name="OrderEstimatedShippingFee">
+                    <input class="form-control" type="number" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="actural_shipping_fee">实际邮费(人民币)(可空缺)：</label>
-                    <input class="form-control" id="actural_shipping_fee" name="OrderActualShippingFee">
+                    <input class="form-control" type="number" id="actural_shipping_fee" name="OrderActualShippingFee">
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="selling_price">最终售价(人民币)：</label>
-                      <input class="form-control" id="selling_price" name="OrderSellingPrice">
+                      <input class="form-control" type="number" id="selling_price" name="OrderSellingPrice" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_buyer_paid_money">买家实际付款(人民币)(可空缺)</label>
-                    <input class="form-control" id="order_buyer_paid_money" name="OrderCustomerPaidMoney">
+                    <input class="form-control" type="number" id="order_buyer_paid_money" name="OrderCustomerPaidMoney">
                   </div>
                 </div>
                 
@@ -152,14 +152,14 @@
                 </div>
                 <div class="form-group">
                   <label for="order_company_received_money">公司已收汇款(可空缺)：</label>
-                  <input class="form-control" id="order_company_received_money" name="OrderCompanyReceivedMoney">
+                  <input class="form-control" type="number" id="order_company_received_money" name="OrderCompanyReceivedMoney">
                 </div>
                 <div class="form-group">
                   <label for="order_note">备注(可空缺)：</label>
-                  <input class="form-control" id="order_note" name="OrderNote">
+                  <input class="form-control" type="text" id="order_note" name="OrderNote">
                 </div>
                 <div class="checkbox" style="padding-left:20px">
-                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid"/>利润是否已和代理结算</label>
+                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True"/>利润是否已和代理结算</label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
@@ -169,41 +169,41 @@
               <form role="form" style="padding:20px" id="package_creation_form"  action="<c:url value="/package/create" />" method="POST">
                 <div class="form-group">
                   <label for="package_proxy">包裹代理机构：</label>
-                   <input class="form-control" id="package_proxy" name="PackageProxyName">
+                   <input class="form-control" type="text" id="package_proxy" name="PackageProxyName" required>
                 </div>
                 <div class="form-group">
                   <label for="package_receiver">收件人：</label>
-                  <input class="form-control" id="package_receiver" name="PackageReceiver">
+                  <input class="form-control" type="text" id="package_receiver" name="PackageReceiver" required>
                 </div>
                 <div class="form-group">
                   <label for="package_destination">收件地址：</label>
-                  <input class="form-control" id="package_destination" name="PackageDestination">
+                  <input class="form-control" type="text" id="package_destination" name="PackageDestination" required>
                 </div>
                 <div class="form-group">
                   <label for="tracking_number">包裹单号：</label>
-                  <input class="form-control" id="tracking_number" name="PackageTrackingNumber">
+                  <input class="form-control" type="text" id="tracking_number" name="PackageTrackingNumber" required>
                 </div>
                 <div class="form-group">
                   <label for="package_weight">包裹重量（g）：</label>
-                  <input class="form-control" id="package_weight" name="PackageWeight">
+                  <input class="form-control" type="number" id="package_weight" name="PackageWeight" required>
                 </div>
                 <div class="form-group">
                   <label for="package_shipping_fee">邮寄费用：</label>
-                  <input class="form-control" id="package_shipping_fee" name="PackgeShippingFee">
+                  <input class="form-control" type="number" id="package_shipping_fee" name="PackgeShippingFee" required>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="package_custom_fee">额外海关费用：</label>
-                    <input class="form-control" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="0">
+                    <input class="form-control" type="number" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="0" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="package_insurance_fee">额外保险费用：</label>
-                    <input class="form-control" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="0">
+                    <input class="form-control"  type="number" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="0" required>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="package_notes">备注(可空缺)：</label>
-                  <input class="form-control" id="package_notes" name="PackageNote">
+                  <input class="form-control" type="text" id="package_notes" name="PackageNote">
                 </div>
                 <div class="checkbox">
                   <label><input type="checkbox" checked="checked" id="package_is_shipped" name="PackageIsShipped" value="True"/>是否寄出</label>
@@ -229,11 +229,11 @@
               <form role="form" style="padding:20px" action="<c:url value="/image/create" />" method="POST">
                 <div class="form-group">
                   <label for="img_url">图片地址：</label>
-                  <input class="form-control" id="img_url" name="ImageUrl" placeholder="阿里云OSS 照片url地址">
+                  <input class="form-control" type="url" id="img_url" name="ImageUrl" placeholder="阿里云OSS 照片url地址" required autofocus>
                 </div>
                 <div class="form-group">
                   <label for="img_description">图片名称：</label>
-                  <input class="form-control" id="img_description" name="ImageDescription" placeholder="图片描述(key)">
+                  <input class="form-control" type="text" id="img_description" name="ImageDescription" placeholder="图片描述(key)" required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
@@ -243,11 +243,11 @@
               <form role="form" style="padding:20px" action="<c:url value="/brand/create" />" method="POST" id="brand_creation_form">
                 <div class="form-group">
                   <label for="brand_en">品牌英文名称：</label>
-                  <input class="form-control" id="brand_en" name="BrandEnglishName">
+                  <input class="form-control" type="text" id="brand_en" name="BrandEnglishName" required autofocus>
                 </div>
                 <div class="form-group">
                   <label for="brand_cn">品牌中文名称：</label>
-                  <input class="form-control" id="brand_cn" name="BrandChineseName">
+                  <input class="form-control" type="text" id="brand_cn" name="BrandChineseName" required>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
                   <label for="brand_category">品牌所属类别：</label>
@@ -267,8 +267,9 @@
 						</select>
                   </div>
                   <div class="dropdown col-sm-7" style="margin-bottom:10px">
-                    <label for="brand_image">相关尺寸图片(可选)：</label>
+                    <label for="brand_image">相关尺寸图片(可无)：</label>
 						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId">
+						    <option value=""></option>
 						   <c:forEach items="${imageList}" var="sizeChartImage">
 						    <option value="${sizeChartImage.imageId}">${sizeChartImage.imageDescription}</option>
 						   </c:forEach>
@@ -286,19 +287,19 @@
               <form role="form" style="padding:20px" id="product_creation_form" action="<c:url value="/product/create" />" method="POST">
                 <div class="form-group">
                   <label for="product-name">产品名称：</label>
-                  <input class="form-control" id="product-name" name="ProductName">
+                  <input class="form-control" type="text" id="product-name" name="ProductName" required>
                 </div>
                 <div class="form-group">
                   <label for="product-description">产品描述：</label>
-                  <input class="form-control" id="product-description" name="ProductDescription">
+                  <input class="form-control" type="text" id="product-description" name="ProductDescription" required>
                 </div>
                 <div class="form-group">
                   <label for="product-link">产品链接：</label>
-                  <input class="form-control" id="product-link" name="ProductLink">
+                  <input class="form-control" type="url" id="product-link" name="ProductLink" required>
                 </div>
                 <div class="form-group">
                   <label for="product-weight">产品重量：</label>
-                  <input class="form-control" id="product-weight" name="ProductWeight">
+                  <input class="form-control" type="number" id="product-weight" name="ProductWeight" required>
                 </div>
                 <div class="row">
                   <div class="dropdown col-sm-5" style="margin-bottom:10px">

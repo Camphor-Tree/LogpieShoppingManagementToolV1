@@ -12,7 +12,7 @@
                 <input name="OrderDate" value="${order.orderDate}" type="hidden">
                 <div class="form-group">
                   <label for="order_buyer">订单购买者：</label>
-                  <input class="form-control" id="order_buyer" name="OrderBuyerName" value="${order.orderBuyerName}">
+                  <input class="form-control" type="text" id="order_buyer" name="OrderBuyerName" value="${order.orderBuyerName}" required>
                 </div>
                 <div class="form-group">
                   <label for="order_proxy">订单代理人：</label>
@@ -43,41 +43,41 @@
                 <div class="row">
                   <div class="form-group col-sm-6">
                   <label for="order_product_count">购买数量</label>
-                  <input class="form-control" id="order_product_count" name="OrderProductCount" value="${order.orderProductCount}">
+                  <input class="form-control" type="number" id="order_product_count" name="OrderProductCount" value="${order.orderProductCount}" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_proxy_profit_percentage">代理分红百分比</label>
-                    <input class="form-control" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="${order.orderProxyProfitPercentage}">
+                    <input class="form-control" type="number" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="${order.orderProxyProfitPercentage}" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="order_actual_cost">实际购买成本(美元)(可空缺)：</label>
-                      <input class="form-control" id="order_actual_cost" name="OrderActualCost" value="${order.orderActualCost}">
+                      <input class="form-control" type="number" id="order_actual_cost" name="OrderActualCost" value="${order.orderActualCost}">
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率：</label>
-                    <input class="form-control" id="order_currency_rate" name="OrderCurrencyRate" value="${order.orderCurrencyRate}">
+                    <input class="form-control" type="number" id="order_currency_rate" name="OrderCurrencyRate" value="${order.orderCurrencyRate}" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="estimated_shipping_fee">预计邮费：</label>
-                    <input class="form-control" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}">
+                    <input class="form-control" type="number" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="actural_shipping_fee">实际邮费(人民币)(可空缺)：</label>
-                    <input class="form-control" id="actural_shipping_fee" name="OrderActualShippingFee" value="${order.orderActualShippingFee}">
+                    <input class="form-control" type="number" id="actural_shipping_fee" name="OrderActualShippingFee" value="${order.orderActualShippingFee}">
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="selling_price">最终售价(人民币)：</label>
-                      <input class="form-control" id="selling_price" name="OrderSellingPrice" value="${order.orderSellingPrice}">
+                      <input class="form-control" type="number" id="selling_price" name="OrderSellingPrice" value="${order.orderSellingPrice}" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_buyer_paid_money">买家实际付款(人民币)(可空缺)</label>
-                    <input class="form-control" id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="${order.orderCustomerPaidMoney}">
+                    <input class="form-control" type="number" id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="${order.orderCustomerPaidMoney}">
                   </div>
                 </div>
                 
@@ -98,11 +98,11 @@
                 </div>
                 <div class="form-group">
                   <label for="order_company_received_money">公司已收汇款(可空缺)：</label>
-                  <input class="form-control" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}">
+                  <input class="form-control" type="number" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}">
                 </div>
                 <div class="form-group">
                   <label for="order_note">备注(可空缺)：</label>
-                  <input class="form-control" id="order_note" name="OrderNote" value="${order.orderNote}">
+                  <input class="form-control" type="text" id="order_note" name="OrderNote" value="${order.orderNote}">
                 </div>
                 <div class="checkbox" style="padding-left:20px">
                   <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True" <c:if test="${order.orderIsProfitPaid==true}">checked</c:if>/>利润是否已和代理结算</label>
