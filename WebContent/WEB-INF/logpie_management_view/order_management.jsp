@@ -103,11 +103,11 @@
                 <div class="row">
                   <div class="form-group col-sm-6">
                   <label for="order_product_count">购买数量</label>
-                  <input class="form-control" type="number" min="1" max="1000" id="order_product_count" name="OrderProductCount" value="1" required>
+                  <input class="form-control" type="number" step="1" min="1" max="1000" id="order_product_count" name="OrderProductCount" value="1" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_proxy_profit_percentage">代理分红百分比</label>
-                    <input class="form-control" type="number" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4" required>
+                    <input class="form-control" type="number" step="0.01" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4" required>
                   </div>
                 </div>
                 <div class="row">
@@ -117,27 +117,27 @@
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率：</label>
-                    <input class="form-control" type="number" id="order_currency_rate" name="OrderCurrencyRate" value="6.23" required>
+                    <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="6.23" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="estimated_shipping_fee">预计邮费：</label>
-                    <input class="form-control" type="number" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" required>
+                    <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="actural_shipping_fee">实际邮费(人民币)(可空缺)：</label>
-                    <input class="form-control" type="number" id="actural_shipping_fee" name="OrderActualShippingFee">
+                    <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee">
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="selling_price">最终售价(人民币)：</label>
-                      <input class="form-control" type="number" id="selling_price" name="OrderSellingPrice" required>
+                      <input class="form-control" type="number" step="0.01"  id="selling_price" name="OrderSellingPrice" required>
                   </div>
                   <div class="form-group col-sm-6">
-                    <label for="order_buyer_paid_money">买家实际付款(人民币)(可空缺)</label>
-                    <input class="form-control" type="number" id="order_buyer_paid_money" name="OrderCustomerPaidMoney">
+                    <label for="order_buyer_paid_money">买家付款(人民币)</label>
+                    <input class="form-control" type="number" step="0.01"  id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="0" required>
                   </div>
                 </div>
                 
@@ -152,7 +152,7 @@
                 </div>
                 <div class="form-group">
                   <label for="order_company_received_money">公司已收汇款：</label>
-                  <input class="form-control" type="number" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0">
+                  <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
                 </div>
                 <div class="form-group">
                   <label for="order_note">备注(可空缺)：</label>

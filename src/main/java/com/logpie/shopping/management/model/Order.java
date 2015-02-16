@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.StringUtils;
 
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
@@ -194,7 +195,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Float proxyProfitPercentage = rs.getFloat(DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE);
         final Float orderActualCost = rs.getFloat(DB_KEY_ORDER_ACTUAL_COST);
         final Float currencyRate = rs.getFloat(DB_KEY_ORDER_CURRENCY_RATE);
-        final LogpiePackage package1 = LogpiePackage.getLogpiePackageByResultSet(rs, row);
+        final Integer packageId = rs.getInt(DB_KEY_ORDER_PACKAGE_ID);
+        LogpiePackage package1 = null;
+        if (packageId != null)
+        {
+
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            package1 = packageDAO.getPackageById(String.valueOf(packageId));
+        }
         final Float estimatedShippingFee = rs.getFloat(DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE);
         final Float actualShippingFee = rs.getFloat(DB_KEY_ORDER_ACTUAL_SHIPPING_FEE);
         final Float sellingPrice = rs.getFloat(DB_KEY_ORDER_SELLING_PRICE);
@@ -220,17 +228,29 @@ public class Order implements RowMapper<Order>, LogpieModel
         modelMap.put(Order.DB_KEY_ORDER_BUYER_NAME, mOrderBuyerName);
         modelMap.put(Order.DB_KEY_ORDER_PROXY_ID, mOrderProxy.getAdminId());
         modelMap.put(Order.DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE, mOrderProxyProfitPercentage);
-        modelMap.put(Order.DB_KEY_ORDER_ACTUAL_COST, mOrderActualCost);
+        if (mOrderActualCost != null)
+        {
+            modelMap.put(Order.DB_KEY_ORDER_ACTUAL_COST, mOrderActualCost);
+        }
         modelMap.put(Order.DB_KEY_ORDER_CURRENCY_RATE, mOrderCurrencyRate);
-        modelMap.put(Order.DB_KEY_ORDER_PACKAGE_ID, mOrderPackage.getPackageId());
+        if (mOrderPackage != null)
+        {
+            modelMap.put(Order.DB_KEY_ORDER_PACKAGE_ID, mOrderPackage.getPackageId());
+        }
         modelMap.put(Order.DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE, mOrderEstimatedShippingFee);
-        modelMap.put(Order.DB_KEY_ORDER_ACTUAL_SHIPPING_FEE, mOrderActualShippingFee);
+        if (mOrderActualShippingFee != null)
+        {
+            modelMap.put(Order.DB_KEY_ORDER_ACTUAL_SHIPPING_FEE, mOrderActualShippingFee);
+        }
         modelMap.put(Order.DB_KEY_ORDER_SELLING_PRICE, mOrderSellingPrice);
         modelMap.put(Order.DB_KEY_ORDER_CUSTOMER_PAID_MONEY, mOrderCustomerPaidMoney);
         // modelMap.put(Order.DB_KEY_ORDER_FINAL_PROFIT, mOrderFinalProfit);
         modelMap.put(Order.DB_KEY_ORDER_COMPANY_RECEIVED_MONEY, mOrderCompanyReceivedMoney);
         modelMap.put(Order.DB_KEY_ORDER_IS_PROFIT_PAID, mOrderIsProfitPaid);
-        modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
+        if (mOrderNote != null)
+        {
+            modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
+        }
         return modelMap;
     }
 
@@ -253,15 +273,34 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
         final Float orderProxyProfitPercentage = Float.parseFloat(request
                 .getParameter("OrderProxyProfitPercentage"));
-        final Float orderActualCost = Float.parseFloat(request.getParameter("OrderActualCost"));
+        // OrderActualCost may be null
+        Float orderActualCost = null;
+        final String orderActualCostString = request.getParameter("OrderActualCost");
+        if (!StringUtils.isEmpty(orderActualCostString))
+        {
+            orderActualCost = Float.parseFloat(request.getParameter("OrderActualCost"));
+        }
         final Float orderCurrencyRate = Float.parseFloat(request.getParameter("OrderCurrencyRate"));
+
+        // PackageId may be null
+        LogpiePackage orderPackage = null;
         final String orderPackageId = request.getParameter("OrderPackageId");
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-        final LogpiePackage orderPackage = packageDAO.getPackageById(orderPackageId);
+        if (!StringUtils.isEmpty(orderPackageId))
+        {
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            orderPackage = packageDAO.getPackageById(orderPackageId);
+        }
         final Float orderEstimatedShippingFee = Float.parseFloat(request
                 .getParameter("OrderEstimatedShippingFee"));
-        final Float orderActualShippingFee = Float.parseFloat(request
-                .getParameter("OrderActualShippingFee"));
+
+        // ActualShipping Fee may be null
+        Float orderActualShippingFee = null;
+        final String orderActualShippingFeeString = request.getParameter("OrderActualShippingFee");
+        if (!StringUtils.isEmpty(orderActualShippingFeeString))
+        {
+            orderActualShippingFee = Float.parseFloat(request
+                    .getParameter("OrderActualShippingFee"));
+        }
         final Float orderSellingPrice = Float.parseFloat(request.getParameter("OrderSellingPrice"));
         final Float orderCustomerPaidMoney = Float.parseFloat(request
                 .getParameter("OrderCustomerPaidMoney"));
@@ -271,6 +310,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderCompanyReceivedMoney"));
         final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
                 .getParameter("OrderIsProfitPaid"));
+
+        // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
 
         return new Order(orderProduct, orderProductCount, orderBuyerName, orderProxy,
@@ -300,15 +341,27 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
         final Float orderProxyProfitPercentage = Float.parseFloat(request
                 .getParameter("OrderProxyProfitPercentage"));
-        final Float orderActualCost = Float.parseFloat(request.getParameter("OrderActualCost"));
+        // OrderActualCost may be null
+        Float orderActualCost = null;
+        final String orderActualCostString = request.getParameter("OrderActualCost");
+        if (!StringUtils.isEmpty(orderActualCostString))
+        {
+            orderActualCost = Float.parseFloat(request.getParameter("OrderActualCost"));
+        }
         final Float orderCurrencyRate = Float.parseFloat(request.getParameter("OrderCurrencyRate"));
         final String orderPackageId = request.getParameter("OrderPackageId");
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
         final LogpiePackage orderPackage = packageDAO.getPackageById(orderPackageId);
         final Float orderEstimatedShippingFee = Float.parseFloat(request
                 .getParameter("OrderEstimatedShippingFee"));
-        final Float orderActualShippingFee = Float.parseFloat(request
-                .getParameter("OrderActualShippingFee"));
+        // ActualShipping Fee may be null
+        Float orderActualShippingFee = null;
+        final String orderActualShippingFeeString = request.getParameter("OrderActualShippingFee");
+        if (!StringUtils.isEmpty(orderActualShippingFeeString))
+        {
+            orderActualShippingFee = Float.parseFloat(request
+                    .getParameter("OrderActualShippingFee"));
+        }
         final Float orderSellingPrice = Float.parseFloat(request.getParameter("OrderSellingPrice"));
         final Float orderCustomerPaidMoney = Float.parseFloat(request
                 .getParameter("OrderCustomerPaidMoney"));
@@ -318,6 +371,7 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderCompanyReceivedMoney"));
         final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
                 .getParameter("OrderIsProfitPaid"));
+        // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
 
         return new Order(orderId, orderDate, orderProduct, orderProductCount, orderBuyerName,

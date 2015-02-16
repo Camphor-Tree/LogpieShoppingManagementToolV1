@@ -14,7 +14,6 @@ import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
-import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -165,8 +164,11 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         final Set<String> conditions = new HashSet<String>();
         conditions
                 .add(String.format("%s = %s", Order.DB_KEY_ORDER_PROXY_ID, Admin.DB_KEY_ADMIN_ID));
-        conditions.add(String.format("%s = %s", Order.DB_KEY_ORDER_PACKAGE_ID,
-                LogpiePackage.DB_KEY_PACKAGE_ID));
+
+        // conditions.add(String.format("%s = %s",
+        // Order.DB_KEY_ORDER_PACKAGE_ID,
+        // LogpiePackage.DB_KEY_PACKAGE_ID));
+
         conditions.add(String.format("%s = %s", Order.DB_KEY_ORDER_PRODUCT_ID,
                 Product.DB_KEY_PRODUCT_ID));
         conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
@@ -189,8 +191,10 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         tableMap.put(sNonAliasPrefix + sOrderTableName, sOrderTableName);
         // alias for multiple foreign key connection
         tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
-        tableMap.put(sNonAliasPrefix + LogpiePackageDAO.sPackageTableName,
-                LogpiePackageDAO.sPackageTableName);
+
+        // tableMap.put(sNonAliasPrefix + LogpiePackageDAO.sPackageTableName,
+        // LogpiePackageDAO.sPackageTableName);
+
         tableMap.put(sNonAliasPrefix + ProductDAO.sProductTableName, ProductDAO.sProductTableName);
         tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, BrandDAO.sBrandTableName);
         tableMap.put(ProductDAO.sProductImageTableAlias, ImageDAO.sImageTableName);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.LogpiePackage;
@@ -64,7 +65,7 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
      */
     public LogpiePackage getPackageById(final String packageId)
     {
-        if (packageId == null)
+        if (StringUtils.isEmpty(packageId))
         {
             return null;
         }
