@@ -11,6 +11,12 @@ import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.LogpieDataSourceFactory;
 import com.logpie.shopping.management.util.CollectionUtils;
 
+/**
+ * This class is used to finish Logpie system initialization
+ * 
+ * @author zhoyilei
+ *
+ */
 public class LogpieInitialization
 {
     Logger LOG = Logger.getLogger(LogpieInitialization.class);
@@ -74,12 +80,18 @@ public class LogpieInitialization
         // If there is no account, then create a super admin
         if (CollectionUtils.isEmpty(adminList))
         {
-            final Admin superAdmin = new Admin("SuperAdmin", "admin@logpie.com", "313541388",
+            final Admin superAdmin = new Admin("许嘉航", "admin@logpie.com", "313541388",
                     "logpiezxqy", "2065197113", "123456", "1", "haohaoxuexi");
-            final boolean initAdminSuccess = adminDAO.addAdmin(superAdmin);
-            if (initAdminSuccess)
+            final Admin adminSuzhou = new Admin("乔梦颖", "278489810@qq.com", "278489810",
+                    "ElenaQ222", "18626158611", "123456", "1", "qiaomengying");
+            final Admin adminShanghai = new Admin("杨秋菊", "391810590@qq.com", "391810590",
+                    "Xwy030705yqj", "18916555359", "123456", "1", "yangqiuju");
+            final boolean initSuperAdminSuccess = adminDAO.addAdmin(superAdmin);
+            final boolean initSuzhouAdminSuccess = adminDAO.addAdmin(adminSuzhou);
+            final boolean initShanghaiAdminSuccess = adminDAO.addAdmin(adminShanghai);
+            if (initSuperAdminSuccess && initSuzhouAdminSuccess && initShanghaiAdminSuccess)
             {
-                LOG.debug("init super admin success");
+                LOG.debug("init admins success");
             }
         }
 
