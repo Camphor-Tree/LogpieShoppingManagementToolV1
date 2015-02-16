@@ -29,6 +29,9 @@ public class LogpieInitialization
 
     private void initDatabase()
     {
+        // Currently, need to manually run the command below to create a
+        // database and enable utf-8 encoding
+        // "CREATE DATABASE `Logpie` CHARACTER SET utf8 COLLATE utf8_general_ci;"
         SimpleDriverDataSource dataSource = LogpieDataSourceFactory.getDataSource();
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

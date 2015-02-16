@@ -97,7 +97,7 @@
 				  </select>
                 </div>
                 <div class="form-group">
-                  <label for="order_company_received_money">公司已收汇款(可空缺)：</label>
+                  <label for="order_company_received_money">公司已收汇款：</label>
                   <input class="form-control" type="number" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}">
                 </div>
                 <div class="form-group">

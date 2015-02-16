@@ -47,19 +47,19 @@ public class Order implements RowMapper<Order>, LogpieModel
     private Product mOrderProduct;
     private Integer mOrderProductCount;
     private String mOrderBuyerName;
-    private Admin mOrderProxy; // may be null
+    private Admin mOrderProxy;
     private Float mOrderProxyProfitPercentage;
-    private Float mOrderActualCost;
+    private Float mOrderActualCost; // may be null
     private Float mOrderCurrencyRate;
     private LogpiePackage mOrderPackage;// may be null
     private Float mOrderEstimatedShippingFee;
     private Float mOrderActualShippingFee;// may be null
     private Float mOrderSellingPrice;
-    private Float mOrderCustomerPaidMoney;// may be null
+    private Float mOrderCustomerPaidMoney;// default to 0
     private Float mOrderFinalProfit;// may be null
     private Float mOrderCompanyReceivedMoney; // may be null
-    private Boolean mOrderIsProfitPaid;
-    private String mOrderNote;
+    private Boolean mOrderIsProfitPaid; // default false
+    private String mOrderNote;// may be null
 
     // For RowMapper
     public Order()
