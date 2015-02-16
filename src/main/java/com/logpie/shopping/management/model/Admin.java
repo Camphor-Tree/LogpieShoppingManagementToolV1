@@ -177,10 +177,10 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         final String adminId = rs.getString(DB_KEY_ADMIN_ID);
         final String adminName = rs.getString(DB_KEY_ADMIN_NAME);
         final String adminEmail = rs.getString(DB_KEY_ADMIN_EMAIL);
-        final String adminQQ = String.valueOf(rs.getInt(DB_KEY_ADMIN_QQ));
+        final String adminQQ = rs.getString(DB_KEY_ADMIN_QQ);
         final String adminWechat = rs.getString(DB_KEY_ADMIN_WECHAT);
-        final String adminPhone = String.valueOf(rs.getInt(DB_KEY_ADMIN_PHONE));
-        final String adminIdentityNumber = String.valueOf(rs.getInt(DB_KEY_ADMIN_IDENTITY_NUMBER));
+        final String adminPhone = rs.getString(DB_KEY_ADMIN_PHONE);
+        final String adminIdentityNumber = rs.getString(DB_KEY_ADMIN_IDENTITY_NUMBER);
         // final String adminPassVersion =
         // rs.getString(DB_KEY_ADMIN_PASS_VERSION);
         LOG.debug("Find values:" + adminId + ":" + adminName);
