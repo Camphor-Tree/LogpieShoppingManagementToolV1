@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.StringUtils;
 
 import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
@@ -31,7 +32,7 @@ public class Brand implements RowMapper<Brand>, LogpieModel
     private Image mBrandImage;
     private String mBrandEnglishName;
     private String mBrandChineseName;
-    private Image mBrandSizeChartImage;
+    private Image mBrandSizeChartImage;// may be null
     private Category mBrandCategory;
     private Boolean mBrandIsActivated;
 
@@ -103,7 +104,10 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         modelMap.put(Brand.DB_KEY_BRAND_ENGLISH_NAME, mBrandEnglishName);
         modelMap.put(Brand.DB_KEY_BRAND_CHINESE_NAME, mBrandChineseName);
         modelMap.put(Brand.DB_KEY_BRAND_IMAGE_ID, mBrandImage.getImageId());
-        modelMap.put(Brand.DB_KEY_BRAND_SIZE_CHART_ID, mBrandSizeChartImage.getImageId());
+        if (mBrandSizeChartImage != null)
+        {
+            modelMap.put(Brand.DB_KEY_BRAND_SIZE_CHART_ID, mBrandSizeChartImage.getImageId());
+        }
         modelMap.put(Brand.DB_KEY_BRAND_CATEGORY_ID, mBrandCategory.getCategoryId());
         modelMap.put(Brand.DB_KEY_BRAND_IS_ACTIVATED, mBrandIsActivated);
         return modelMap;
@@ -123,10 +127,13 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         final String brandEnglishName = request.getParameter("BrandEnglishName");
         final String brandChineseName = request.getParameter("BrandChineseName");
         final String brandSizeChartImageId = request.getParameter("BrandSizeChartImageId");
-        final Image brandSizeChartImage = imageDAO.getImageById(brandSizeChartImageId);
+        Image brandSizeChartImage = null;
+        if (!StringUtils.isEmpty(brandSizeChartImageId))
+        {
+            brandSizeChartImage = imageDAO.getImageById(brandSizeChartImageId);
+        }
         final Category brandCategory = categoryDAO.getCategoryById(request
                 .getParameter("BrandCategoryId"));
-        LOG.debug("yilei" + request.getParameter("BrandIsActivated"));
         final Boolean brandIsActivated = Boolean.parseBoolean(request
                 .getParameter("BrandIsActivated"));
 
