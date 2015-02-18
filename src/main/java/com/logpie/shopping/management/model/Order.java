@@ -199,7 +199,6 @@ public class Order implements RowMapper<Order>, LogpieModel
         LogpiePackage package1 = null;
         if (packageId != null)
         {
-
             final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
             package1 = packageDAO.getPackageById(String.valueOf(packageId));
         }

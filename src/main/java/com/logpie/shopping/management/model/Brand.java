@@ -86,10 +86,13 @@ public class Brand implements RowMapper<Brand>, LogpieModel
                 BrandDAO.sBrandImageTableAlias);
         final String brandNameEN = rs.getString(DB_KEY_BRAND_ENGLISH_NAME);
         final String brandNameCN = rs.getString(DB_KEY_BRAND_CHINESE_NAME);
-        // TODO: Here will produce a bug since there are two foreign keys in the
-        // result
-        final Image brandSizeChartImage = Image.getImageByResultSet(rs, rowNum,
-                BrandDAO.sBrandSizeChartImageAlias);
+        final Integer sizeChartImageId = rs.getInt(DB_KEY_BRAND_SIZE_CHART_ID);
+        Image brandSizeChartImage = null;
+        if (sizeChartImageId != null)
+        {
+            final ImageDAO imageDAO = new ImageDAO();
+            brandSizeChartImage = imageDAO.getImageById(String.valueOf(sizeChartImageId));
+        }
         final Category brandCategory = Category.getCategoryByResultSet(rs, rowNum);
         final boolean brandIsActivated = rs.getBoolean(DB_KEY_BRAND_IS_ACTIVATED);
 
