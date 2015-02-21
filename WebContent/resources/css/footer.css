@@ -1,8 +1,6 @@
  .logpiefooter {
-   position : absolute;
-   bottom : 0;
    height : 40px;
    margin-top : 40px;
-   margin-left: 40px;
+   margin-left: 140px;
    margin-right: auto;
  }

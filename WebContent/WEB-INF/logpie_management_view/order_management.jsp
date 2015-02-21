@@ -18,22 +18,22 @@
         <th>订单序号</th>
         <th>订单日期</th>
         <th>商品名称</th>
-        <th>商品数量</th>
-        <th>商品重量</th>
+        <!--<th>商品数量</th>-->
+        <!-- <th>商品重量</th> -->
         <th>订单购买者</th>
         <th>订单代理者</th>
-        <th>订单代理分红百分比</th>
+        <!--<th>订单代理分红百分比</th>-->
         <th>订单购买最终价(美元)</th>
-        <th>订单当日汇率</th>
+        <!--<th>订单当日汇率</th>-->
         <th>订单包裹序号</th>
-        <th>订单估计运费(人民币)</th>
+        <!--<th>订单估计运费(人民币)</th>-->
         <th>订单实际运费(人民币)</th>
         <th>订单售价</th>
         <th>实收账款</th>
         <th>订单最终利润</th>
         <th>订单公司已收汇款(人民币)</th>
         <th>订单利润已结算</th>
-        <th>订单备注</th>
+        <!--<th>订单备注</th>-->
         <th>修改</th>
         </tr>
         <c:forEach items="${orderList}" var="order">
@@ -41,22 +41,22 @@
         <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
         <td>${order.orderDate}</td>
         <td>${order.orderProduct.productName}</td>
-        <td>${order.orderProductCount}</td>
-        <td>${order.orderProduct.productWeight}</td>
+        <!--<td>${order.orderProductCount}</td>-->
+        <!-- <td>${order.orderProduct.productWeight}</td>-->
         <td>${order.orderBuyerName}</td>
         <td>${order.orderProxy.adminName}</td>
-        <td>${order.orderProxyProfitPercentage}</td>
+        <!--<td>${order.orderProxyProfitPercentage}</td>-->
         <td>${order.orderActualCost}</td>
-        <td>${order.orderCurrencyRate}</td>
+        <!--<td>${order.orderCurrencyRate}</td>-->
         <td><a href="./package?id=${order.orderPackage.packageId}">${order.orderPackage.packageId}</a></td>
-        <td>${order.orderEstimatedShippingFee}</td>
+        <!-- <td>${order.orderEstimatedShippingFee}</td>-->
         <td>${order.orderActualShippingFee}</td>
         <td>${order.orderSellingPrice}</td>
         <td>${order.orderCustomerPaidMoney}</td>
         <td>${order.orderFinalProfit}</td>
         <td>${order.orderCompanyReceivedMoney}</td>
         <td>${order.orderIsProfitPaid}</td>
-        <td>${order.orderNote}</td>
+        <!--<td>${order.orderNote}</td>-->
         <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}">修改</a></td>
         </tr>
         </c:forEach>
