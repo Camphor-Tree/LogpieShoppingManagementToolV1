@@ -129,6 +129,12 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
             tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
             return tableMap;
         }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            return null;
+        }
     }
 
     private class QueryAccountByAdminIdQuery extends

@@ -263,4 +263,10 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         mBrandIsActivated = brandIsActivated;
     }
 
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_BRAND_ID;
+    }
+
 }

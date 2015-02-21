@@ -50,4 +50,10 @@ public class LogpieBaseQuerySingleRecordByIdTemplateQuery<T> implements LogpieDa
         return tableMap;
     }
 
+    @Override
+    public Set<String> getOrderBy()
+    {
+        return null;
+    }
+
 }

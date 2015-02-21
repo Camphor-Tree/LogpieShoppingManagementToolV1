@@ -434,4 +434,10 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         mPackageNote = packageNote;
     }
 
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_PACKAGE_ID;
+    }
+
 }

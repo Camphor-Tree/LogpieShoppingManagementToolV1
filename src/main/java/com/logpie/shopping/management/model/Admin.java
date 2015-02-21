@@ -206,4 +206,10 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         return new Admin(adminName, adminEmail, adminQQ, adminWechat, adminPhone,
                 adminIdentityNumber, adminPassVersion, adminPassword);
     }
+
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_ADMIN_ID;
+    }
 }

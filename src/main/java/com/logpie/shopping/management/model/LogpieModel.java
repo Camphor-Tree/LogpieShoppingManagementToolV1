@@ -10,4 +10,6 @@ import java.util.Map;
 public interface LogpieModel
 {
     public Map<String, Object> getModelMap();
+
+    public String getPrimaryKey();
 }

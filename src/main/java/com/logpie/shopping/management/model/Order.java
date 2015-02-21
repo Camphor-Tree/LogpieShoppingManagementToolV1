@@ -685,4 +685,10 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
     }
 
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_ORDER_ID;
+    }
+
 }

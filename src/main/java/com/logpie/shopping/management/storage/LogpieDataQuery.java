@@ -18,4 +18,6 @@ public interface LogpieDataQuery<T>
 
     // table alias => table names(used in multiple foreign keys connections)
     public Map<String, String> getQueryTables();
+
+    public Set<String> getOrderBy();
 }

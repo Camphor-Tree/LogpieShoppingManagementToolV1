@@ -121,4 +121,10 @@ public class Image implements RowMapper<Image>, LogpieModel
         return mImageDescription;
     }
 
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_IMAGE_ID;
+    }
+
 }

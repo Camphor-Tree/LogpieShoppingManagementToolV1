@@ -22,6 +22,7 @@ public class LogpieBaseDAO<T>
     private static final String sBaseQuerySQL = "SELECT * FROM ";
     private static final String sBaseInsertSQL = "INSERT INTO ";
     private static final String sBaseUpdateSQL = "UPDATE ";
+    private static final String sBaseOrderBySQL = " ORDER BY ";
 
     public static final String sNonAliasPrefix = "LogpieNoAlias";
 
@@ -62,13 +63,14 @@ public class LogpieBaseDAO<T>
         final RowMapper<T> resultMapper = query.getQueryResultMapper();
         final Set<String> queryConditions = query.getQueryConditions();
         final Map<String, String> queryTables = query.getQueryTables();
+        final Set<String> queryOrderBy = query.getOrderBy();
 
         if (queryTables == null || queryTables.size() == 0)
         {
             throw new IllegalArgumentException("The query talbe cannot be null or empty");
         }
         final String queryTablesSql = buildQueryTablesSQL(queryTables);
-        final String querySQL = buildQuerySQL(queryConditions, queryTablesSql);
+        final String querySQL = buildQuerySQL(queryConditions, queryTablesSql, queryOrderBy);
         LOG.debug("querySQL is:" + querySQL);
         final List<T> results = jdbcTemplate.query(querySQL, resultMapper);
         return results;
@@ -94,7 +96,8 @@ public class LogpieBaseDAO<T>
      * @param queryTablesSql
      * @return
      */
-    private String buildQuerySQL(final Set<String> queryConditions, final String queryTablesSql)
+    private String buildQuerySQL(final Set<String> queryConditions, final String queryTablesSql,
+            final Set<String> queryOrderBy)
     {
         String querySQL;
         if (!CollectionUtils.isEmpty(queryConditions))
@@ -106,7 +109,33 @@ public class LogpieBaseDAO<T>
         {
             querySQL = sBaseQuerySQL + queryTablesSql;
         }
+
+        if (!CollectionUtils.isEmpty(queryOrderBy))
+        {
+            querySQL = querySQL + buildOrderBySQL(queryOrderBy);
+
+        }
         return querySQL;
+    }
+
+    private String buildOrderBySQL(final Set<String> orderBySet)
+    {
+        final StringBuilder orderByBuilder = new StringBuilder(sBaseOrderBySQL);
+        final int size = orderBySet.size();
+        int i = 0;
+        for (final String orderBy : orderBySet)
+        {
+            orderByBuilder.append(orderBy);
+            if (++i < size)
+            {
+                orderByBuilder.append(",");
+            }
+            else
+            {
+                orderByBuilder.append(" ");
+            }
+        }
+        return orderByBuilder.toString();
     }
 
     /**

@@ -302,4 +302,10 @@ public class Product implements RowMapper<Product>, LogpieModel
         mProductBrand = brand;
     }
 
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_PRODUCT_ID;
+    }
+
 }

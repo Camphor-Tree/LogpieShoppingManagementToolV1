@@ -98,4 +98,10 @@ public class Category implements RowMapper<Category>, LogpieModel
     {
         mCategoryName = categoryName;
     }
+
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_CATEGORY_ID;
+    }
 }
