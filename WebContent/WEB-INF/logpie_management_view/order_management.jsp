@@ -18,8 +18,8 @@
       <table class="table table-striped text-center" style="table-layout:fixed;">
         <tr class="info">
         <th class="col-xs-1 col-md-1 text-center">订单号</th>
-        <th class="col-xs-1 col-md-2 text-center">订单日期</th>
-        <th class="col-xs-2 col-md-2 text-center">商品名称</th>
+        <th class="col-xs-1 col-md-1 text-center">订单日期</th>
+        <th class="col-xs-2 col-md-3 text-center">商品名称</th>
         <!--<th>商品数量</th>-->
         <!-- <th>商品重量</th> -->
         <th class="col-xs-1 col-md-1 text-center">购买者</th>

@@ -114,8 +114,11 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (mOrderCustomerPaidMoney != null && mOrderCurrencyRate != null
                 && mOrderActualCost != null)
         {
-            mOrderFinalProfit = Float.valueOf(mOrderCustomerPaidMoney.intValue()
-                    - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue());
+            final String profitString = String.format(
+                    "%.2f",
+                    Float.valueOf(mOrderCustomerPaidMoney.intValue()
+                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()));
+            mOrderFinalProfit = Float.valueOf(profitString);
         }
     }
 
@@ -165,8 +168,11 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (mOrderCustomerPaidMoney != null && mOrderCurrencyRate != null
                 && mOrderActualCost != null)
         {
-            mOrderFinalProfit = Float.valueOf(mOrderCustomerPaidMoney.intValue()
-                    - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue());
+            final String profitString = String.format(
+                    "%.2f",
+                    Float.valueOf(mOrderCustomerPaidMoney.intValue()
+                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()));
+            mOrderFinalProfit = Float.valueOf(profitString);
         }
     }
 
