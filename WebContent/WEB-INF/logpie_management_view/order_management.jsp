@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="tag" tagdir="/WEB-INF/tags/" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:logpie_common_template>
     <jsp:body>
         <div class="row">
@@ -14,33 +15,34 @@
    		<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin:10px">新建基础数据</button>
       <br/>
 
-        <table class="table table-striped table-bordered table-hover">
-        <tr>
-        <th class="col-xs-1">订单序号</th>
-        <th class="col-xs-2">订单日期</th>
-        <th class="col-xs-3">商品名称</th>
+      <table class="table table-striped text-center" style="table-layout:fixed;">
+        <tr class="info">
+        <th class="col-xs-1 col-md-1 text-center">订单号</th>
+        <th class="col-xs-1 col-md-2 text-center">订单日期</th>
+        <th class="col-xs-2 col-md-2 text-center">商品名称</th>
         <!--<th>商品数量</th>-->
         <!-- <th>商品重量</th> -->
-        <th class="col-xs-2">购买者</th>
-        <th class="col-xs-2">订单代理</th>
+        <th class="col-xs-1 col-md-1 text-center">购买者</th>
+        <th class="col-xs-1 col-md-1 text-center">订单代理</th>
         <!--<th>订单代理分红百分比</th>-->
-        <th class="col-xs-2">订单购买最终价$</th>
+        <th class="col-xs-1 col-md-1 text-center">订单购买最终价$</th>
         <!--<th>订单当日汇率</th>-->
-        <th class="col-xs-2">订单包裹号</th>
+        <th class="col-xs-1 col-md-1 text-center">订单包裹号</th>
         <!--<th>订单估计运费(人民币)</th>-->
-        <th class="col-xs-1">订单实际运费￥</th>
-        <th class="col-xs-2">订单售价￥</th>
-        <th class="col-xs-2">实收账款￥</th>
-        <th class="col-xs-2">最终利润￥</th>
-        <th class="col-xs-1">公司已收汇款￥</th>
-        <th class="col-xs-1">利润是否结算</th>
+        <th class="col-xs-1 col-md-1 text-center">订单实际运费￥</th>
+        <th class="col-xs-1 col-md-1 text-center">订单售价￥</th>
+        <th class="col-xs-1 col-md-1 text-center">实收账款￥</th>
+        <th class="col-xs-1 col-md-1 text-center">最终利润￥</th>
+        <th class="col-xs-1 col-md-1 text-center">公司已收汇款￥</th>
+        <th class="col-xs-1 col-md-1 text-center">利润是否结算</th>
         <!--<th>订单备注</th>-->
-        <th class="col-xs-1">修改</th>
+        <th class="col-xs-1 col-md-1 text-center">修改</th>
         </tr>
+        <tbody style="font-size:16px;">
         <c:forEach items="${orderList}" var="order">
-        <tr>
+        <tr >
         <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
-        <td>${order.orderDate}</td>
+        <td>${fn:substring(order.orderDate,0,10)}</td>
         <td>${order.orderProduct.productName}</td>
         <!--<td>${order.orderProductCount}</td>-->
         <!-- <td>${order.orderProduct.productWeight}</td>-->
@@ -56,12 +58,11 @@
         <td>${order.orderCustomerPaidMoney}</td>
         <td>${order.orderFinalProfit}</td>
         <td>${order.orderCompanyReceivedMoney}</td>
-        <td>${order.orderIsProfitPaid}</td>
+        <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
         <!--<td>${order.orderNote}</td>-->
         <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}">修改</a></td>
         </tr>
         </c:forEach>
-        <tbody>
         </tbody>
         </table>
         
@@ -114,7 +115,7 @@
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="order_actual_cost">实际购买成本(美元)(可空缺)：</label>
-                      <input class="form-control" type="number" id="order_actual_cost" name="OrderActualCost">
+                      <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost">
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率：</label>

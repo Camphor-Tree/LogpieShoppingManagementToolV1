@@ -34,7 +34,7 @@ h2{
 }
     </style>
   </head>
-  <body style="font-family:微软雅黑">
+  <body>
    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
       <div class="container">
         <div class="navbar-header">
