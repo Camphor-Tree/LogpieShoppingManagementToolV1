@@ -12,29 +12,30 @@
             </div>
 		</c:if>
    		<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin:10px">新建基础数据</button>
+      <br/>
 
         <table class="table table-striped table-bordered table-hover">
         <tr>
-        <th>订单序号</th>
-        <th>订单日期</th>
-        <th>商品名称</th>
+        <th class="col-xs-1">订单序号</th>
+        <th class="col-xs-2">订单日期</th>
+        <th class="col-xs-3">商品名称</th>
         <!--<th>商品数量</th>-->
         <!-- <th>商品重量</th> -->
-        <th>订单购买者</th>
-        <th>订单代理者</th>
+        <th class="col-xs-2">购买者</th>
+        <th class="col-xs-2">订单代理</th>
         <!--<th>订单代理分红百分比</th>-->
-        <th>订单购买最终价(美元)</th>
+        <th class="col-xs-2">订单购买最终价$</th>
         <!--<th>订单当日汇率</th>-->
-        <th>订单包裹序号</th>
+        <th class="col-xs-2">订单包裹号</th>
         <!--<th>订单估计运费(人民币)</th>-->
-        <th>订单实际运费(人民币)</th>
-        <th>订单售价</th>
-        <th>实收账款</th>
-        <th>订单最终利润</th>
-        <th>订单公司已收汇款(人民币)</th>
-        <th>订单利润已结算</th>
+        <th class="col-xs-1">订单实际运费￥</th>
+        <th class="col-xs-2">订单售价￥</th>
+        <th class="col-xs-2">实收账款￥</th>
+        <th class="col-xs-2">最终利润￥</th>
+        <th class="col-xs-1">公司已收汇款￥</th>
+        <th class="col-xs-1">利润是否结算</th>
         <!--<th>订单备注</th>-->
-        <th>修改</th>
+        <th class="col-xs-1">修改</th>
         </tr>
         <c:forEach items="${orderList}" var="order">
         <tr>
