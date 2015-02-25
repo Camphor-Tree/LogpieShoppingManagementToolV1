@@ -40,14 +40,26 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     }
 
     /**
-     * For getting all existing categories
+     * For getting all existing orders
      * 
-     * @return All existing categories
+     * @return All existing orders
      */
     public List<Order> getAllOrders()
     {
-        GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery();
+        final GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery();
         return super.queryResult(getAllPackageQuery);
+    }
+
+    /**
+     * For getting all orders in specific year-month
+     * 
+     * @return orders
+     */
+    public List<Order> getOrdersByMonth(final String year, final String month)
+    {
+        final GetAllOrdersInMonthQuery getAllOrdersInMonthQuery = new GetAllOrdersInMonthQuery(
+                year, month);
+        return super.queryResult(getAllOrdersInMonthQuery);
     }
 
     /**
@@ -115,6 +127,36 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         public Set<String> getQueryConditions()
         {
             return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+    }
+
+    private class GetAllOrdersInMonthQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        private String mYear;
+        private String mMonth;
+
+        GetAllOrdersInMonthQuery(final String year, final String month)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mYear = year;
+            mMonth = month;
+        }
+
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add year month conditions
+            conditions.add(String.format("MONTH(%s) = MONTH(\'%s-%s-01\')",
+                    Order.DB_KEY_ORDER_DATE, mYear, mMonth));
+            return conditions;
         }
 
         @Override
