@@ -4,41 +4,39 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:logpie_common_template>
     <jsp:body>
-        <div class="row">
-            <h3>欢迎来到 订单管理</h3>
+        <div class="row" style="margin-bottom:30px">
+            <h3>欢迎来到 订单管理<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px">新建基础数据</button></h3>
         </div>
         <c:if test="${action_message !=null}">
   	        <div class="alert alert-success" role="alert">
                     <strong>${action_message}</strong>
             </div>
 		</c:if>
-   		<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin:10px">新建基础数据</button>
-      <br/>
-
-      <table class="table table-striped text-center" style="table-layout:fixed;">
+   		
+      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle;">
         <tr class="info">
-        <th class="col-xs-1 col-md-1 text-center">订单号</th>
-        <th class="col-xs-1 col-md-1 text-center">订单日期</th>
-        <th class="col-xs-2 col-md-3 text-center">商品名称</th>
+        <th class="col-xs-1 col-md-1 text-center">No</th>
+        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
+        <th class="col-xs-4 col-md-4 text-center">商品名称</th>
         <!--<th>商品数量</th>-->
         <!-- <th>商品重量</th> -->
-        <th class="col-xs-1 col-md-1 text-center">购买者</th>
-        <th class="col-xs-1 col-md-1 text-center">订单代理</th>
+        <th class="col-xs-2 col-md-2 text-center">购买者</th>
+        <th class="col-xs-2 col-md-2 text-center">代理者</th>
         <!--<th>订单代理分红百分比</th>-->
-        <th class="col-xs-1 col-md-1 text-center">订单购买最终价$</th>
+        <th class="col-xs-2 col-md-2 text-center">购买终价$</th>
         <!--<th>订单当日汇率</th>-->
-        <th class="col-xs-1 col-md-1 text-center">订单包裹号</th>
+        <th class="col-xs-2 col-md-2 text-center">订单包裹号</th>
         <!--<th>订单估计运费(人民币)</th>-->
-        <th class="col-xs-1 col-md-1 text-center">订单实际运费￥</th>
-        <th class="col-xs-1 col-md-1 text-center">订单售价￥</th>
-        <th class="col-xs-1 col-md-1 text-center">实收账款￥</th>
-        <th class="col-xs-1 col-md-1 text-center">最终利润￥</th>
-        <th class="col-xs-1 col-md-1 text-center">公司已收汇款￥</th>
-        <th class="col-xs-1 col-md-1 text-center">利润是否结算</th>
+        <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
+        <th class="col-xs-2 col-md-2 text-center">订单售价￥</th>
+        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
+        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
+        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
+        <th class="col-xs-2 col-md-2 text-center">利润是否结算</th>
         <!--<th>订单备注</th>-->
-        <th class="col-xs-1 col-md-1 text-center">修改</th>
+        <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
-        <tbody style="font-size:16px;">
+        <tbody style="font-size:14px;">
         <c:forEach items="${orderList}" var="order">
         <tr >
         <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
@@ -79,7 +77,7 @@
             <!--<li><a data-toggle="tab" href="#section-admin">管理员</a></li>-->
           </ul>
           <div class="tab-content">
-          <div id="section-order" class="tab-pane fade in active"style="padding:20px">
+          <div id="section-order" class="tab-pane fade in active" style="padding:20px">
               <h3>新建一个订单</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/create" />" method="POST" >
                 <div class="form-group">
