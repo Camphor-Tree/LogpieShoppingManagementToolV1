@@ -68,7 +68,7 @@ public class AccountingLogic
             // if customer hasn't paid the money, we won't include it into the
             // calculate. We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0)
+            if (orderCustomerPaidMoney < 0.001)
             {
                 continue;
             }
@@ -279,7 +279,7 @@ public class AccountingLogic
             // if customer hasn't paid the money, we won't include it into the
             // calculate. We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0)
+            if (orderCustomerPaidMoney < 0.001)
             {
                 continue;
             }
@@ -318,7 +318,7 @@ public class AccountingLogic
             // if customer hasn't paid the money, we won't include it into the
             // calculate. We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0)
+            if (orderCustomerPaidMoney < 0.001)
             {
                 continue;
             }

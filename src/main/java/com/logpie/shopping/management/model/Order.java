@@ -117,7 +117,8 @@ public class Order implements RowMapper<Order>, LogpieModel
             final String profitString = String.format(
                     "%.2f",
                     Float.valueOf(mOrderCustomerPaidMoney.intValue()
-                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()));
+                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()
+                            - mOrderActualShippingFee));
             mOrderFinalProfit = Float.valueOf(profitString);
         }
     }
@@ -171,7 +172,8 @@ public class Order implements RowMapper<Order>, LogpieModel
             final String profitString = String.format(
                     "%.2f",
                     Float.valueOf(mOrderCustomerPaidMoney.intValue()
-                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()));
+                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()
+                            - mOrderActualShippingFee));
             mOrderFinalProfit = Float.valueOf(profitString);
         }
     }
