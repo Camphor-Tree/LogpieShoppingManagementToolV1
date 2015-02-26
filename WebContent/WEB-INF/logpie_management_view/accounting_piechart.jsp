@@ -8,15 +8,15 @@
         </div>
        <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['corechart']}]}"></script>
        <div class="row">
-       <c:if test="${PieChart2 == null}">
            <div id="piechart1" style="height: 600px;" class="col-md-12"></div>
-       </c:if>
+       </div>
        <c:if test="${PieChart2 != null}">
-           <div id="piechart1" style="height: 600px;" class="col-md-6"></div>
-           <div id="piechart2" style="height: 600px;" class="col-md-6"></div>
+           <div class="row">
+           <div id="piechart2" style="height: 600px;" class="col-md-12"></div>
+           </div>
        </c:if>
 
-       </div>
+
        <script type="text/javascript">
        google.setOnLoadCallback(drawChart);
        function drawChart() {
@@ -28,7 +28,9 @@
          ]);
          var options1 = {
            title: '${PieChart1.chartLabel}',
+           titleTextStyle: {fontSize: 22},
            pieSliceText: 'label',
+           
          };
 
          var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
@@ -42,6 +44,7 @@
          ]);
          var options2 = {
            title: '${PieChart2.chartLabel}',
+           titleTextStyle: {fontSize: 22},
            pieSliceText: 'label',
          };
          var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));

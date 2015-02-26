@@ -308,6 +308,11 @@ public class Order implements RowMapper<Order>, LogpieModel
             orderActualShippingFee = Float.parseFloat(request
                     .getParameter("OrderActualShippingFee"));
         }
+        else
+        {
+            // default to 0
+            orderActualShippingFee = 0.0f;
+        }
         final Float orderSellingPrice = Float.parseFloat(request.getParameter("OrderSellingPrice"));
         final Float orderCustomerPaidMoney = Float.parseFloat(request
                 .getParameter("OrderCustomerPaidMoney"));

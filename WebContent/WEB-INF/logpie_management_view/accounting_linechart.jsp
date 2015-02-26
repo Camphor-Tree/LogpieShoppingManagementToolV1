@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <tag:logpie_common_template>
     <jsp:body>
+    <div class="container">
         <div class="row">
             <h3>${AccountingType}</h3>
         </div>
@@ -25,6 +26,7 @@
          data1.addColumn({type: 'number', role: 'annotation'});
          var options1 = {
            title: '${LineChart1.chartLabel}',
+           titleTextStyle: {fontSize: 22},
            curveType: 'line',
            annotations: { stemColor: 'white', textStyle: { fontSize: 16 } },
            pointSize: 7,
@@ -41,6 +43,7 @@
          ]);
          var options2 = {
                  title: '${LineChart2.chartLabel}',
+                 titleTextStyle: {fontSize: 22},
                  curveType: 'line',
                  annotations: { stemColor: 'white', textStyle: { fontSize: 16 } },
         		 pointSize: 7,
@@ -51,5 +54,6 @@
      	 </c:if>
        }
        </script>
+    </div>
     </jsp:body>
 </tag:logpie_common_template>

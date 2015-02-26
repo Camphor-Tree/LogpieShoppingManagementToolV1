@@ -5,7 +5,7 @@
 <tag:logpie_common_template>
     <jsp:body>
         <div class="row" style="margin-bottom:30px">
-            <h3>欢迎来到 订单管理<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px">新建基础数据</button></h3>
+            <h3>欢迎来到 订单管理<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button></h3>
         </div>
         <c:if test="${action_message !=null}">
   	        <div class="alert alert-success" role="alert">
@@ -13,7 +13,7 @@
             </div>
 		</c:if>
    		
-      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle;">
+      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:16px;">
         <tr class="info">
         <th class="col-xs-1 col-md-1 text-center">No</th>
         <th class="col-xs-2 col-md-2 text-center">订单日期</th>
@@ -36,7 +36,7 @@
         <!--<th>订单备注</th>-->
         <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
-        <tbody style="font-size:14px;">
+        <tbody>
         <c:forEach items="${orderList}" var="order">
         <tr >
         <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
