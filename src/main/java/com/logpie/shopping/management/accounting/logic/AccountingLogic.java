@@ -309,7 +309,7 @@ public class AccountingLogic
         {
             return null;
         }
-        final Map<String, Double> orderProfitInAdminMap = new HashMap<String, Double>();
+        final Map<String, Double> orderProfitInBrandMap = new HashMap<String, Double>();
         for (final Order order : orderList)
         {
             final String brandName = order.getOrderProduct().getProductBrand()
@@ -325,19 +325,57 @@ public class AccountingLogic
             final Float orderProfit = order.getOrderFinalProfit();
             if (brandName != null)
             {
-                if (!orderProfitInAdminMap.containsKey(brandName))
+                if (!orderProfitInBrandMap.containsKey(brandName))
                 {
-                    orderProfitInAdminMap
+                    orderProfitInBrandMap
                             .put(brandName, Double.parseDouble(orderProfit.toString()));
                 }
                 else
                 {
-                    double profit = orderProfitInAdminMap.get(brandName);
+                    double profit = orderProfitInBrandMap.get(brandName);
                     profit = profit + orderProfit;
-                    orderProfitInAdminMap.put(brandName, profit);
+                    orderProfitInBrandMap.put(brandName, profit);
                 }
             }
         }
-        return orderProfitInAdminMap;
+        return orderProfitInBrandMap;
+    }
+
+    public static Map<String, Double> getOrderProfitsInCategory(final List<Order> orderList)
+    {
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return null;
+        }
+        final Map<String, Double> orderProfitInCategoryMap = new HashMap<String, Double>();
+        for (final Order order : orderList)
+        {
+            final String categoryName = order.getOrderProduct().getProductBrand()
+                    .getBrandCategory().getCategoryName();
+            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
+            // if customer hasn't paid the money, we won't include it into the
+            // calculate. We do this to prevent it being a negative number,
+            // since Pie chart doesn't accept negative number.
+            if (orderCustomerPaidMoney < 0.001)
+            {
+                continue;
+            }
+            final Float orderProfit = order.getOrderFinalProfit();
+            if (categoryName != null)
+            {
+                if (!orderProfitInCategoryMap.containsKey(categoryName))
+                {
+                    orderProfitInCategoryMap.put(categoryName,
+                            Double.parseDouble(orderProfit.toString()));
+                }
+                else
+                {
+                    double profit = orderProfitInCategoryMap.get(categoryName);
+                    profit = profit + orderProfit;
+                    orderProfitInCategoryMap.put(categoryName, profit);
+                }
+            }
+        }
+        return orderProfitInCategoryMap;
     }
 }

@@ -90,6 +90,10 @@ public class AccountingController
             {
                 return handleOrderInAdmin(yearMonth);
             }
+            else if (type.equals("OrderProfitInCategory"))
+            {
+                return handleOrderProfitInCategory(yearMonth);
+            }
             else if (type.equals("OrderProfitInBrand"))
             {
                 return handleOrderProfitInBrand(yearMonth);
@@ -300,11 +304,49 @@ public class AccountingController
         return accountingOrderInAdminPieChartPage;
     }
 
+    private Object handleOrderProfitInCategory(final String yearMonth)
+    {
+        final ModelAndView accountingOrderInAdminPieChartPage = new ModelAndView(
+                "accounting_piechart");
+        final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各类别 所有订单利润分布图", "订单类别",
+                "订单利润");
+
+        final OrderDAO orderDAO = new OrderDAO();
+        final List<Order> allOrderList = orderDAO.getAllOrders();
+        final Map<String, Double> orderProfitInBrandMap = AccountingLogic
+                .getOrderProfitsInCategory(allOrderList);
+        final List<KeyValue> pieDataList = GoogleChartHelper
+                .getPieDataListFromMap(orderProfitInBrandMap);
+        accountingOrderInAdminPieChartPage.addObject(PIE_CHART_DATA_LIST_1, pieDataList);
+        accountingOrderInAdminPieChartPage.addObject(PIE_CHART_1, orderInCategoryPieChart1);
+
+        if (yearMonth != null)
+        {
+            final String year = yearMonth.substring(0, 4);
+            final String month = yearMonth.substring(5, 7);
+            final List<Order> orderInMonthList = orderDAO.getOrdersByMonth(year, month);
+            if (orderInMonthList != null && !orderInMonthList.isEmpty())
+            {
+                final String chartLabel = String.format("各类别 %s年%s月 订单利润分布图", year, month);
+                final LogpiePieChart orderInCategoryPieChart2 = new LogpiePieChart(chartLabel,
+                        "订单类别", "订单利润");
+                final Map<String, Double> orderProfitInBrandMap2 = AccountingLogic
+                        .getOrderProfitsInCategory(orderInMonthList);
+                final List<KeyValue> pieDataList2 = GoogleChartHelper
+                        .getPieDataListFromMap(orderProfitInBrandMap2);
+                accountingOrderInAdminPieChartPage.addObject(PIE_CHART_DATA_LIST_2, pieDataList2);
+                accountingOrderInAdminPieChartPage.addObject(PIE_CHART_2, orderInCategoryPieChart2);
+            }
+        }
+
+        return accountingOrderInAdminPieChartPage;
+    }
+
     private Object handleOrderProfitInAdmin(final String yearMonth)
     {
         final ModelAndView accountingOrderInAdminPieChartPage = new ModelAndView(
                 "accounting_piechart");
-        final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各代理 所有订单利润分布图", "订单类别",
+        final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各代理 所有订单利润分布图", "订单代理",
                 "订单利润");
 
         final OrderDAO orderDAO = new OrderDAO();
@@ -341,7 +383,7 @@ public class AccountingController
     {
         final ModelAndView accountingOrderInAdminPieChartPage = new ModelAndView(
                 "accounting_piechart");
-        final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各品牌 所有订单利润分布图", "订单类别",
+        final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各品牌 所有订单利润分布图", "订单品牌",
                 "订单利润");
 
         final OrderDAO orderDAO = new OrderDAO();
