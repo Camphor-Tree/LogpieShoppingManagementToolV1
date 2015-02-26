@@ -63,6 +63,29 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     }
 
     /**
+     * For getting all orders within n days
+     * 
+     * @return orders
+     */
+    public List<Order> getOrdersWithinNdays(int n)
+    {
+        final GetOrdersWithinNDaysQuery getOrdersWithinNDaysQuery = new GetOrdersWithinNDaysQuery(n);
+        return super.queryResult(getOrdersWithinNDaysQuery);
+    }
+
+    /**
+     * For getting all orders within n months
+     * 
+     * @return orders
+     */
+    public List<Order> getOrdersWithinNmonths(int n)
+    {
+        final GetOrdersWithinNMonthsQuery getOrdersWithinNMonthsQuery = new GetOrdersWithinNMonthsQuery(
+                n);
+        return super.queryResult(getOrdersWithinNMonthsQuery);
+    }
+
+    /**
      * For querying specific Package by PackageId
      * 
      * @param orderId
@@ -127,6 +150,62 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         public Set<String> getQueryConditions()
         {
             return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+    }
+
+    private class GetOrdersWithinNMonthsQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        private int mNmonths;
+
+        GetOrdersWithinNMonthsQuery(int n)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mNmonths = n;
+        }
+
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add year month conditions
+            conditions.add(String.format("DATE(%s) > DATE_SUB(DATE(NOW()), INTERVAL %d MONTH)",
+                    Order.DB_KEY_ORDER_DATE, mNmonths));
+            return conditions;
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+    }
+
+    private class GetOrdersWithinNDaysQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        private int mNdays;
+
+        GetOrdersWithinNDaysQuery(int n)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mNdays = n;
+        }
+
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add year month conditions
+            conditions.add(String.format("DATE(%s) > DATE_SUB(DATE(NOW()), INTERVAL %d DAY)",
+                    Order.DB_KEY_ORDER_DATE, mNdays));
+            return conditions;
         }
 
         @Override

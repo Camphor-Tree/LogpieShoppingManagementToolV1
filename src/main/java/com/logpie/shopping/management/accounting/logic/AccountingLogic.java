@@ -1,6 +1,11 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.accounting.logic;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +22,167 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class AccountingLogic
 {
+    /**
+     * 
+     * @param isDaily
+     *            whether it is daily or monthly. If daily pass true
+     * @param period
+     *            How long the period should be.
+     * @param orderList
+     * @return
+     */
+    public static Map<String, Double> getOrderProfits(final boolean isDaily, final int period,
+            final List<Order> orderList)
+    {
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return null;
+        }
+        final Map<String, Double> orderProfitMap = new HashMap<String, Double>();
+        // Add keys. (Date/month)
+        for (int i = 0; i < period; i++)
+        {
+            final Calendar cal = Calendar.getInstance();
+            if (isDaily)
+            {
+                cal.add(Calendar.DATE, -1 * i);
+                final Date dateBeforeIdays = cal.getTime();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+                final String dateKey = dateFormat.format(dateBeforeIdays);
+                orderProfitMap.put(dateKey, 0.0);
+            }
+            else
+            {
+                cal.add(Calendar.MONTH, -1 * i);
+                final Date dateBeforeImonths = cal.getTime();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+                final String dateKey = dateFormat.format(dateBeforeImonths);
+                orderProfitMap.put(dateKey, 0.0);
+            }
+        }
+
+        for (final Order order : orderList)
+        {
+            final String orderDate = order.getOrderDate();
+            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
+            // if customer hasn't paid the money, we won't include it into the
+            // calculate. We do this to prevent it being a negative number,
+            // since Pie chart doesn't accept negative number.
+            if (orderCustomerPaidMoney < 0)
+            {
+                continue;
+            }
+            final Float orderProfit = order.getOrderFinalProfit();
+            if (orderDate != null)
+            {
+                final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date date;
+                try
+                {
+                    date = formatter.parse(orderDate);
+                } catch (ParseException e)
+                {
+                    continue;
+                }
+                SimpleDateFormat dateFormat;
+                String dateKey;
+                if (isDaily)
+                {
+                    dateFormat = new SimpleDateFormat("MM-dd");
+                    dateKey = dateFormat.format(date);
+                }
+                else
+                {
+                    dateFormat = new SimpleDateFormat("yyyy-MM");
+                    dateKey = dateFormat.format(date);
+                }
+
+                if (orderProfitMap.containsKey(dateKey))
+                {
+                    double profit = orderProfitMap.get(dateKey);
+                    orderProfitMap.put(dateKey, orderProfit + profit);
+                }
+            }
+        }
+        return orderProfitMap;
+    }
+
+    /**
+     * 
+     * @param isDaily
+     *            whether it is daily or monthly. If daily pass true
+     * @param period
+     *            How long the period should be.
+     * @param orderList
+     * @return
+     */
+    public static Map<String, Integer> getOrderNumbers(final boolean isDaily, final int period,
+            final List<Order> orderList)
+    {
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return null;
+        }
+        final Map<String, Integer> orderNumberMap = new HashMap<String, Integer>();
+        // Add keys. (Date/month)
+        for (int i = 0; i < period; i++)
+        {
+            final Calendar cal = Calendar.getInstance();
+            if (isDaily)
+            {
+                cal.add(Calendar.DATE, -1 * i);
+                final Date dateBeforeIdays = cal.getTime();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+                final String dateKey = dateFormat.format(dateBeforeIdays);
+                orderNumberMap.put(dateKey, 0);
+            }
+            else
+            {
+                cal.add(Calendar.MONTH, -1 * i);
+                final Date dateBeforeImonths = cal.getTime();
+                final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+                final String dateKey = dateFormat.format(dateBeforeImonths);
+                orderNumberMap.put(dateKey, 0);
+            }
+        }
+
+        for (final Order order : orderList)
+        {
+            final String orderDate = order.getOrderDate();
+            if (orderDate != null)
+            {
+                final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date date;
+                try
+                {
+                    date = formatter.parse(orderDate);
+                } catch (ParseException e)
+                {
+                    continue;
+                }
+                SimpleDateFormat dateFormat;
+                String dateKey;
+                if (isDaily)
+                {
+                    dateFormat = new SimpleDateFormat("MM-dd");
+                    dateKey = dateFormat.format(date);
+                }
+                else
+                {
+                    dateFormat = new SimpleDateFormat("yyyy-MM");
+                    dateKey = dateFormat.format(date);
+                }
+
+                if (orderNumberMap.containsKey(dateKey))
+                {
+                    int count = orderNumberMap.get(dateKey);
+                    orderNumberMap.put(dateKey, count + 1);
+                }
+            }
+        }
+        return orderNumberMap;
+    }
+
     public static Map<String, Integer> getOrdersInCategory(final List<Order> orderList)
     {
         if (CollectionUtils.isEmpty(orderList))
@@ -97,5 +263,81 @@ public class AccountingLogic
             }
         }
         return orderInAdminMap;
+    }
+
+    public static Map<String, Double> getOrderProfitsInAdmin(final List<Order> orderList)
+    {
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return null;
+        }
+        final Map<String, Double> orderProfitInAdminMap = new HashMap<String, Double>();
+        for (final Order order : orderList)
+        {
+            final Admin orderProxyAdmin = order.getOrderProxy();
+            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
+            // if customer hasn't paid the money, we won't include it into the
+            // calculate. We do this to prevent it being a negative number,
+            // since Pie chart doesn't accept negative number.
+            if (orderCustomerPaidMoney < 0)
+            {
+                continue;
+            }
+            final Float orderProfit = order.getOrderFinalProfit();
+            if (orderProxyAdmin != null)
+            {
+                final String proxyAdminName = orderProxyAdmin.getAdminName();
+                if (!orderProfitInAdminMap.containsKey(proxyAdminName))
+                {
+                    orderProfitInAdminMap.put(proxyAdminName,
+                            Double.parseDouble(orderProfit.toString()));
+                }
+                else
+                {
+                    double profit = orderProfitInAdminMap.get(proxyAdminName);
+                    profit = profit + orderProfit;
+                    orderProfitInAdminMap.put(proxyAdminName, profit);
+                }
+            }
+        }
+        return orderProfitInAdminMap;
+    }
+
+    public static Map<String, Double> getOrderProfitsInBrand(final List<Order> orderList)
+    {
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return null;
+        }
+        final Map<String, Double> orderProfitInAdminMap = new HashMap<String, Double>();
+        for (final Order order : orderList)
+        {
+            final String brandName = order.getOrderProduct().getProductBrand()
+                    .getBrandChineseName();
+            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
+            // if customer hasn't paid the money, we won't include it into the
+            // calculate. We do this to prevent it being a negative number,
+            // since Pie chart doesn't accept negative number.
+            if (orderCustomerPaidMoney < 0)
+            {
+                continue;
+            }
+            final Float orderProfit = order.getOrderFinalProfit();
+            if (brandName != null)
+            {
+                if (!orderProfitInAdminMap.containsKey(brandName))
+                {
+                    orderProfitInAdminMap
+                            .put(brandName, Double.parseDouble(orderProfit.toString()));
+                }
+                else
+                {
+                    double profit = orderProfitInAdminMap.get(brandName);
+                    profit = profit + orderProfit;
+                    orderProfitInAdminMap.put(brandName, profit);
+                }
+            }
+        }
+        return orderProfitInAdminMap;
     }
 }
