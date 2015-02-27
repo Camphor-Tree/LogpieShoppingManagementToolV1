@@ -235,6 +235,8 @@ public class OrderDAO extends LogpieBaseDAO<Order>
             // add year month conditions
             conditions.add(String.format("MONTH(%s) = MONTH(\'%s-%s-01\')",
                     Order.DB_KEY_ORDER_DATE, mYear, mMonth));
+            conditions.add(String.format("YEAR(%s) = YEAR(\'%s-%s-01\')", Order.DB_KEY_ORDER_DATE,
+                    mYear, mMonth));
             return conditions;
         }
 

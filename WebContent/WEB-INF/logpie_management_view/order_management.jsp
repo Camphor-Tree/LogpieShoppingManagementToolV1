@@ -4,8 +4,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:logpie_common_template>
     <jsp:body>
-        <div class="row" style="margin-bottom:30px">
-            <h3>欢迎来到 订单管理<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button></h3>
+        <div class="row" style="margin-bottom:10px">
+        	<h3>欢迎来到 订单管理</h3>
+	        <div class="col-md-2">
+	            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button>
+			</div>
+			<div class="dropdown col-md-2">
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按代理筛选<span class="caret"></span></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+				  </ul>
+			</div>
         </div>
         <c:if test="${action_message !=null}">
   	        <div class="alert alert-success" role="alert">
@@ -13,12 +25,12 @@
             </div>
 		</c:if>
    		
-      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:16px;">
+      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">
         <th class="col-xs-1 col-md-1 text-center">No</th>
         <th class="col-xs-2 col-md-2 text-center">订单日期</th>
         <th class="col-xs-4 col-md-4 text-center">商品名称</th>
-        <!--<th>商品数量</th>-->
+        <th class="col-xs-1 col-md-1 text-center">数量</th>
         <!-- <th>商品重量</th> -->
         <th class="col-xs-2 col-md-2 text-center">购买者</th>
         <th class="col-xs-2 col-md-2 text-center">代理者</th>
@@ -42,7 +54,7 @@
         <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
         <td>${fn:substring(order.orderDate,0,10)}</td>
         <td>${order.orderProduct.productName}</td>
-        <!--<td>${order.orderProductCount}</td>-->
+        <td>${order.orderProductCount}</td>
         <!-- <td>${order.orderProduct.productWeight}</td>-->
         <td>${order.orderBuyerName}</td>
         <td>${order.orderProxy.adminName}</td>
