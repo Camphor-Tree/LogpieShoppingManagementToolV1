@@ -12,10 +12,10 @@
 			<div class="dropdown col-md-2">
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按代理筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+				  	<c:forEach items="${adminList}" var="admin">
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?admin=${admin.adminId}" />">${admin.adminName}</a></li>
+					</c:forEach>
+				    
 				  </ul>
 			</div>
         </div>
@@ -37,7 +37,7 @@
         <!--<th>订单代理分红百分比</th>-->
         <th class="col-xs-2 col-md-2 text-center">购买终价$</th>
         <!--<th>订单当日汇率</th>-->
-        <th class="col-xs-2 col-md-2 text-center">订单包裹号</th>
+        <th class="col-xs-1 col-md-1 text-center">包裹</th>
         <!--<th>订单估计运费(人民币)</th>-->
         <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
         <th class="col-xs-2 col-md-2 text-center">订单售价￥</th>

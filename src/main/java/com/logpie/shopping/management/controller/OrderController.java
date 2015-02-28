@@ -42,7 +42,8 @@ public class OrderController
 
     @RequestMapping(value = "/order_management", method = RequestMethod.GET)
     public Object showOrderManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
+            @RequestParam(value = "admin", required = false) final String adminId)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
         if (authSuccess)
@@ -56,7 +57,15 @@ public class OrderController
                 orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, message);
             }
             final OrderDAO orderDAO = new OrderDAO();
-            final List<Order> orderList = orderDAO.getAllOrders();
+            final List<Order> orderList;
+            if (adminId != null)
+            {
+                orderList = orderDAO.getOrdersForProxy(adminId);
+            }
+            else
+            {
+                orderList = orderDAO.getAllOrders();
+            }
             orderManagementPage.addObject("orderList", orderList);
 
             final CategoryDAO categoryDAO = new CategoryDAO();

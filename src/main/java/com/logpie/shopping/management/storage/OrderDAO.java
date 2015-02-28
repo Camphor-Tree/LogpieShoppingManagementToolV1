@@ -86,6 +86,18 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     }
 
     /**
+     * For getting all orders for specific proxy.
+     * 
+     * @return orders
+     */
+    public List<Order> getOrdersForProxy(final String proxyAdminId)
+    {
+        final GetOrdersForProxyQuery getOrdersForProxyQuery = new GetOrdersForProxyQuery(
+                proxyAdminId);
+        return super.queryResult(getOrdersForProxyQuery);
+    }
+
+    /**
      * For querying specific Package by PackageId
      * 
      * @param orderId
@@ -150,6 +162,34 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         public Set<String> getQueryConditions()
         {
             return getForeignKeyConnectionConditions();
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+    }
+
+    private class GetOrdersForProxyQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        final String mProxyAdminId;
+
+        GetOrdersForProxyQuery(final String proxyAdminId)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mProxyAdminId = proxyAdminId;
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add year month conditions
+            conditions.add(String.format("%s=%s", Order.DB_KEY_ORDER_PROXY_ID, mProxyAdminId));
+            return conditions;
         }
 
         @Override
