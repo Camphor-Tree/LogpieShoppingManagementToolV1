@@ -49,8 +49,8 @@ h2{
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/LogpieShopping/home">主页</a></li>
-            <li><a href="/LogpieShopping/product_management">商品管理</a></li>
 			<li><a href="/LogpieShopping/order_management">订单管理</a></li>
+			<li><a href="/LogpieShopping/package_management">包裹管理</a></li>
 			<li><a href="/LogpieShopping/accounting">财务报表</a></li>
 			<li><a href="/LogpieShopping/logout">退出登录,${AdminName}</a></li>
           </ul>

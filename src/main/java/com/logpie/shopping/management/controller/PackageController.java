@@ -1,6 +1,8 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,6 +27,25 @@ import com.logpie.shopping.management.storage.LogpiePackageDAO;
 public class PackageController
 {
     private static final Logger LOG = Logger.getLogger(PackageController.class);
+
+    @RequestMapping(value = "/package_management", method = RequestMethod.GET)
+    public Object showOrderManagementPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to package manage page.");
+            final ModelAndView packageManagementPage = new ModelAndView("package_management");
+
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final List<LogpiePackage> packageList = packageDAO.getAllPackage();
+            packageManagementPage.addObject("packageList", packageList);
+
+            return packageManagementPage;
+        }
+        return "redirect:/signin";
+    }
 
     /**
      * Show singple package information

@@ -343,4 +343,3 @@
     </div>
     </jsp:body>
 </tag:logpie_common_template>
-
