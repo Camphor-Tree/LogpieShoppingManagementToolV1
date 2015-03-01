@@ -18,7 +18,7 @@ import java.util.TreeMap;
  */
 public class GoogleChartHelper
 {
-    public static List<KeyValue> getPieDataListFromMap(Map<String, ?> dataMap)
+    public static List<KeyValue> getPieDataListFromMap(final Map<String, ?> dataMap)
     {
         final ArrayList<KeyValue> pieDataList = new ArrayList<KeyValue>();
         for (final Entry<String, ?> dataEntry : dataMap.entrySet())
@@ -39,9 +39,9 @@ public class GoogleChartHelper
     }
 
     public static List<KeyValue> getLineChartDataListFromStringIntegerMap(
-            Map<String, Integer> dataMap)
+            final Map<String, Integer> dataMap)
     {
-        final ValueComparator bvc = new ValueComparator(dataMap);
+        final MonthDayValueComparator bvc = new MonthDayValueComparator(dataMap);
         final TreeMap<String, Integer> sortedDataMap = new TreeMap<String, Integer>(bvc);
         sortedDataMap.putAll(dataMap);
         final ArrayList<KeyValue> pieDataList = new ArrayList<KeyValue>();
@@ -52,10 +52,19 @@ public class GoogleChartHelper
         return pieDataList;
     }
 
-    public static List<KeyValue> getLineChartDataListFromStringDoubleMap(Map<String, Double> dataMap)
+    public static List<KeyValue> getLineChartDataListFromStringDoubleMap(
+            final Map<String, Double> dataMap, final boolean isMonthlyFormat)
     {
-        final ValueComparator bvc = new ValueComparator(dataMap);
-        final TreeMap<String, Double> sortedDataMap = new TreeMap<String, Double>(bvc);
+        Comparator<String> comparator;
+        if (isMonthlyFormat)
+        {
+            comparator = new YearMonthValueComparator(dataMap);
+        }
+        else
+        {
+            comparator = new MonthDayValueComparator(dataMap);
+        }
+        final TreeMap<String, Double> sortedDataMap = new TreeMap<String, Double>(comparator);
         sortedDataMap.putAll(dataMap);
         final ArrayList<KeyValue> pieDataList = new ArrayList<KeyValue>();
         for (final Entry<String, Double> dataEntry : sortedDataMap.entrySet())
@@ -72,12 +81,12 @@ public class GoogleChartHelper
      * @author zhoyilei
      *
      */
-    public static class ValueComparator implements Comparator<String>
+    public static class YearMonthValueComparator implements Comparator<String>
     {
 
         Map<String, ?> base;
 
-        public ValueComparator(Map<String, ?> base)
+        public YearMonthValueComparator(final Map<String, ?> base)
         {
             this.base = base;
         }
@@ -86,9 +95,48 @@ public class GoogleChartHelper
         // equals.
         public int compare(String a, String b)
         {
-            // TODO: Currently it also works for "MM-dd" since it will treat MM
-            // as yyyy, dd as mm, it still can be sorted.
             final DateFormat formatter = new SimpleDateFormat("yyyy-MM");
+            try
+            {
+                Date dateA = formatter.parse(a);
+                Date dateB = formatter.parse(b);
+                if (dateA.before(dateB))
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            } catch (ParseException e)
+            {
+                // returning 0 would merge keys
+                return -1;
+            }
+        }
+    }
+
+    /**
+     * Help sort the map by key (based on time).
+     * 
+     * @author zhoyilei
+     *
+     */
+    public static class MonthDayValueComparator implements Comparator<String>
+    {
+
+        Map<String, ?> base;
+
+        public MonthDayValueComparator(Map<String, ?> base)
+        {
+            this.base = base;
+        }
+
+        // Note: this comparator imposes orderings that are inconsistent with
+        // equals.
+        public int compare(String a, String b)
+        {
+            final DateFormat formatter = new SimpleDateFormat("MM-dd");
             try
             {
                 Date dateA = formatter.parse(a);

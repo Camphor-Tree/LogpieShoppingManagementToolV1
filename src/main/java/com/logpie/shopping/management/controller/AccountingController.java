@@ -176,7 +176,7 @@ public class AccountingController
         final Map<String, Double> orderWithinNdaysMap = AccountingLogic.getOrderProfits(true, 12,
                 orderListWithinNdays);
         final List<KeyValue> lineDataList1 = GoogleChartHelper
-                .getLineChartDataListFromStringDoubleMap(orderWithinNdaysMap);
+                .getLineChartDataListFromStringDoubleMap(orderWithinNdaysMap, false);
         orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_1, lineDataList1);
         orderNumberLineChartPage.addObject(LINE_CHART_1, orderInCategoryPieChart1);
 
@@ -186,7 +186,7 @@ public class AccountingController
         final Map<String, Double> orderWithinNmonthsMap = AccountingLogic.getOrderProfits(false,
                 12, orderListWithinNmonths);
         final List<KeyValue> lineDataList2 = GoogleChartHelper
-                .getLineChartDataListFromStringDoubleMap(orderWithinNmonthsMap);
+                .getLineChartDataListFromStringDoubleMap(orderWithinNmonthsMap, true);
         orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_2, lineDataList2);
         orderNumberLineChartPage.addObject(LINE_CHART_2, orderInCategoryPieChart2);
 
