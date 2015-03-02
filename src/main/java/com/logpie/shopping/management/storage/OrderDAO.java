@@ -98,6 +98,18 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     }
 
     /**
+     * For getting all orders for specific buyer name.
+     * 
+     * @return orders
+     */
+    public List<Order> getOrdersForBuyerName(final String buyerName)
+    {
+        final GetOrdersForBuyerNameQuery getOrdersForBuyerNameQuery = new GetOrdersForBuyerNameQuery(
+                buyerName);
+        return super.queryResult(getOrdersForBuyerNameQuery);
+    }
+
+    /**
      * For querying specific Package by PackageId
      * 
      * @param orderId
@@ -189,6 +201,34 @@ public class OrderDAO extends LogpieBaseDAO<Order>
             final Set<String> conditions = getForeignKeyConnectionConditions();
             // add year month conditions
             conditions.add(String.format("%s=%s", Order.DB_KEY_ORDER_PROXY_ID, mProxyAdminId));
+            return conditions;
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+    }
+
+    private class GetOrdersForBuyerNameQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        final String mBuyerName;
+
+        GetOrdersForBuyerNameQuery(final String buyerName)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mBuyerName = buyerName;
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add buyerName conditions
+            conditions.add(String.format("%s=\'%s\'", Order.DB_KEY_ORDER_BUYER_NAME, mBuyerName));
             return conditions;
         }
 

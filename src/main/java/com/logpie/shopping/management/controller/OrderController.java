@@ -1,7 +1,10 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +46,8 @@ public class OrderController
     @RequestMapping(value = "/order_management", method = RequestMethod.GET)
     public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            @RequestParam(value = "admin", required = false) final String adminId)
+            @RequestParam(value = "admin", required = false) final String adminId,
+            @RequestParam(value = "buyer", required = false) final String buyerName)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
         if (authSuccess)
@@ -70,11 +74,19 @@ public class OrderController
             {
                 orderList = orderDAO.getOrdersForProxy(adminId);
             }
+            else if (buyerName != null)
+            {
+                orderList = orderDAO.getOrdersForBuyerName(buyerName);
+            }
             else
             {
                 orderList = orderDAO.getAllOrders();
             }
             orderManagementPage.addObject("orderList", orderList);
+
+            // Use all the orders list to generate the buyers list.
+            final List<String> orderBuyersList = getBuyerList(orderDAO.getAllOrders());
+            orderManagementPage.addObject("orderBuyersList", orderBuyersList);
 
             final CategoryDAO categoryDAO = new CategoryDAO();
             final List<Category> categoryList = categoryDAO.getAllCategory();
@@ -226,4 +238,22 @@ public class OrderController
         return "redirect:/signin";
     }
 
+    private List<String> getBuyerList(final List<Order> orderList)
+    {
+        final Set<String> buyerSet = new HashSet<String>();
+        final List<String> buyerList = new ArrayList<String>();
+        if (orderList != null)
+        {
+            for (final Order order : orderList)
+            {
+                final String buyerName = order.getOrderBuyerName();
+                if (!buyerSet.contains(buyerName))
+                {
+                    buyerSet.add(buyerName);
+                    buyerList.add(buyerName);
+                }
+            }
+        }
+        return buyerList;
+    }
 }

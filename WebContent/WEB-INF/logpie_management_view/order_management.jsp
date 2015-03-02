@@ -15,7 +15,14 @@
 				  	<c:forEach items="${adminList}" var="admin">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?admin=${admin.adminId}" />">${admin.adminName}</a></li>
 					</c:forEach>
-				    
+				  </ul>
+			</div>
+			<div class="dropdown col-md-2">
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按购买者筛选<span class="caret"></span></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+				  	<c:forEach items="${orderBuyersList}" var="buyer">
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?buyer=${buyer}" />">${buyer}</a></li>
+					</c:forEach>
 				  </ul>
 			</div>
         </div>
