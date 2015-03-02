@@ -147,13 +147,13 @@ public class PackageController
 
             if (updatePackageSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "Update package: " + modifiedPackage.getPackageId() + " successfully!");
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, "更新包裹:"
+                        + modifiedPackage.getPackageId() + " 信息，成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "Update order for" + modifiedPackage.getPackageId() + " fail!");
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, "更新包裹:"
+                        + modifiedPackage.getPackageId() + " 信息，失败!");
             }
 
             return "redirect:/package_management";

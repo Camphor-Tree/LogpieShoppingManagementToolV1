@@ -45,9 +45,6 @@ public class SimpleCreateController
             final ModelAndView createCategoryPage = new ModelAndView("show_all_categories");
             final CategoryDAO categoryDAO = new CategoryDAO();
             final List<Category> categoryList = categoryDAO.getAllCategory();
-            // final Map<String, Object> modelMap = new HashMap<String,
-            // Object>();
-            // modelMap.put("categories", categoryList);
             createCategoryPage.addObject("categoryList", categoryList);
 
             return createCategoryPage;
@@ -87,12 +84,12 @@ public class SimpleCreateController
             if (createCategorySuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new category:" + newCategory.getCategoryName() + " successfully!");
+                        "创建新的分类:" + newCategory.getCategoryName() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new category:" + newCategory.getCategoryName() + " fail!");
+                        "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
             }
 
             return "redirect:/order_management";
@@ -127,12 +124,12 @@ public class SimpleCreateController
             if (createAdminSuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new admin:" + newAdmin.getAdminName() + " successfully!");
+                        "创建新的管理员:" + newAdmin.getAdminName() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new admin:" + newAdmin.getAdminName() + " fail!");
+                        "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
             }
 
             return "redirect:/order_management";
@@ -159,12 +156,12 @@ public class SimpleCreateController
             if (createImageSuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new image:" + newImage.getImageDescription() + " successfully!");
+                        "创建新的图片:" + newImage.getImageDescription() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new image:" + newImage.getImageDescription() + " fail!");
+                        "创建新的图片:" + newImage.getImageDescription() + " 失败!");
             }
 
             return "redirect:/order_management";
@@ -192,15 +189,15 @@ public class SimpleCreateController
             {
                 redirectAttrs.addFlashAttribute(
                         LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new brand:" + newBrand.getBrandEnglishName() + "/"
-                                + newBrand.getBrandChineseName() + " successfully!");
+                        "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
+                                + newBrand.getBrandChineseName() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(
                         LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new brand:" + newBrand.getBrandEnglishName() + "/"
-                                + newBrand.getBrandChineseName() + " fail!");
+                        "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
+                                + newBrand.getBrandChineseName() + " 失败!");
             }
 
             return "redirect:/order_management";
@@ -227,12 +224,12 @@ public class SimpleCreateController
             if (createNewProductSuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new product:" + newProduct.getProductName() + " successfully!");
+                        "创建新的产品:" + newProduct.getProductName() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new product:" + newProduct.getProductName() + " fail!");
+                        "创建新的产品:" + newProduct.getProductName() + " 失败!");
             }
 
             return "redirect:/order_management";

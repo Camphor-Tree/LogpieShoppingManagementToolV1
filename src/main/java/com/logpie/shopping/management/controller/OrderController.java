@@ -116,12 +116,12 @@ public class OrderController
             if (createOrderSuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new order for " + newOrder.getOrderBuyerName() + " successfully!");
+                        "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "create new order for" + newOrder.getOrderBuyerName() + " fail!");
+                        "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 失败");
             }
 
             return "redirect:/order_management";
@@ -205,12 +205,12 @@ public class OrderController
             if (updateOrderSuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "Update order for " + modifiedOrder.getOrderBuyerName() + " successfully!");
+                        "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 成功");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
-                        "Update order for" + modifiedOrder.getOrderBuyerName() + " fail!");
+                        "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 失败");
             }
 
             return "redirect:/order_management";

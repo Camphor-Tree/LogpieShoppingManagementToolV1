@@ -7,6 +7,11 @@
         <div class="row" style="margin-bottom:10px">
         	<h3>欢迎来到 包裹管理</h3>
         </div>
+        <c:if test="${action_message !=null}">
+  	        <div class="alert alert-success" role="alert">
+                    <strong>${action_message}</strong>
+            </div>
+		</c:if>
    		
       <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">
