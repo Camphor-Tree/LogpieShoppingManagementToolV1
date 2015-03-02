@@ -108,4 +108,56 @@ public class PackageController
         }
         return "redirect:/signin";
     }
+
+    @RequestMapping(value = "/package/edit", method = RequestMethod.GET)
+    public Object showModifyPackagePage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("id") String packageId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            final ModelAndView modifyOrderPage = new ModelAndView("package_edit");
+
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
+            modifyOrderPage.addObject("logpiePackage", logpiePackage);
+
+            return modifyOrderPage;
+        }
+        return "redirect:/signin";
+    }
+
+    @RequestMapping(value = "/package/edit", method = RequestMethod.POST)
+    public Object modifyPackageOrder(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to modify the package information.");
+            final LogpiePackage modifiedPackage = LogpiePackage
+                    .readModifiedLogpiePackageFromRequest(request);
+            boolean updatePackageSuccess = false;
+            if (modifiedPackage != null)
+            {
+                final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+                updatePackageSuccess = packageDAO.updateLogpiePackageProfile(modifiedPackage);
+            }
+
+            if (updatePackageSuccess)
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "Update package: " + modifiedPackage.getPackageId() + " successfully!");
+            }
+            else
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        "Update order for" + modifiedPackage.getPackageId() + " fail!");
+            }
+
+            return "redirect:/package_management";
+        }
+        return "redirect:/signin";
+    }
 }

@@ -213,6 +213,37 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
                 packageIsDelivered, packageNote);
     }
 
+    public static LogpiePackage readModifiedLogpiePackageFromRequest(
+            final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String packageId = request.getParameter("PackageId");
+        final String packageProxyName = request.getParameter("PackageProxyName");
+        final String packageTrackingNumber = request.getParameter("PackageTrackingNumber");
+        final String packageReceiver = request.getParameter("PackageReceiver");
+        final String packageDestination = request.getParameter("PackageDestination");
+        final String packageDate = request.getParameter("PackageDate");
+        final Integer packageWeight = Integer.parseInt(request.getParameter("PackageWeight"));
+        final Integer packgeShippingFee = Integer.parseInt(request
+                .getParameter("PackgeShippingFee"));
+        final Integer packageAdditionalCustomTaxFee = Integer.parseInt(request
+                .getParameter("PackageAdditionalCustomTaxFee"));
+        final Integer packageAdditionalInsuranceFee = Integer.parseInt(request
+                .getParameter("PackageAdditionalInsuranceFee"));
+        final Boolean packageIsShipped = Boolean.parseBoolean(request
+                .getParameter("PackageIsShipped"));
+        final Boolean packageIsDelivered = Boolean.parseBoolean(request
+                .getParameter("PackageIsDelivered"));
+        final String packageNote = request.getParameter("PackageNote");
+        return new LogpiePackage(packageId, packageProxyName, packageTrackingNumber,
+                packageReceiver, packageDestination, packageDate, packageWeight, packgeShippingFee,
+                packageAdditionalCustomTaxFee, packageAdditionalInsuranceFee, packageIsShipped,
+                packageIsDelivered, packageNote);
+    }
+
     /**
      * @return the packageId
      */
