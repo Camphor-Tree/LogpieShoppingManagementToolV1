@@ -64,7 +64,7 @@
         <c:forEach items="${orderList}" var="order">
         <tr >
         <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
-        <td>${fn:substring(order.orderDate,0,10)}</td>
+        <td>${fn:substring(order.orderDate,5,10)}</td>
         <td>${order.orderProduct.productName}</td>
         <td>${order.orderProductCount}</td>
         <!-- <td>${order.orderProduct.productWeight}</td>-->
