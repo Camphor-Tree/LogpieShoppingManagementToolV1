@@ -1,4 +1,5 @@
 <%@tag description="Overall Page template" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
   <head>
@@ -44,15 +45,15 @@ h2{
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/LogpieShopping/home">Logpie米国小买手</a>
+          <a class="navbar-brand" href="<c:url value="/home" />">Logpie米国小买手</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/LogpieShopping/home">主页</a></li>
-			<li><a href="/LogpieShopping/order_management">订单管理</a></li>
-			<li><a href="/LogpieShopping/package_management">包裹管理</a></li>
-			<li><a href="/LogpieShopping/accounting">财务报表</a></li>
-			<li><a href="/LogpieShopping/logout">退出登录,${AdminName}</a></li>
+            <li class="active"><a href="<c:url value="/home" />">主页</a></li>
+			<li><a href="<c:url value="/order_management" />">订单管理</a></li>
+			<li><a href="<c:url value="/package_management" />">包裹管理</a></li>
+			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
+			<li><a href="<c:url value="/logout" />">退出登录,${AdminName}</a></li>
           </ul>
         </div>
       </div>
