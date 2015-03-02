@@ -53,7 +53,19 @@ h2{
 			<li><a href="<c:url value="/order_management" />">订单管理</a></li>
 			<li><a href="<c:url value="/package_management" />">包裹管理</a></li>
 			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
-			<li><a href="<c:url value="/logout" />">退出登录,${AdminName}</a></li>
+			<li class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">更多<span class="caret"></span></a>
+	          <ul class="dropdown-menu" role="menu">
+	            <li><a href="<c:url value="/category_management" />">分类管理</a></li>
+	            <li><a href="<c:url value="/brand_management" />">品牌管理</a></li>
+	            <li><a href="<c:url value="/image_management" />">图片管理</a></li>
+	            <li><a href="<c:url value="/product_management" />">商品管理</a></li>
+	            <li class="divider"></li>
+	            <li><a href="<c:url value="/account_management" />">账号管理</a></li>
+	            <li class="divider"></li>
+	            <li><a href="<c:url value="/logout" />">退出登录</a></li>
+	          </ul>
+       	    </li>
           </ul>
         </div>
       </div>
