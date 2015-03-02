@@ -83,12 +83,12 @@ public class SimpleCreateController
 
             if (createCategorySuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "创建新的分类:" + newCategory.getCategoryName() + " 成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
             }
 
@@ -123,12 +123,12 @@ public class SimpleCreateController
 
             if (createAdminSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "创建新的管理员:" + newAdmin.getAdminName() + " 成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
             }
 
@@ -155,12 +155,12 @@ public class SimpleCreateController
 
             if (createImageSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "创建新的图片:" + newImage.getImageDescription() + " 成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "创建新的图片:" + newImage.getImageDescription() + " 失败!");
             }
 
@@ -188,14 +188,14 @@ public class SimpleCreateController
             if (createBrandSuccess)
             {
                 redirectAttrs.addFlashAttribute(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
                                 + newBrand.getBrandChineseName() + " 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
                                 + newBrand.getBrandChineseName() + " 失败!");
             }
@@ -223,12 +223,12 @@ public class SimpleCreateController
 
             if (createNewProductSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "创建新的产品:" + newProduct.getProductName() + " 成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "创建新的产品:" + newProduct.getProductName() + " 失败!");
             }
 

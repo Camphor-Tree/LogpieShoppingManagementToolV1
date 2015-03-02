@@ -29,15 +29,29 @@ public class PackageController
     private static final Logger LOG = Logger.getLogger(PackageController.class);
 
     @RequestMapping(value = "/package_management", method = RequestMethod.GET)
-    public Object showOrderManagementPage(final HttpServletRequest request,
+    public Object showPackageManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
         if (authSuccess)
         {
-            LOG.debug("Authenticate cookie is valid. Going to package manage page.");
-            final ModelAndView packageManagementPage = new ModelAndView("package_management");
+            LOG.debug("Authenticate cookie is valid. Going to package management page.");
 
+            final ModelAndView packageManagementPage = new ModelAndView("package_management");
+            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
+            {
+                final String message = (String) redirectAttrs.getFlashAttributes().get(
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+                packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                        message);
+            }
+            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+            {
+                final String message = (String) redirectAttrs.getFlashAttributes().get(
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+                packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                        message);
+            }
             final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
             final List<LogpiePackage> packageList = packageDAO.getAllPackage();
             packageManagementPage.addObject("packageList", packageList);
@@ -93,13 +107,13 @@ public class PackageController
 
             if (createLogpiePackageSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "create new logpiePackage to " + newLogpiePackage.getPackageDestination()
                                 + " successfully!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "create new logpiePackage to " + newLogpiePackage.getPackageDestination()
                                 + " fail!");
             }
@@ -129,7 +143,7 @@ public class PackageController
     }
 
     @RequestMapping(value = "/package/edit", method = RequestMethod.POST)
-    public Object modifyPackageOrder(final HttpServletRequest request,
+    public Object modifyPackage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
@@ -147,15 +161,14 @@ public class PackageController
 
             if (updatePackageSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, "更新包裹:"
-                        + modifiedPackage.getPackageId() + " 信息，成功!");
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                        "更新包裹:" + modifiedPackage.getPackageId() + " 信息，成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, "更新包裹:"
-                        + modifiedPackage.getPackageId() + " 信息，失败!");
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                        "更新包裹:" + modifiedPackage.getPackageId() + " 信息，失败!");
             }
-
             return "redirect:/package_management";
         }
         return "redirect:/signin";

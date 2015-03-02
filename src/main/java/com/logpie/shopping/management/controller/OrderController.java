@@ -50,11 +50,19 @@ public class OrderController
         {
             LOG.debug("Authenticate cookie is valid. Going to order manage page.");
             final ModelAndView orderManagementPage = new ModelAndView("order_management");
-            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE))
+            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
             {
                 final String message = (String) redirectAttrs.getFlashAttributes().get(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE);
-                orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE, message);
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+                orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                        message);
+            }
+            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+            {
+                final String message = (String) redirectAttrs.getFlashAttributes().get(
+                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+                orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                        message);
             }
             final OrderDAO orderDAO = new OrderDAO();
             final List<Order> orderList;
@@ -115,12 +123,12 @@ public class OrderController
 
             if (createOrderSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 成功!");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 失败");
             }
 
@@ -204,12 +212,12 @@ public class OrderController
 
             if (updateOrderSuccess)
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                         "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 成功");
             }
             else
             {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE,
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                         "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 失败");
             }
 

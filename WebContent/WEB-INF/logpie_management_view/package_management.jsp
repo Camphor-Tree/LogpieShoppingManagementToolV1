@@ -7,9 +7,14 @@
         <div class="row" style="margin-bottom:10px">
         	<h3>欢迎来到 包裹管理</h3>
         </div>
-        <c:if test="${action_message !=null}">
+        <c:if test="${action_message_success !=null}">
   	        <div class="alert alert-success" role="alert">
-                    <strong>${action_message}</strong>
+                    <strong>${action_message_success}</strong>
+            </div>
+		</c:if>
+		<c:if test="${action_message_fail !=null}">
+  	        <div class="alert alert-danger" role="alert">
+                    <strong>${action_message_fail}</strong>
             </div>
 		</c:if>
    		
