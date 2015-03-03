@@ -110,6 +110,18 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     }
 
     /**
+     * For getting all orders for specific package
+     * 
+     * @return orders
+     */
+    public List<Order> getOrdersForPackage(final String packageId)
+    {
+        final GetOrdersForPackageQuery getOrdersForPackageQuery = new GetOrdersForPackageQuery(
+                packageId);
+        return super.queryResult(getOrdersForPackageQuery);
+    }
+
+    /**
      * For querying specific Package by PackageId
      * 
      * @param orderId
@@ -229,6 +241,34 @@ public class OrderDAO extends LogpieBaseDAO<Order>
             final Set<String> conditions = getForeignKeyConnectionConditions();
             // add buyerName conditions
             conditions.add(String.format("%s=\'%s\'", Order.DB_KEY_ORDER_BUYER_NAME, mBuyerName));
+            return conditions;
+        }
+
+        @Override
+        public Map<String, String> getQueryTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+    }
+
+    private class GetOrdersForPackageQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        final String mPackageId;
+
+        GetOrdersForPackageQuery(final String packageId)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mPackageId = packageId;
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add buyerName conditions
+            conditions.add(String.format("%s=%s", Order.DB_KEY_ORDER_PACKAGE_ID, mPackageId));
             return conditions;
         }
 

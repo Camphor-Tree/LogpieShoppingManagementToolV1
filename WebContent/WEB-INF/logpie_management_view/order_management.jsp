@@ -25,6 +25,14 @@
 					</c:forEach>
 				  </ul>
 			</div>
+			<div class="dropdown col-md-2">
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按包裹筛选<span class="caret"></span></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+				  	<c:forEach items="${packageList}" var="orderPackage">
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?packageId=${orderPackage.packageId}" />">${orderPackage.packageId}-${orderPackage.packageProxyName}-${fn:substring(orderPackage.packageDate,5,10)}</a></li>
+					</c:forEach>
+				  </ul>
+			</div>
         </div>
         <c:if test="${action_message_success !=null}">
   	        <div class="alert alert-success" role="alert">

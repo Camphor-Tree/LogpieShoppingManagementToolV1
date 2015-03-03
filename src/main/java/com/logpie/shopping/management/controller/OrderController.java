@@ -47,7 +47,8 @@ public class OrderController
     public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
             @RequestParam(value = "admin", required = false) final String adminId,
-            @RequestParam(value = "buyer", required = false) final String buyerName)
+            @RequestParam(value = "buyer", required = false) final String buyerName,
+            @RequestParam(value = "packageId", required = false) final String packageId)
     {
         final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
         if (authSuccess)
@@ -77,6 +78,10 @@ public class OrderController
             else if (buyerName != null)
             {
                 orderList = orderDAO.getOrdersForBuyerName(buyerName);
+            }
+            else if (packageId != null)
+            {
+                orderList = orderDAO.getOrdersForPackage(packageId);
             }
             else
             {
