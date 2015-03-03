@@ -6,8 +6,18 @@
     <jsp:body>
         <div class="row" style="margin-bottom:10px">
         	<h3>欢迎来到 订单管理</h3>
+        	<c:if test="${action_message_success !=null}">
+  	        <div class="alert alert-success" role="alert">
+                    <strong>${action_message_success}</strong>
+            </div>
+			</c:if>
+			<c:if test="${action_message_fail !=null}">
+	  	        <div class="alert alert-danger" role="alert">
+	                    <strong>${action_message_fail}</strong>
+	            </div>
+			</c:if>
 	        <div class="col-md-2">
-	            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button>
+	            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button>
 			</div>
 			<div class="dropdown col-md-2">
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按代理筛选<span class="caret"></span></button>
@@ -33,18 +43,7 @@
 					</c:forEach>
 				  </ul>
 			</div>
-        </div>
-        <c:if test="${action_message_success !=null}">
-  	        <div class="alert alert-success" role="alert">
-                    <strong>${action_message_success}</strong>
-            </div>
-		</c:if>
-		<c:if test="${action_message_fail !=null}">
-  	        <div class="alert alert-danger" role="alert">
-                    <strong>${action_message_fail}</strong>
-            </div>
-		</c:if>
-   		
+        </div>  		
       <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">
         <th class="col-xs-1 col-md-1 text-center">No</th>
@@ -81,7 +80,7 @@
         <!--<td>${order.orderProxyProfitPercentage}</td>-->
         <td>${order.orderActualCost}</td>
         <!--<td>${order.orderCurrencyRate}</td>-->
-        <td><a href="./package?id=${order.orderPackage.packageId}">${order.orderPackage.packageId}</a></td>
+        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>><a href="./package?id=${order.orderPackage.packageId}">${order.orderPackage.packageId}</a></td>
         <!-- <td>${order.orderEstimatedShippingFee}</td>-->
         <td>${order.orderActualShippingFee}</td>
         <td>${order.orderSellingPrice}</td>
