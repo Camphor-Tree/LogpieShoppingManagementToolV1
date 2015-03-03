@@ -1,6 +1,7 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,14 +71,22 @@ public class OrderController
                         message);
             }
             final OrderDAO orderDAO = new OrderDAO();
-            final List<Order> orderList;
+            List<Order> orderList;
             if (adminId != null)
             {
                 orderList = orderDAO.getOrdersForProxy(adminId);
             }
             else if (buyerName != null)
             {
-                orderList = orderDAO.getOrdersForBuyerName(buyerName);
+                try
+                {
+                    final String decodedBuyerName = new String(buyerName.getBytes("iso-8859-1"),
+                            "UTF-8");
+                    orderList = orderDAO.getOrdersForBuyerName(decodedBuyerName);
+                } catch (UnsupportedEncodingException e)
+                {
+                    orderList = orderDAO.getAllOrders();
+                }
             }
             else if (packageId != null)
             {
