@@ -224,6 +224,8 @@ public class LogpieBaseDAO<T>
             }
             else
             {
+                // if the value is null, then String.valueOf will return "null"
+                // which is accepted by MySQL.
                 valueBuilder.append(String.valueOf(value));
             }
 
@@ -269,6 +271,8 @@ public class LogpieBaseDAO<T>
             }
             else
             {
+                // if the value is null, then String.valueOf will return "null"
+                // which is accepted by MySQL.
                 updateSqlBuilder.append(String.valueOf(value));
             }
             if (++i < size)

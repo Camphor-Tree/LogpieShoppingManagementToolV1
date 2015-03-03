@@ -111,6 +111,10 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         {
             modelMap.put(Brand.DB_KEY_BRAND_SIZE_CHART_ID, mBrandSizeChartImage.getImageId());
         }
+        else
+        {
+            modelMap.put(Brand.DB_KEY_BRAND_SIZE_CHART_ID, null);
+        }
         modelMap.put(Brand.DB_KEY_BRAND_CATEGORY_ID, mBrandCategory.getCategoryId());
         modelMap.put(Brand.DB_KEY_BRAND_IS_ACTIVATED, mBrandIsActivated);
         return modelMap;

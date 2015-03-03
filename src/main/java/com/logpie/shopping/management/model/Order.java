@@ -235,29 +235,33 @@ public class Order implements RowMapper<Order>, LogpieModel
         modelMap.put(Order.DB_KEY_ORDER_BUYER_NAME, mOrderBuyerName);
         modelMap.put(Order.DB_KEY_ORDER_PROXY_ID, mOrderProxy.getAdminId());
         modelMap.put(Order.DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE, mOrderProxyProfitPercentage);
-        if (mOrderActualCost != null)
-        {
-            modelMap.put(Order.DB_KEY_ORDER_ACTUAL_COST, mOrderActualCost);
-        }
+        // if (mOrderActualCost != null)
+        // {
+        modelMap.put(Order.DB_KEY_ORDER_ACTUAL_COST, mOrderActualCost);
+        // }
         modelMap.put(Order.DB_KEY_ORDER_CURRENCY_RATE, mOrderCurrencyRate);
         if (mOrderPackage != null)
         {
             modelMap.put(Order.DB_KEY_ORDER_PACKAGE_ID, mOrderPackage.getPackageId());
         }
-        modelMap.put(Order.DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE, mOrderEstimatedShippingFee);
-        if (mOrderActualShippingFee != null)
+        else
         {
-            modelMap.put(Order.DB_KEY_ORDER_ACTUAL_SHIPPING_FEE, mOrderActualShippingFee);
+            modelMap.put(Order.DB_KEY_ORDER_PACKAGE_ID, null);
         }
+        modelMap.put(Order.DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE, mOrderEstimatedShippingFee);
+        // if (mOrderActualShippingFee != null)
+        // {
+        modelMap.put(Order.DB_KEY_ORDER_ACTUAL_SHIPPING_FEE, mOrderActualShippingFee);
+        // }
         modelMap.put(Order.DB_KEY_ORDER_SELLING_PRICE, mOrderSellingPrice);
         modelMap.put(Order.DB_KEY_ORDER_CUSTOMER_PAID_MONEY, mOrderCustomerPaidMoney);
         // modelMap.put(Order.DB_KEY_ORDER_FINAL_PROFIT, mOrderFinalProfit);
         modelMap.put(Order.DB_KEY_ORDER_COMPANY_RECEIVED_MONEY, mOrderCompanyReceivedMoney);
         modelMap.put(Order.DB_KEY_ORDER_IS_PROFIT_PAID, mOrderIsProfitPaid);
-        if (mOrderNote != null)
-        {
-            modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
-        }
+        // if (mOrderNote != null)
+        // {
+        modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
+        // }
         return modelMap;
     }
 
