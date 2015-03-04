@@ -50,11 +50,11 @@
         <th class="col-xs-2 col-md-2 text-center">订单日期</th>
         <th class="col-xs-4 col-md-4 text-center">商品名称</th>
         <th class="col-xs-1 col-md-1 text-center">数量</th>
-        <!-- <th>商品重量</th> -->
+        <th class="col-xs-2 col-md-2 text-center">重量</th>
         <th class="col-xs-2 col-md-2 text-center">购买者</th>
         <th class="col-xs-2 col-md-2 text-center">代理者</th>
         <!--<th>订单代理分红百分比</th>-->
-        <th class="col-xs-2 col-md-2 text-center">购买终价$</th>
+        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
         <!--<th>订单当日汇率</th>-->
         <th class="col-xs-1 col-md-1 text-center">包裹</th>
         <!--<th>订单估计运费(人民币)</th>-->
@@ -63,7 +63,7 @@
         <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
         <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
         <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
-        <th class="col-xs-2 col-md-2 text-center">利润是否结算</th>
+        <th class="col-xs-1 col-md-1 text-center">利结</th>
         <!--<th>订单备注</th>-->
         <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
@@ -74,7 +74,7 @@
         <td>${fn:substring(order.orderDate,5,10)}</td>
         <td>${order.orderProduct.productName}</td>
         <td>${order.orderProductCount}</td>
-        <!-- <td>${order.orderProduct.productWeight}</td>-->
+        <td>${order.orderWeight}</td>
         <td>${order.orderBuyerName}</td>
         <td>${order.orderProxy.adminName}</td>
         <!--<td>${order.orderProxyProfitPercentage}</td>-->
@@ -132,11 +132,15 @@
 				  </select>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-6">
+                  <div class="form-group col-sm-4">
                   <label for="order_product_count">购买数量</label>
                   <input class="form-control" type="number" step="1" min="1" max="1000" id="order_product_count" name="OrderProductCount" value="1" required>
                   </div>
-                  <div class="form-group col-sm-6">
+                  <div class="form-group col-sm-4">
+                  <label for="order_weight">订单重量</label>
+                  <input class="form-control" type="number" step="0.01" min="0" max="1000" id="order_weight" name="OrderWeight" value="0" required>
+                  </div>
+                  <div class="form-group col-sm-4">
                     <label for="order_proxy_profit_percentage">代理分红百分比</label>
                     <input class="form-control" type="number" step="0.01" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4" required>
                   </div>

@@ -61,7 +61,7 @@ public class LogpieInitialization
         jdbcTemplate
                 .execute("create table if not exists Admins(AdminId serial primary key, AdminName text not null, AdminPassword text not null, AdminEmail text not null, AdminQQ text, AdminWechat text, AdminPhone text not null, AdminIdentityNumber text)");
         jdbcTemplate
-                .execute("create table if not exists Orders(OrderId serial primary key, OrderDate timestamp not null default current_timestamp, OrderProductId bigint unsigned not null, OrderProductCount int not null, OrderBuyerName text not null, OrderProxyId bigint unsigned, OrderProxyProfitPercentage float not null, OrderActualCost float, OrderCurrencyRate float not null, OrderPackageId bigint unsigned, OrderEstimatedShippingFee float not null, OrderActualShippingFee float, OrderSellingPrice float not null, OrderCustomerPaidMoney float, OrderCompanyReceivedMoney float, OrderIsProfitPaid boolean not null default false, OrderNote text, foreign key (OrderPackageId) references Packages(PackageId) on update cascade on delete cascade, foreign key (OrderProxyId) references Admins(AdminId) on update cascade on delete cascade, foreign key (OrderProductId) references Products(ProductId) on update cascade on delete cascade)");
+                .execute("create table if not exists Orders(OrderId serial primary key, OrderDate timestamp not null default current_timestamp, OrderProductId bigint unsigned not null, OrderProductCount int not null, OrderWeight float default 0, OrderBuyerName text not null, OrderProxyId bigint unsigned, OrderProxyProfitPercentage float not null, OrderActualCost float, OrderCurrencyRate float not null, OrderPackageId bigint unsigned, OrderEstimatedShippingFee float not null, OrderActualShippingFee float, OrderSellingPrice float not null, OrderCustomerPaidMoney float, OrderCompanyReceivedMoney float, OrderIsProfitPaid boolean not null default false, OrderNote text, foreign key (OrderPackageId) references Packages(PackageId) on update cascade on delete cascade, foreign key (OrderProxyId) references Admins(AdminId) on update cascade on delete cascade, foreign key (OrderProductId) references Products(ProductId) on update cascade on delete cascade)");
         // jdbcTemplate
         // .execute("create table if not exists ExchangeRate(Date timestamp primary key default current_timestamp, Rate float not null)");
         // jdbcTemplate
@@ -86,10 +86,17 @@ public class LogpieInitialization
                     "ElenaQ222", "18626158611", "123456", "1", "qiaomengying");
             final Admin adminShanghai = new Admin("杨秋菊", "391810590@qq.com", "391810590",
                     "Xwy030705yqj", "18916555359", "123456", "1", "yangqiuju");
+            final Admin adminZhongying = new Admin("仲瑛", "8904143@qq.com", "8904143", "8904143",
+                    "123456", "123456", "1", "zhongying");
+            final Admin adminSihua = new Admin("司华", "sihua@qq.com", "123456", "123456", "123456",
+                    "123456", "1", "sihua");
             final boolean initSuperAdminSuccess = adminDAO.addAdmin(superAdmin);
             final boolean initSuzhouAdminSuccess = adminDAO.addAdmin(adminSuzhou);
             final boolean initShanghaiAdminSuccess = adminDAO.addAdmin(adminShanghai);
-            if (initSuperAdminSuccess && initSuzhouAdminSuccess && initShanghaiAdminSuccess)
+            final boolean initAdminZhongyingSuccess = adminDAO.addAdmin(adminZhongying);
+            final boolean initAdminSihuaSuccess = adminDAO.addAdmin(adminSihua);
+            if (initSuperAdminSuccess && initSuzhouAdminSuccess && initShanghaiAdminSuccess
+                    && initAdminZhongyingSuccess && initAdminSihuaSuccess)
             {
                 LOG.debug("init admins success");
             }

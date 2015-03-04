@@ -13,6 +13,7 @@
 		   <strong>订单产品号: </strong><c:out value="${order.orderProduct.productId}"/><br />
 		   <strong>订单产品名称: </strong><c:out value="${order.orderProduct.productName}"/><br />
 		   <strong>订单产品数量: </strong><c:out value="${order.orderProductCount}"/><br />
+		   <strong>订单重量: </strong><c:out value="${order.orderWeight}"/><br />
 		   <strong>订单买家: </strong><c:out value="${order.orderBuyerName}"/><br />
 		   <strong>订单代理人: </strong><c:out value="${order.orderProxy.adminName}"/><br />
 		   <strong>订单代理分红百分比: </strong><c:out value="${order.orderProxyProfitPercentage}"/><br />
