@@ -154,14 +154,12 @@ public class PackageController
             if (createLogpiePackageSuccess)
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "create new logpiePackage to " + newLogpiePackage.getPackageDestination()
-                                + " successfully!");
+                        "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 成功!");
             }
             else
             {
                 redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "create new logpiePackage to " + newLogpiePackage.getPackageDestination()
-                                + " fail!");
+                        "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
             }
 
             return "redirect:/order_management";
