@@ -47,7 +47,7 @@
                   </div>
                   <div class="form-group col-sm-4">
                   <label for="order_weight">订单重量</label>
-                  <input class="form-control" type="number" step="0.01" min="0" max="1000" id="order_weight" name="OrderWeight" value="${order.orderWeight}" required>
+                  <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="${order.orderWeight}" required>
                   </div>
                   <div class="form-group col-sm-4">
                     <label for="order_proxy_profit_percentage">代理分红百分比</label>
