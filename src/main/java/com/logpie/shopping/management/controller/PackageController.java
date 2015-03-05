@@ -17,7 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.model.LogpiePackage;
+import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
+import com.logpie.shopping.management.storage.OrderDAO;
 
 /**
  * @author zhoyilei
@@ -82,8 +84,52 @@ public class PackageController
             if (logpiePackage != null)
             {
                 packageDetailPage.addObject("logpiePackage", logpiePackage);
+                final OrderDAO orderDAO = new OrderDAO();
+                final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
+                packageDetailPage.addObject("orderList", orderList);
+                // Calculate the total weight
+                packageDetailPage.addObject("packageTotalWeight",
+                        String.valueOf(calculateTotalWeight(orderList)));
+
             }
+
             return packageDetailPage;
+        }
+        return "redirect:/signin";
+    }
+
+    /**
+     * Quick calculate the distribution of the shipping fee in one package.
+     * 
+     * @param request
+     * @param packageId
+     * @return
+     */
+    @RequestMapping(value = "/package/quickCalculateShippingFeeDistribution", method = RequestMethod.GET)
+    public Object quickCalculateShippingFeeDistribution(final HttpServletRequest request,
+            @RequestParam("id") String packageId)
+    {
+        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
+        if (authSuccess)
+        {
+            LOG.debug("Authenticate cookie is valid. Going to package page.");
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
+            if (logpiePackage != null)
+            {
+                final OrderDAO orderDAO = new OrderDAO();
+                final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
+                final Float totalWeight = calculateTotalWeight(orderList);
+                for (final Order order : orderList)
+                {
+                    final Float shippingFeeDistribution = order.getOrderWeight() / totalWeight
+                            * logpiePackage.getPackgeShippingFee();
+                    order.setOrderActualShippingFee(shippingFeeDistribution);
+                    orderDAO.updateOrderProfile(order);
+                }
+            }
+
+            return "redirect:/package?id=" + packageId;
         }
         return "redirect:/signin";
     }
@@ -172,5 +218,19 @@ public class PackageController
             return "redirect:/package_management";
         }
         return "redirect:/signin";
+    }
+
+    private Float calculateTotalWeight(final List<Order> orderList)
+    {
+        if (orderList == null || orderList.size() == 0)
+        {
+            return 0.0f;
+        }
+        Float totalWeight = 0.0f;
+        for (Order order : orderList)
+        {
+            totalWeight += order.getOrderWeight();
+        }
+        return totalWeight;
     }
 }

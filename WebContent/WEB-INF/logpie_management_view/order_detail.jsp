@@ -28,6 +28,7 @@
 		   <strong>订单代理利润已结算: </strong><c:out value="${order.orderIsProfitPaid}"/><br />
 		   <strong>订单备注: </strong><c:out value="${order.orderNote}"/><br />
         </div>
+        
         </c:if>
         <c:if test="${order ==null}">
   	        <div class="alert alert-danger" role="alert">
