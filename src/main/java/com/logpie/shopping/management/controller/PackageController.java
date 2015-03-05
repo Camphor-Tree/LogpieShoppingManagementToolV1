@@ -124,7 +124,8 @@ public class PackageController
                 {
                     final Float shippingFeeDistribution = order.getOrderWeight() / totalWeight
                             * logpiePackage.getPackgeShippingFee();
-                    order.setOrderActualShippingFee(shippingFeeDistribution);
+                    order.setOrderActualShippingFee(Float.valueOf(String.format("%.2f",
+                            shippingFeeDistribution)));
                     orderDAO.updateOrderProfile(order);
                 }
             }
