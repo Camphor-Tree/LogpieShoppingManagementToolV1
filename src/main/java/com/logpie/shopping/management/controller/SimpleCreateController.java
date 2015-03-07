@@ -1,8 +1,6 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,18 +31,6 @@ import com.logpie.shopping.management.storage.ProductDAO;
 public class SimpleCreateController
 {
     private static final Logger LOG = Logger.getLogger(OrderController.class);
-
-    @RequestMapping(value = "/category", method = RequestMethod.GET)
-    public Object showAllCategories(final HttpServletRequest request,
-            final HttpServletResponse httpResponse)
-    {
-        final ModelAndView createCategoryPage = new ModelAndView("show_all_categories");
-        final CategoryDAO categoryDAO = new CategoryDAO();
-        final List<Category> categoryList = categoryDAO.getAllCategory();
-        createCategoryPage.addObject("categoryList", categoryList);
-
-        return createCategoryPage;
-    }
 
     @RequestMapping(value = "/category/create", method = RequestMethod.GET)
     public Object showCreateCategoryPage(final HttpServletRequest request,

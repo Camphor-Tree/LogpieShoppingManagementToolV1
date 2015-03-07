@@ -71,6 +71,17 @@ public class Category implements RowMapper<Category>, LogpieModel
         return modelMap;
     }
 
+    public static Category readModifiedCategoryFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String categoryId = request.getParameter("CategoryId");
+        final String categoryName = request.getParameter("CategoryName");
+        return new Category(categoryId, categoryName);
+    }
+
     public static Category readNewCategoryFromRequest(final HttpServletRequest request)
     {
         if (request == null)
