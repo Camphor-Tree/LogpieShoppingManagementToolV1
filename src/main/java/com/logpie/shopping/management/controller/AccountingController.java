@@ -22,7 +22,6 @@ import com.logpie.shopping.management.accounting.logic.GoogleChartHelper;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValue;
 import com.logpie.shopping.management.accounting.logic.LogpieLineChart;
 import com.logpie.shopping.management.accounting.logic.LogpiePieChart;
-import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.storage.OrderDAO;
 
@@ -49,18 +48,13 @@ public class AccountingController
     public Object showAccountingPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
-        {
-            LOG.debug("Authenticate cookie is valid. Going to accounting page.");
-            final ModelAndView accountingHomePage = new ModelAndView("accounting");
-            final Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, 1);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-            accountingHomePage.addObject("Today", dateFormat.format(calendar.getTime()));
-            return accountingHomePage;
-        }
-        return "redirect:/signin";
+        LOG.debug("Authenticate cookie is valid. Going to accounting page.");
+        final ModelAndView accountingHomePage = new ModelAndView("accounting");
+        final Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+        accountingHomePage.addObject("Today", dateFormat.format(calendar.getTime()));
+        return accountingHomePage;
     }
 
     /**
@@ -74,40 +68,35 @@ public class AccountingController
             @RequestParam(value = "type", required = true) String type,
             @RequestParam(value = "year_month", required = false) String yearMonth)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to piechart page.");
+        if (type.equals("OrderInCategory"))
         {
-            LOG.debug("Authenticate cookie is valid. Going to piechart page.");
-            if (type.equals("OrderInCategory"))
-            {
-                return handleOrderInCategory(yearMonth);
-            }
-            else if (type.equals("OrderInBrand"))
-            {
-                return handleOrderInBrand(yearMonth);
-            }
-            else if (type.equals("OrderInAdmin"))
-            {
-                return handleOrderInAdmin(yearMonth);
-            }
-            else if (type.equals("OrderProfitInCategory"))
-            {
-                return handleOrderProfitInCategory(yearMonth);
-            }
-            else if (type.equals("OrderProfitInBrand"))
-            {
-                return handleOrderProfitInBrand(yearMonth);
-            }
-            else if (type.equals("OrderProfitInAdmin"))
-            {
-                return handleOrderProfitInAdmin(yearMonth);
-            }
-            else
-            {
-                return "redirect:/accounting";
-            }
+            return handleOrderInCategory(yearMonth);
         }
-        return "redirect:/signin";
+        else if (type.equals("OrderInBrand"))
+        {
+            return handleOrderInBrand(yearMonth);
+        }
+        else if (type.equals("OrderInAdmin"))
+        {
+            return handleOrderInAdmin(yearMonth);
+        }
+        else if (type.equals("OrderProfitInCategory"))
+        {
+            return handleOrderProfitInCategory(yearMonth);
+        }
+        else if (type.equals("OrderProfitInBrand"))
+        {
+            return handleOrderProfitInBrand(yearMonth);
+        }
+        else if (type.equals("OrderProfitInAdmin"))
+        {
+            return handleOrderProfitInAdmin(yearMonth);
+        }
+        else
+        {
+            return "redirect:/accounting";
+        }
     }
 
     /**
@@ -119,24 +108,19 @@ public class AccountingController
             final HttpServletResponse httpResponse,
             @RequestParam(value = "type", required = true) String type)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to piechart page.");
+        if (type.equals("OrderNumbers"))
         {
-            LOG.debug("Authenticate cookie is valid. Going to piechart page.");
-            if (type.equals("OrderNumbers"))
-            {
-                return handleOrderNumbers();
-            }
-            else if (type.equals("OrderProfits"))
-            {
-                return handleOrderProfits();
-            }
-            else
-            {
-                return "redirect:/accounting";
-            }
+            return handleOrderNumbers();
         }
-        return "redirect:/signin";
+        else if (type.equals("OrderProfits"))
+        {
+            return handleOrderProfits();
+        }
+        else
+        {
+            return "redirect:/accounting";
+        }
     }
 
     private Object handleOrderNumbers()

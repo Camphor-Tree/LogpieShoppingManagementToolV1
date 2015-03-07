@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
-
 /**
  * @author zhoyilei
  *
@@ -26,14 +24,9 @@ public class ProductController
     public Object showProductManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
-        {
-            LOG.debug("Authenticate cookie is valid. Going to product manage page.");
-            final ModelAndView productManagementPage = new ModelAndView("product_management");
-            return productManagementPage;
-        }
-        return "redirect:/signin";
+        LOG.debug("Authenticate cookie is valid. Going to product manage page.");
+        final ModelAndView productManagementPage = new ModelAndView("product_management");
+        return productManagementPage;
     }
 
 }

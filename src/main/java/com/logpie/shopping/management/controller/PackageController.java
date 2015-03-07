@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
@@ -34,33 +33,28 @@ public class PackageController
     public Object showPackageManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to package management page.");
+
+        final ModelAndView packageManagementPage = new ModelAndView("package_management");
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
         {
-            LOG.debug("Authenticate cookie is valid. Going to package management page.");
-
-            final ModelAndView packageManagementPage = new ModelAndView("package_management");
-            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-            {
-                final String message = (String) redirectAttrs.getFlashAttributes().get(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-                packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        message);
-            }
-            if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-            {
-                final String message = (String) redirectAttrs.getFlashAttributes().get(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-                packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        message);
-            }
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-            final List<LogpiePackage> packageList = packageDAO.getAllPackage();
-            packageManagementPage.addObject("packageList", packageList);
-
-            return packageManagementPage;
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    message);
         }
-        return "redirect:/signin";
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            packageManagementPage
+                    .addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
+        }
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final List<LogpiePackage> packageList = packageDAO.getAllPackage();
+        packageManagementPage.addObject("packageList", packageList);
+
+        return packageManagementPage;
     }
 
     /**
@@ -74,28 +68,23 @@ public class PackageController
     public Object showPackageDetailPage(final HttpServletRequest request,
             @RequestParam("id") String packageId)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to package page.");
+        final ModelAndView packageDetailPage = new ModelAndView("package_detail");
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
+        if (logpiePackage != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to package page.");
-            final ModelAndView packageDetailPage = new ModelAndView("package_detail");
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-            final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
-            if (logpiePackage != null)
-            {
-                packageDetailPage.addObject("logpiePackage", logpiePackage);
-                final OrderDAO orderDAO = new OrderDAO();
-                final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
-                packageDetailPage.addObject("orderList", orderList);
-                // Calculate the total weight
-                packageDetailPage.addObject("packageTotalWeight",
-                        String.valueOf(calculateTotalWeight(orderList)));
+            packageDetailPage.addObject("logpiePackage", logpiePackage);
+            final OrderDAO orderDAO = new OrderDAO();
+            final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
+            packageDetailPage.addObject("orderList", orderList);
+            // Calculate the total weight
+            packageDetailPage.addObject("packageTotalWeight",
+                    String.valueOf(calculateTotalWeight(orderList)));
 
-            }
-
-            return packageDetailPage;
         }
-        return "redirect:/signin";
+
+        return packageDetailPage;
     }
 
     /**
@@ -109,63 +98,53 @@ public class PackageController
     public Object quickCalculateShippingFeeDistribution(final HttpServletRequest request,
             @RequestParam("id") String packageId)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to package page.");
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
+        if (logpiePackage != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to package page.");
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-            final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
-            if (logpiePackage != null)
+            final OrderDAO orderDAO = new OrderDAO();
+            final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
+            final Float totalWeight = calculateTotalWeight(orderList);
+            for (final Order order : orderList)
             {
-                final OrderDAO orderDAO = new OrderDAO();
-                final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
-                final Float totalWeight = calculateTotalWeight(orderList);
-                for (final Order order : orderList)
-                {
-                    final Float shippingFeeDistribution = order.getOrderWeight() / totalWeight
-                            * logpiePackage.getPackgeShippingFee();
-                    order.setOrderActualShippingFee(Float.valueOf(String.format("%.2f",
-                            shippingFeeDistribution)));
-                    orderDAO.updateOrderProfile(order);
-                }
+                final Float shippingFeeDistribution = order.getOrderWeight() / totalWeight
+                        * logpiePackage.getPackgeShippingFee();
+                order.setOrderActualShippingFee(Float.valueOf(String.format("%.2f",
+                        shippingFeeDistribution)));
+                orderDAO.updateOrderProfile(order);
             }
-
-            return "redirect:/package?id=" + packageId;
         }
-        return "redirect:/signin";
+
+        return "redirect:/package?id=" + packageId;
     }
 
     @RequestMapping(value = "/package/create", method = RequestMethod.POST)
     public Object createPackage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final LogpiePackage newLogpiePackage = LogpiePackage
+                .readNewLogpiePackageFromRequest(request);
+        boolean createLogpiePackageSuccess = false;
+        if (newLogpiePackage != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-            final LogpiePackage newLogpiePackage = LogpiePackage
-                    .readNewLogpiePackageFromRequest(request);
-            boolean createLogpiePackageSuccess = false;
-            if (newLogpiePackage != null)
-            {
-                final LogpiePackageDAO logpiePackageDAO = new LogpiePackageDAO();
-                createLogpiePackageSuccess = logpiePackageDAO.addPackage(newLogpiePackage);
-            }
-
-            if (createLogpiePackageSuccess)
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
-            }
-
-            return "redirect:/order_management";
+            final LogpiePackageDAO logpiePackageDAO = new LogpiePackageDAO();
+            createLogpiePackageSuccess = logpiePackageDAO.addPackage(newLogpiePackage);
         }
-        return "redirect:/signin";
+
+        if (createLogpiePackageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "创建寄给:"
+                    + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 
     @RequestMapping(value = "/package/edit", method = RequestMethod.GET)
@@ -173,50 +152,40 @@ public class PackageController
             final HttpServletResponse httpResponse, @RequestParam("id") String packageId,
             final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
-        {
-            final ModelAndView modifyOrderPage = new ModelAndView("package_edit");
+        final ModelAndView modifyOrderPage = new ModelAndView("package_edit");
 
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-            final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
-            modifyOrderPage.addObject("logpiePackage", logpiePackage);
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
+        modifyOrderPage.addObject("logpiePackage", logpiePackage);
 
-            return modifyOrderPage;
-        }
-        return "redirect:/signin";
+        return modifyOrderPage;
     }
 
     @RequestMapping(value = "/package/edit", method = RequestMethod.POST)
     public Object modifyPackage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to modify the package information.");
+        final LogpiePackage modifiedPackage = LogpiePackage
+                .readModifiedLogpiePackageFromRequest(request);
+        boolean updatePackageSuccess = false;
+        if (modifiedPackage != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to modify the package information.");
-            final LogpiePackage modifiedPackage = LogpiePackage
-                    .readModifiedLogpiePackageFromRequest(request);
-            boolean updatePackageSuccess = false;
-            if (modifiedPackage != null)
-            {
-                final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-                updatePackageSuccess = packageDAO.updateLogpiePackageProfile(modifiedPackage);
-            }
-
-            if (updatePackageSuccess)
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "更新包裹:" + modifiedPackage.getPackageId() + " 信息，成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "更新包裹:" + modifiedPackage.getPackageId() + " 信息，失败!");
-            }
-            return "redirect:/package_management";
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            updatePackageSuccess = packageDAO.updateLogpiePackageProfile(modifiedPackage);
         }
-        return "redirect:/signin";
+
+        if (updatePackageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "更新包裹:" + modifiedPackage.getPackageId() + " 信息，成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新包裹:"
+                    + modifiedPackage.getPackageId() + " 信息，失败!");
+        }
+        return "redirect:/package_management";
     }
 
     private Float calculateTotalWeight(final List<Order> orderList)

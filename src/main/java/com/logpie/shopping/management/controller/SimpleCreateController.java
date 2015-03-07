@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
@@ -39,62 +38,47 @@ public class SimpleCreateController
     public Object showAllCategories(final HttpServletRequest request,
             final HttpServletResponse httpResponse)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
-        {
-            final ModelAndView createCategoryPage = new ModelAndView("show_all_categories");
-            final CategoryDAO categoryDAO = new CategoryDAO();
-            final List<Category> categoryList = categoryDAO.getAllCategory();
-            createCategoryPage.addObject("categoryList", categoryList);
+        final ModelAndView createCategoryPage = new ModelAndView("show_all_categories");
+        final CategoryDAO categoryDAO = new CategoryDAO();
+        final List<Category> categoryList = categoryDAO.getAllCategory();
+        createCategoryPage.addObject("categoryList", categoryList);
 
-            return createCategoryPage;
-        }
-        return "redirect:/signin";
+        return createCategoryPage;
     }
 
     @RequestMapping(value = "/category/create", method = RequestMethod.GET)
     public Object showCreateCategoryPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
-        {
-            final ModelAndView createCategoryPage = new ModelAndView("create_category");
-            return createCategoryPage;
-        }
-        return "redirect:/signin";
+        final ModelAndView createCategoryPage = new ModelAndView("create_category");
+        return createCategoryPage;
     }
 
     @RequestMapping(value = "/category/create", method = RequestMethod.POST)
     public Object createCategory(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to create a new category.");
+        final Category newCategory = Category.readNewCategoryFromRequest(request);
+        boolean createCategorySuccess = false;
+        if (newCategory != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to create a new category.");
-            final Category newCategory = Category.readNewCategoryFromRequest(request);
-            boolean createCategorySuccess = false;
-            if (newCategory != null)
-            {
-                final CategoryDAO categoryDAO = new CategoryDAO();
-                createCategorySuccess = categoryDAO.addCategory(newCategory);
-            }
-
-            if (createCategorySuccess)
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "创建新的分类:" + newCategory.getCategoryName() + " 成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
-            }
-
-            return "redirect:/order_management";
+            final CategoryDAO categoryDAO = new CategoryDAO();
+            createCategorySuccess = categoryDAO.addCategory(newCategory);
         }
-        return "redirect:/signin";
+
+        if (createCategorySuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的分类:" + newCategory.getCategoryName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 
     /**
@@ -108,132 +92,110 @@ public class SimpleCreateController
     public Object createAdmin(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        final Admin newAdmin = Admin.readNewAdminFromRequest(request);
+        boolean createAdminSuccess = false;
+        if (newAdmin != null)
         {
-            // TODO: check whether it is super admin
-            LOG.debug("Authenticate cookie is valid. Going to create a new admin.");
-            final Admin newAdmin = Admin.readNewAdminFromRequest(request);
-            boolean createAdminSuccess = false;
-            if (newAdmin != null)
-            {
-                final AdminDAO adminDAO = new AdminDAO();
-                createAdminSuccess = adminDAO.addAdmin(newAdmin);
-            }
-
-            if (createAdminSuccess)
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "创建新的管理员:" + newAdmin.getAdminName() + " 成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
-            }
-
-            return "redirect:/order_management";
+            final AdminDAO adminDAO = new AdminDAO();
+            createAdminSuccess = adminDAO.addAdmin(newAdmin);
         }
-        return "redirect:/signin";
+
+        if (createAdminSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的管理员:" + newAdmin.getAdminName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 
     @RequestMapping(value = "/image/create", method = RequestMethod.POST)
     public Object createImage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to create a new image.");
+        final Image newImage = Image.readNewImageFromRequest(request);
+        boolean createImageSuccess = false;
+        if (newImage != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to create a new image.");
-            final Image newImage = Image.readNewImageFromRequest(request);
-            boolean createImageSuccess = false;
-            if (newImage != null)
-            {
-                final ImageDAO imageDAO = new ImageDAO();
-                createImageSuccess = imageDAO.addImage(newImage);
-            }
-
-            if (createImageSuccess)
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "创建新的图片:" + newImage.getImageDescription() + " 成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "创建新的图片:" + newImage.getImageDescription() + " 失败!");
-            }
-
-            return "redirect:/order_management";
+            final ImageDAO imageDAO = new ImageDAO();
+            createImageSuccess = imageDAO.addImage(newImage);
         }
-        return "redirect:/signin";
+
+        if (createImageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的图片:" + newImage.getImageDescription() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的图片:" + newImage.getImageDescription() + " 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 
     @RequestMapping(value = "/brand/create", method = RequestMethod.POST)
     public Object createBrand(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final Brand newBrand = Brand.readNewBrandFromRequest(request);
+        boolean createBrandSuccess = false;
+        if (newBrand != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-            final Brand newBrand = Brand.readNewBrandFromRequest(request);
-            boolean createBrandSuccess = false;
-            if (newBrand != null)
-            {
-                final BrandDAO brandDAO = new BrandDAO();
-                createBrandSuccess = brandDAO.addBrand(newBrand);
-            }
-
-            if (createBrandSuccess)
-            {
-                redirectAttrs.addFlashAttribute(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
-                                + newBrand.getBrandChineseName() + " 成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(
-                        LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
-                                + newBrand.getBrandChineseName() + " 失败!");
-            }
-
-            return "redirect:/order_management";
+            final BrandDAO brandDAO = new BrandDAO();
+            createBrandSuccess = brandDAO.addBrand(newBrand);
         }
-        return "redirect:/signin";
+
+        if (createBrandSuccess)
+        {
+            redirectAttrs.addFlashAttribute(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
+                            + newBrand.getBrandChineseName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
+                            + newBrand.getBrandChineseName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 
     @RequestMapping(value = "/product/create", method = RequestMethod.POST)
     public Object createProduct(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final Product newProduct = Product.readNewProductFromRequest(request);
+        boolean createNewProductSuccess = false;
+        if (newProduct != null)
         {
-            LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-            final Product newProduct = Product.readNewProductFromRequest(request);
-            boolean createNewProductSuccess = false;
-            if (newProduct != null)
-            {
-                final ProductDAO productDAO = new ProductDAO();
-                createNewProductSuccess = productDAO.addProduct(newProduct);
-            }
-
-            if (createNewProductSuccess)
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                        "创建新的产品:" + newProduct.getProductName() + " 成功!");
-            }
-            else
-            {
-                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                        "创建新的产品:" + newProduct.getProductName() + " 失败!");
-            }
-
-            return "redirect:/order_management";
+            final ProductDAO productDAO = new ProductDAO();
+            createNewProductSuccess = productDAO.addProduct(newProduct);
         }
-        return "redirect:/signin";
+
+        if (createNewProductSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的产品:" + newProduct.getProductName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的产品:" + newProduct.getProductName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 }

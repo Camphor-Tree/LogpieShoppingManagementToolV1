@@ -18,19 +18,14 @@ public class HomeController
     private static final Logger LOG = Logger.getLogger(HomeController.class);
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public Object showSignInPage(HttpServletRequest request, HttpServletResponse httpResponse)
+    public Object showHomePage(HttpServletRequest request, HttpServletResponse httpResponse)
     {
-        final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
-        if (authSuccess)
-        {
-            LOG.debug("Authenticate cookie is valid. Going to home page.");
-            Admin admin = AuthenticationHelper.getAdminFromCookie(request);
+        LOG.debug("Authenticate cookie is valid. Going to home page.");
+        Admin admin = AuthenticationHelper.getAdminFromCookie(request);
 
-            final ModelAndView signinPage = new ModelAndView("home");
-            signinPage.addObject("AdminName", admin.getAdminName());
-            return signinPage;
-        }
-        return "redirect:/signin";
+        final ModelAndView signinPage = new ModelAndView("home");
+        signinPage.addObject("AdminName", admin.getAdminName());
+        return signinPage;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
