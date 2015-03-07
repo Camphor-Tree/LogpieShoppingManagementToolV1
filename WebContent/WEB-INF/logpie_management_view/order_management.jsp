@@ -93,7 +93,13 @@
         </tr>
         </c:forEach>
         </tbody>
-        </table>
+      </table>
+      <div class="row">
+      	<div class="text-success">当前订单列表 Logpie 总估计利润: ${profitCalculator.estimatedProfitsForAllOrders}</div>
+      	<div class="text-success">当前订单列表 Logpie 已寄出包裹准确总利润: ${profitCalculator.actualProfitsForAllOrders}</div>
+      	<div class="text-danger">当前订单列表 Logpie北美总部 总估计利润: ${profitCalculator.netEstimatedProfitsForAllOrders}</div>
+      	<div class="text-danger">当前订单列表 Logpie北美总部 已寄出包裹准确总利润: ${profitCalculator.netActualProfitsForAllOrders}</div>
+      </div>
         
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">

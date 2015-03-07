@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
+import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
@@ -125,6 +126,9 @@ public class OrderController
             final ProductDAO productDAO = new ProductDAO();
             final List<Product> productList = productDAO.getAllProduct();
             orderManagementPage.addObject("productList", productList);
+
+            final LogpieProfitCalculator profitCalculator = new LogpieProfitCalculator(orderList);
+            orderManagementPage.addObject("profitCalculator", profitCalculator);
 
             return orderManagementPage;
         }
