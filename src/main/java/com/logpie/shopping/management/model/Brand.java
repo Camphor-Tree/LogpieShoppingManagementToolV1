@@ -148,6 +148,35 @@ public class Brand implements RowMapper<Brand>, LogpieModel
                 brandCategory, brandIsActivated);
     }
 
+    public static Brand readModifiedBrandFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String brandId = request.getParameter("BrandId");
+        final ImageDAO imageDAO = new ImageDAO();
+        final CategoryDAO categoryDAO = new CategoryDAO();
+
+        final String brandImageId = request.getParameter("BrandImageId");
+        final Image brandImage = imageDAO.getImageById(brandImageId);
+        final String brandEnglishName = request.getParameter("BrandEnglishName");
+        final String brandChineseName = request.getParameter("BrandChineseName");
+        final String brandSizeChartImageId = request.getParameter("BrandSizeChartImageId");
+        Image brandSizeChartImage = null;
+        if (!StringUtils.isEmpty(brandSizeChartImageId))
+        {
+            brandSizeChartImage = imageDAO.getImageById(brandSizeChartImageId);
+        }
+        final Category brandCategory = categoryDAO.getCategoryById(request
+                .getParameter("BrandCategoryId"));
+        final Boolean brandIsActivated = Boolean.parseBoolean(request
+                .getParameter("BrandIsActivated"));
+
+        return new Brand(brandId, brandImage, brandEnglishName, brandChineseName,
+                brandSizeChartImage, brandCategory, brandIsActivated);
+    }
+
     /**
      * @return the brandId
      */
