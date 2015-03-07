@@ -149,6 +149,31 @@ public class Product implements RowMapper<Product>, LogpieModel
                 productWeight, productIsActivated, productBrand);
     }
 
+    public static Product readModifiedProductFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final ImageDAO imageDAO = new ImageDAO();
+        final BrandDAO brandDAO = new BrandDAO();
+
+        final String productId = request.getParameter("ProductId");
+        final String productName = request.getParameter("ProductName");
+        final String productDescription = request.getParameter("ProductDescription");
+        final String productLink = request.getParameter("ProductLink");
+        final String productImageId = request.getParameter("ProductImageId");
+        final Image productImage = imageDAO.getImageById(productImageId);
+        final Integer productWeight = Integer.parseInt(request.getParameter("ProductWeight"));
+        final Boolean productIsActivated = Boolean.parseBoolean(request
+                .getParameter("ProductIsActivated"));
+        final String productPostDate = request.getParameter("ProductPostDate");
+        final Brand productBrand = brandDAO.getBrandById(request.getParameter("ProductBrandId"));
+
+        return new Product(productId, productName, productDescription, productLink, productImage,
+                productWeight, productIsActivated, productPostDate, productBrand);
+    }
+
     /**
      * @return the productId
      */
