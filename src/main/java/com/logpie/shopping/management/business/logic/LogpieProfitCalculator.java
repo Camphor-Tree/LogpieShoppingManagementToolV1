@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.util.CollectionUtils;
+import com.logpie.shopping.management.util.NumberUtils;
 
 /**
  * This class is used to calculate logpie profits.
@@ -27,10 +28,14 @@ public class LogpieProfitCalculator
     {
         super();
         mOrderList = orderList;
-        mEstimatedProfitsForAllOrders = getProfitInEstimationForAllOrders();
-        mActualProfitsForAllOrders = getActualProfitForAllShippedOrders();
-        mNetEstimatedProfitsForAllOrders = getEstimatedNetCompanyProfitForAllOrders();
-        mNetActualProfitsForAllOrders = getActualNetCompanyProfitForShippedOrders();
+        mEstimatedProfitsForAllOrders = NumberUtils
+                .keepTwoDigitsDecimalForFloat(getProfitInEstimationForAllOrders());
+        mActualProfitsForAllOrders = NumberUtils
+                .keepTwoDigitsDecimalForFloat(getActualProfitForAllShippedOrders());
+        mNetEstimatedProfitsForAllOrders = NumberUtils
+                .keepTwoDigitsDecimalForFloat(getEstimatedNetCompanyProfitForAllOrders());
+        mNetActualProfitsForAllOrders = NumberUtils
+                .keepTwoDigitsDecimalForFloat(getActualNetCompanyProfitForShippedOrders());
     }
 
     /**
@@ -145,7 +150,7 @@ public class LogpieProfitCalculator
     private float getActualProfitForOrder(final Order order)
     {
         float singleActualTheoryProfit = order.getOrderSellingPrice() - order.getOrderActualCost()
-                - order.getOrderActualShippingFee();
+                * order.getOrderCurrencyRate() - order.getOrderActualShippingFee();
         return singleActualTheoryProfit;
     }
 
@@ -156,7 +161,7 @@ public class LogpieProfitCalculator
     private float getEstimatedProfitForOrder(final Order order)
     {
         float singleProfitInEstimation = order.getOrderSellingPrice() - order.getOrderActualCost()
-                - order.getOrderEstimatedShippingFee();
+                * order.getOrderCurrencyRate() - order.getOrderEstimatedShippingFee();
         return singleProfitInEstimation;
     }
 
