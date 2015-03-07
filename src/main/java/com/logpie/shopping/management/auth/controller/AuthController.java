@@ -61,7 +61,7 @@ public class AuthController
         return "redirect:/signin";
     }
 
-    @RequestMapping(value = "/account_management", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin_profile", method = RequestMethod.GET)
     public Object showModifyAdminProfilePage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {

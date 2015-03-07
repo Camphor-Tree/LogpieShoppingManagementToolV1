@@ -4,9 +4,8 @@
 <tag:logpie_common_template>
     <jsp:body>
         <div class="row"  style="padding:20px">
-            <h3>修改个人资料</h3>
+            <h3>修改个人资料: ${admin.adminName}</h3>
         </div>
-        <div>姓名: ${admin.adminName}</div>
           <div id="section-admin-profile" class="tab-pane fade in active">
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/admin/edit" />" method="POST" >
                 <input name="AdminId" value="${admin.adminId}" type="hidden">

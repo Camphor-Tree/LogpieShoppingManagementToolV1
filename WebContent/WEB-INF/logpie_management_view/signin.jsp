@@ -21,7 +21,7 @@
         <label for="inputEmail" class="sr-only">管理员email</label>
         <input type="email" id="inputEmail" name="email" class="form-control" placeholder="管理员 email" required autofocus>
         <label for="inputPassword" class="sr-only">管理员 密码</label>
-        <input type="password" id="inputPassword" name="password" class="form-control" value="fakePassword" placeholder="管理员 密码" required>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="管理员 密码" required>
 		<!--  Currently we don't support remember me
         <div class="checkbox">
           <label>
