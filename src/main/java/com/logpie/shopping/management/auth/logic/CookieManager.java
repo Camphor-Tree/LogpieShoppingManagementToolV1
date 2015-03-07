@@ -55,9 +55,14 @@ public class CookieManager
 
     public Cookie setupAuthCookie(final Admin admin)
     {
-        Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, buildAuthenticationCookie(admin));
+        final Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, buildAuthenticationCookie(admin));
         authCookie.setMaxAge(AUTH_COOKIE_DURATION);
         authCookie.setPath("/");
+        // Set domain to .logpie.com so that it can work for both
+        // tool.logpie.com and t.logpie.com
+        // But it won't work on local debug mode. So currently just set it
+        // default full domain
+        // authCookie.setDomain(".logpie.com");
         return authCookie;
     }
 

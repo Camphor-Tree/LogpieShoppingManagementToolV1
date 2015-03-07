@@ -91,6 +91,94 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         return modelMap;
     }
 
+    // TODO refactor the logic better
+    public boolean isSuperAdmin()
+    {
+        if (mAdminId != null && mAdminId.equals(1))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * Map the database row into Admin object
+     * 
+     * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet,
+     * int)
+     */
+    @Override
+    public Admin mapRow(ResultSet rs, int rowNum) throws SQLException
+    {
+        return getAdminByResultSet(rs, rowNum);
+    }
+
+    public static Admin getAdminByResultSet(final ResultSet rs, int row) throws SQLException
+    {
+        if (rs == null)
+        {
+            return null;
+        }
+        LOG.debug("Mapping the result set to admin object");
+        final String adminId = rs.getString(DB_KEY_ADMIN_ID);
+        final String adminName = rs.getString(DB_KEY_ADMIN_NAME);
+        final String adminEmail = rs.getString(DB_KEY_ADMIN_EMAIL);
+        final String adminQQ = rs.getString(DB_KEY_ADMIN_QQ);
+        final String adminWechat = rs.getString(DB_KEY_ADMIN_WECHAT);
+        final String adminPhone = rs.getString(DB_KEY_ADMIN_PHONE);
+        final String adminIdentityNumber = rs.getString(DB_KEY_ADMIN_IDENTITY_NUMBER);
+        final String adminPassword = rs.getString(DB_KEY_ADMIN_PASSWORD);
+        // final String adminPassVersion =
+        // rs.getString(DB_KEY_ADMIN_PASS_VERSION);
+        LOG.debug("Find values:" + adminId + ":" + adminName);
+        final String adminPassVersion = "1";
+        return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
+                adminIdentityNumber, adminPassVersion, adminPassword);
+    }
+
+    public static Admin readNewAdminFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String adminName = request.getParameter("AdminName");
+        final String adminEmail = request.getParameter("AdminEmail");
+        final String adminQQ = request.getParameter("AdminQQ");
+        final String adminWechat = request.getParameter("AdminWechat");
+        final String adminPhone = request.getParameter("AdminPhone");
+        final String adminIdentityNumber = request.getParameter("AdminIdentityNumber");
+        final String adminPassVersion = "1";
+        final String adminPassword = request.getParameter("AdminPassword");
+        return new Admin(adminName, adminEmail, adminQQ, adminWechat, adminPhone,
+                adminIdentityNumber, adminPassVersion, adminPassword);
+    }
+
+    public static Admin readModifiedAdminFromRequest(final HttpServletRequest request)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+        final String adminId = request.getParameter("AdminId");
+        final String adminName = request.getParameter("AdminName");
+        final String adminEmail = request.getParameter("AdminEmail");
+        final String adminQQ = request.getParameter("AdminQQ");
+        final String adminWechat = request.getParameter("AdminWechat");
+        final String adminPhone = request.getParameter("AdminPhone");
+        final String adminIdentityNumber = request.getParameter("AdminIdentityNumber");
+        final String adminPassVersion = "1";
+        final String adminPassword = request.getParameter("AdminPassword");
+        return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
+                adminIdentityNumber, adminPassVersion, adminPassword);
+    }
+
+    @Override
+    public String getPrimaryKey()
+    {
+        return DB_KEY_ADMIN_ID;
+    }
+
     /**
      * @return the adminId
      */
@@ -148,68 +236,18 @@ public class Admin implements RowMapper<Admin>, LogpieModel
     }
 
     /**
+     * @return the adminPassword
+     */
+    public String getAdminPassword()
+    {
+        return mAdminPassword;
+    }
+
+    /**
      * @return the adminIdentityNumber
      */
     public String getPassVersion()
     {
         return mAdminPassVersion;
-    }
-
-    /*
-     * Map the database row into Admin object
-     * 
-     * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet,
-     * int)
-     */
-    @Override
-    public Admin mapRow(ResultSet rs, int rowNum) throws SQLException
-    {
-        return getAdminByResultSet(rs, rowNum);
-    }
-
-    public static Admin getAdminByResultSet(final ResultSet rs, int row) throws SQLException
-    {
-        if (rs == null)
-        {
-            return null;
-        }
-        LOG.debug("Mapping the result set to admin object");
-        final String adminId = rs.getString(DB_KEY_ADMIN_ID);
-        final String adminName = rs.getString(DB_KEY_ADMIN_NAME);
-        final String adminEmail = rs.getString(DB_KEY_ADMIN_EMAIL);
-        final String adminQQ = rs.getString(DB_KEY_ADMIN_QQ);
-        final String adminWechat = rs.getString(DB_KEY_ADMIN_WECHAT);
-        final String adminPhone = rs.getString(DB_KEY_ADMIN_PHONE);
-        final String adminIdentityNumber = rs.getString(DB_KEY_ADMIN_IDENTITY_NUMBER);
-        // final String adminPassVersion =
-        // rs.getString(DB_KEY_ADMIN_PASS_VERSION);
-        LOG.debug("Find values:" + adminId + ":" + adminName);
-        final String adminPassVersion = "1";
-        return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
-                adminIdentityNumber, adminPassVersion, "fakePassword");
-    }
-
-    public static Admin readNewAdminFromRequest(final HttpServletRequest request)
-    {
-        if (request == null)
-        {
-            return null;
-        }
-        final String adminName = request.getParameter("AdminName");
-        final String adminEmail = request.getParameter("AdminEmail");
-        final String adminQQ = request.getParameter("AdminQQ");
-        final String adminWechat = request.getParameter("AdminWechat");
-        final String adminPhone = request.getParameter("AdminPhone");
-        final String adminIdentityNumber = request.getParameter("AdminIdentityNumber");
-        final String adminPassVersion = "1";
-        final String adminPassword = request.getParameter("AdminPassword");
-        return new Admin(adminName, adminEmail, adminQQ, adminWechat, adminPhone,
-                adminIdentityNumber, adminPassVersion, adminPassword);
-    }
-
-    @Override
-    public String getPrimaryKey()
-    {
-        return DB_KEY_ADMIN_ID;
     }
 }
