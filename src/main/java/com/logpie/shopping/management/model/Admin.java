@@ -94,11 +94,17 @@ public class Admin implements RowMapper<Admin>, LogpieModel
     // TODO refactor the logic better
     public boolean isSuperAdmin()
     {
-        if (mAdminId != null && mAdminId.equals(1))
+        if (mAdminId != null && mAdminId.equals("1"))
         {
             return true;
         }
         return false;
+    }
+
+    // for jstl to get the value
+    public boolean getIsSuperAdmin()
+    {
+        return isSuperAdmin();
     }
 
     /*

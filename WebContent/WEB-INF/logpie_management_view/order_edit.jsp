@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <tag:logpie_common_template>
     <jsp:body>
+    	<c:if test="${order !=null}">
         <div class="row"  style="padding:20px">
             <h3>修改订单  订单Id:${order.orderId} 订单时间:${order.orderDate}</h3>
         </div>
@@ -84,7 +85,8 @@
                     <input class="form-control" type="number" step="0.01" id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="${order.orderCustomerPaidMoney}" required>
                   </div>
                 </div>
-                
+                <!-- only super admin can modify the package -->
+                <c:if test="${admin.isSuperAdmin==true}">
                 <div class="form-group">
                   <label for="order_package">所属包裹(可空缺)：</label>
                   <select class="form-control" form="order_creation_form" name="OrderPackageId">
@@ -100,19 +102,43 @@
 						</c:forEach>
 				  </select>
                 </div>
+                </c:if>
+                <c:if test="${admin.isSuperAdmin==false}">
+					<input type="hidden" id="order_package_id" name="OrderPackageId" value="${logpiePackage.packageId}"/>
+                </c:if>
+                <!-- only super admin can modify how much money company already received -->
+                <c:if test="${admin.isSuperAdmin==true}">
                 <div class="form-group">
                   <label for="order_company_received_money">公司已收汇款：</label>
                   <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}" required>
                 </div>
+                </c:if>
+                <c:if test="${admin.isSuperAdmin==false}">
+	                  <input class="form-control" type="hidden" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}" required>
+                </c:if>
                 <div class="form-group">
                   <label for="order_note">备注(可空缺)：</label>
                   <input class="form-control" type="text" id="order_note" name="OrderNote" value="${order.orderNote}">
                 </div>
+                <!-- only super admin can modify whether the profit is paid -->
+                <c:if test="${admin.isSuperAdmin==true}">
                 <div class="checkbox" style="padding-left:20px">
                   <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True" <c:if test="${order.orderIsProfitPaid==true}">checked</c:if>/>利润是否已和代理结算</label>
                 </div>
+                </c:if>
+                <c:if test="${admin.isSuperAdmin==false}">
+					<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="${order.orderIsProfitPaid}"/>
+                </c:if>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>
+                    
+        </c:if>
+        <c:if test="${order ==null}">
+        	<br/><br/>
+  	        <div class="alert alert-danger" role="alert">
+                    <strong>抱歉!查无此订单 请检查你url中的订单id是否有效</strong>
+            </div>
+        </c:if>
     </jsp:body>
 </tag:logpie_common_template>

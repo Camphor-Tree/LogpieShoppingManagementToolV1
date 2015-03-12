@@ -22,7 +22,6 @@ public class HomeController
     {
         LOG.debug("Authenticate cookie is valid. Going to home page.");
         Admin admin = AuthenticationHelper.getAdminFromCookie(request);
-
         final ModelAndView signinPage = new ModelAndView("home");
         signinPage.addObject("AdminName", admin.getAdminName());
         return signinPage;

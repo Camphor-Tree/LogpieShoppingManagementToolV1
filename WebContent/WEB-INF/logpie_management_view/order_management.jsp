@@ -19,6 +19,7 @@
 	        <div class="col-md-2">
 	            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button>
 			</div>
+			<c:if test="${adminList != null}">
 			<div class="dropdown col-md-2">
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按代理筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
@@ -27,6 +28,7 @@
 					</c:forEach>
 				  </ul>
 			</div>
+			</c:if>
 			<div class="dropdown col-md-2">
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按购买者筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
@@ -95,10 +97,16 @@
         </tbody>
       </table>
       <div class="row">
+     	<c:if test="${admin.isSuperAdmin==true}">
       	<div class="text-success">当前订单列表 Logpie 总估计利润: ${profitCalculator.estimatedProfitsForAllOrders}</div>
       	<div class="text-success">当前订单列表 Logpie 已寄出包裹准确总利润: ${profitCalculator.actualProfitsForAllOrders}</div>
       	<div class="text-danger">当前订单列表 Logpie北美总部 总估计利润: ${profitCalculator.netEstimatedProfitsForAllOrders}</div>
       	<div class="text-danger">当前订单列表 Logpie北美总部 已寄出包裹准确总利润: ${profitCalculator.netActualProfitsForAllOrders}</div>
+      	</c:if>
+		<c:if test="${admin.isSuperAdmin==false}">
+      	<div class="text-primary">当前订单列表 代理:${admin.adminName} 总估计利润: ${profitCalculator.proxyEstimatedProfitsForAllOrders}</div>
+      	<div class="text-primary">当前订单列表 代理:${admin.adminName} 已寄出包裹准确总利润: ${profitCalculator.proxyActualProfitsForAllOrders}</div>
+      	</c:if>
       </div>
         
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -106,7 +114,9 @@
         <div class="modal-content">
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#section-order">订单</a></li>
-            <li><a data-toggle="tab" href="#section-package">包裹</a></li>
+            <c:if test="${admin.isSuperAdmin==true}">
+          	  <li><a data-toggle="tab" href="#section-package">包裹</a></li>
+            </c:if>
             <li><a data-toggle="tab" href="#section-product">产品</a></li>
             <li><a data-toggle="tab" href="#section-category">类别</a></li>
             <li><a data-toggle="tab" href="#section-image">图片</a></li>
@@ -124,9 +134,14 @@
                 <div class="form-group">
                   <label for="order_proxy">订单代理人：</label>
                   <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
-						   <c:forEach items="${adminList}" var="admin">
-						    <option value="${admin.adminId}">${admin.adminName}</option>
+                  		  <c:if test="${adminList!=null}">
+						    <c:forEach items="${adminList}" var="admin">
+						      <option value="${admin.adminId}">${admin.adminName}</option>
 						    </c:forEach>
+						  </c:if>
+						  <c:if test="${adminList==null}">
+						      <option value="${admin.adminId}">${admin.adminName}</option>
+						  </c:if>
 				  </select>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
@@ -181,30 +196,45 @@
                     <input class="form-control" type="number" step="0.01"  id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="0" required>
                   </div>
                 </div>
-                
-                <div class="form-group">
-                  <label for="order_package">所属包裹(可空缺)：</label>
-                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
-                        <option value=""> </option>
-						<c:forEach items="${packageList}" var="logpiePackage">
-						    <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
-						</c:forEach>
-				  </select>
-                </div>
-                <div class="form-group">
-                  <label for="order_company_received_money">公司已收汇款：</label>
-                  <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
-                </div>
+                <c:if test="${admin.isSuperAdmin==true}">
+	                <div class="form-group">
+	                  <label for="order_package">所属包裹(可空缺)：</label>
+	                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
+	                        <option value=""> </option>
+							<c:forEach items="${packageList}" var="logpiePackage">
+							    <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
+							</c:forEach>
+					  </select>
+	                </div>
+                </c:if>
+                <!-- only super admin can modify how much money company already received -->
+                <c:if test="${admin.isSuperAdmin==true}">
+	                <div class="form-group">
+	                  <label for="order_company_received_money">公司已收汇款：</label>
+	                  <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
+	                </div>
+                </c:if>
+                <c:if test="${admin.isSuperAdmin==false}">
+	                  <input class="form-control" type="hidden" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
+                </c:if>
                 <div class="form-group">
                   <label for="order_note">备注(可空缺)：</label>
                   <input class="form-control" type="text" id="order_note" name="OrderNote">
                 </div>
-                <div class="checkbox" style="padding-left:20px">
-                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True"/>利润是否已和代理结算</label>
-                </div>
+                <!-- only super admin can modify whether the profit is paid -->
+                <c:if test="${admin.isSuperAdmin==true}">
+	                <div class="checkbox" style="padding-left:20px">
+	                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True"/>利润是否已和代理结算</label>
+	                </div>
+                </c:if>
+                <c:if test="${admin.isSuperAdmin==false}">
+					<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="False"/>利润是否已和代理结算</label>
+                </c:if>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>
+            <!-- only super admin can create package -->
+            <c:if test="${admin.isSuperAdmin==true}">
             <div id="section-package" class="tab-pane fade" style="padding:20px">
               <h3>新建一个包裹</h3>
               <form role="form" style="padding:20px" id="package_creation_form"  action="<c:url value="/package/create" />" method="POST">
@@ -255,6 +285,7 @@
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>
+            </c:if>
             <div id="section-category" class="tab-pane fade" style="padding:20px">
               <h3>新建一个类别</h3>
               <form role="form" style="padding:20px" action="<c:url value="/category/create" />" method="post">

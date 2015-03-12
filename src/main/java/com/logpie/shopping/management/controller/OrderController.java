@@ -1,12 +1,6 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,25 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
-import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
-import com.logpie.shopping.management.model.Admin;
-import com.logpie.shopping.management.model.Brand;
-import com.logpie.shopping.management.model.Category;
-import com.logpie.shopping.management.model.Image;
-import com.logpie.shopping.management.model.LogpiePackage;
-import com.logpie.shopping.management.model.Order;
-import com.logpie.shopping.management.model.Product;
-import com.logpie.shopping.management.storage.AdminDAO;
-import com.logpie.shopping.management.storage.BrandDAO;
-import com.logpie.shopping.management.storage.CategoryDAO;
-import com.logpie.shopping.management.storage.ImageDAO;
-import com.logpie.shopping.management.storage.LogpiePackageDAO;
-import com.logpie.shopping.management.storage.OrderDAO;
-import com.logpie.shopping.management.storage.ProductDAO;
 
 /**
  * @author zhoyilei
@@ -51,108 +27,19 @@ public class OrderController
             @RequestParam(value = "buyer", required = false) final String buyerName,
             @RequestParam(value = "packageId", required = false) final String packageId)
     {
-        LOG.debug("Authenticate cookie is valid. Going to order manage page.");
-        final ModelAndView orderManagementPage = new ModelAndView("order_management");
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
-        final OrderDAO orderDAO = new OrderDAO();
-        List<Order> orderList;
-        if (adminId != null)
-        {
-            orderList = orderDAO.getOrdersForProxy(adminId);
-        }
-        else if (buyerName != null)
-        {
-            try
-            {
-                final String decodedBuyerName = new String(buyerName.getBytes("iso-8859-1"),
-                        "UTF-8");
-                orderList = orderDAO.getOrdersForBuyerName(decodedBuyerName);
-            } catch (UnsupportedEncodingException e)
-            {
-                orderList = orderDAO.getAllOrders();
-            }
-        }
-        else if (packageId != null)
-        {
-            orderList = orderDAO.getOrdersForPackage(packageId);
-        }
-        else
-        {
-            orderList = orderDAO.getAllOrders();
-        }
-        orderManagementPage.addObject("orderList", orderList);
-
-        // Use all the orders list to generate the buyers list.
-        final List<String> orderBuyersList = getBuyerList(orderDAO.getAllOrders());
-        orderManagementPage.addObject("orderBuyersList", orderBuyersList);
-
-        final CategoryDAO categoryDAO = new CategoryDAO();
-        final List<Category> categoryList = categoryDAO.getAllCategory();
-        orderManagementPage.addObject("categoryList", categoryList);
-
-        final ImageDAO imageDAO = new ImageDAO();
-        final List<Image> imageList = imageDAO.getAllImage();
-        orderManagementPage.addObject("imageList", imageList);
-
-        final BrandDAO brandDAO = new BrandDAO();
-        final List<Brand> brandList = brandDAO.getAllBrand();
-        orderManagementPage.addObject("brandList", brandList);
-
-        final AdminDAO adminDAO = new AdminDAO();
-        final List<Admin> adminList = adminDAO.getAllAdmins();
-        orderManagementPage.addObject("adminList", adminList);
-
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-        final List<LogpiePackage> packageList = packageDAO.getAllPackage();
-        orderManagementPage.addObject("packageList", packageList);
-
-        final ProductDAO productDAO = new ProductDAO();
-        final List<Product> productList = productDAO.getAllProduct();
-        orderManagementPage.addObject("productList", productList);
-
-        final LogpieProfitCalculator profitCalculator = new LogpieProfitCalculator(orderList);
-        orderManagementPage.addObject("profitCalculator", profitCalculator);
-
-        return orderManagementPage;
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.showOrderManagementPage(request, httpResponse,
+                redirectAttrs, adminId, buyerName, packageId);
     }
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)
     public Object createNewOrder(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        LOG.debug("Authenticate cookie is valid. Going to create a new order.");
-        final Order newOrder = Order.readNewOrderFromRequest(request);
-        boolean createOrderSuccess = false;
-        if (newOrder != null)
-        {
-            final OrderDAO orderDAO = new OrderDAO();
-            createOrderSuccess = orderDAO.addOrder(newOrder);
-        }
-
-        if (createOrderSuccess)
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 成功!");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 失败");
-        }
-
-        return "redirect:/order_management";
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createNewOrder(request, httpResponse, redirectAttrs);
     }
 
     /**
@@ -163,18 +50,12 @@ public class OrderController
      * @return
      */
     @RequestMapping(value = "/order", method = RequestMethod.GET)
-    public Object showOrderManagementPage(final HttpServletRequest request,
+    public Object showOrderDetailPage(final HttpServletRequest request,
             @RequestParam("id") String orderId)
     {
-        LOG.debug("Authenticate cookie is valid. Going to order page.");
-        final ModelAndView packageDetailPage = new ModelAndView("order_detail");
-        final OrderDAO orderDAO = new OrderDAO();
-        final Order order = orderDAO.getOrderById(orderId);
-        if (order != null)
-        {
-            packageDetailPage.addObject("order", order);
-        }
-        return packageDetailPage;
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.showOrderDetailPage(request, orderId);
     }
 
     @RequestMapping(value = "/order/edit", method = RequestMethod.GET)
@@ -182,69 +63,18 @@ public class OrderController
             final HttpServletResponse httpResponse, @RequestParam("id") String orderId,
             final RedirectAttributes redirectAttrs)
     {
-        final ModelAndView modifyOrderPage = new ModelAndView("order_edit");
-        final OrderDAO orderDAO = new OrderDAO();
-        final Order order = orderDAO.getOrderById(orderId);
-        modifyOrderPage.addObject("order", order);
-
-        final AdminDAO adminDAO = new AdminDAO();
-        final List<Admin> adminList = adminDAO.getAllAdmins();
-        modifyOrderPage.addObject("adminList", adminList);
-
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-        final List<LogpiePackage> packageList = packageDAO.getAllPackage();
-        modifyOrderPage.addObject("packageList", packageList);
-
-        final ProductDAO productDAO = new ProductDAO();
-        final List<Product> productList = productDAO.getAllProduct();
-        modifyOrderPage.addObject("productList", productList);
-
-        return modifyOrderPage;
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.showModifyOrderPage(request, httpResponse, orderId,
+                redirectAttrs);
     }
 
     @RequestMapping(value = "/order/edit", method = RequestMethod.POST)
     public Object modifyOrder(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        LOG.debug("Authenticate cookie is valid. Going to create a new order.");
-        final Order modifiedOrder = Order.readModifiedOrderFromRequest(request);
-        boolean updateOrderSuccess = false;
-        if (modifiedOrder != null)
-        {
-            final OrderDAO orderDAO = new OrderDAO();
-            updateOrderSuccess = orderDAO.updateOrderProfile(modifiedOrder);
-        }
-
-        if (updateOrderSuccess)
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 成功");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 失败");
-        }
-
-        return "redirect:/order_management";
-    }
-
-    private List<String> getBuyerList(final List<Order> orderList)
-    {
-        final Set<String> buyerSet = new HashSet<String>();
-        final List<String> buyerList = new ArrayList<String>();
-        if (orderList != null)
-        {
-            for (final Order order : orderList)
-            {
-                final String buyerName = order.getOrderBuyerName();
-                if (!buyerSet.contains(buyerName))
-                {
-                    buyerSet.add(buyerName);
-                    buyerList.add(buyerName);
-                }
-            }
-        }
-        return buyerList;
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.modifyOrder(request, httpResponse, redirectAttrs);
     }
 }

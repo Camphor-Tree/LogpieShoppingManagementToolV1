@@ -75,7 +75,7 @@
 	        </tbody>
         </table>
         <div class="row">
-        <span>当前包裹总重：</span><span>${packageTotalWeight}</span> <a class="btn btn-info" href="./package/quickCalculateShippingFeeDistribution?id=${logpiePackage.packageId}">快捷计算分摊运费</a>
+        <span>当前包裹总重：</span><span>${packageTotalWeight}</span> <c:if test="${admin.isSuperAdmin==true}"><a class="btn btn-info" href="./package/quickCalculateShippingFeeDistribution?id=${logpiePackage.packageId}">快捷计算分摊运费</a></c:if>
         </div>
         </c:if>
         <c:if test="${logpiePackage ==null}">

@@ -15,11 +15,13 @@ import com.logpie.shopping.management.util.NumberUtils;
  */
 public class LogpieProfitCalculator
 {
-    private List<Order> mOrderList;
-    private Float mEstimatedProfitsForAllOrders;
-    private Float mActualProfitsForAllOrders;
-    private Float mNetEstimatedProfitsForAllOrders;
-    private Float mNetActualProfitsForAllOrders;
+    private final List<Order> mOrderList;
+    private final Float mEstimatedProfitsForAllOrders;
+    private final Float mActualProfitsForAllOrders;
+    private final Float mNetEstimatedProfitsForAllOrders;
+    private final Float mNetActualProfitsForAllOrders;
+    private final Float mProxyEstimatedProfitsForAllOrders;
+    private final Float mProxyActualProfitsForAllOrders;
 
     /**
      * @param orderList
@@ -36,6 +38,12 @@ public class LogpieProfitCalculator
                 .keepTwoDigitsDecimalForFloat(getEstimatedNetCompanyProfitForAllOrders());
         mNetActualProfitsForAllOrders = NumberUtils
                 .keepTwoDigitsDecimalForFloat(getActualNetCompanyProfitForShippedOrders());
+        mProxyEstimatedProfitsForAllOrders = NumberUtils
+                .keepTwoDigitsDecimalForFloat(mEstimatedProfitsForAllOrders
+                        - mNetEstimatedProfitsForAllOrders);
+        mProxyActualProfitsForAllOrders = NumberUtils
+                .keepTwoDigitsDecimalForFloat(mActualProfitsForAllOrders
+                        - mNetActualProfitsForAllOrders);
     }
 
     /**
@@ -195,5 +203,21 @@ public class LogpieProfitCalculator
     public Float getNetActualProfitsForAllOrders()
     {
         return mNetActualProfitsForAllOrders;
+    }
+
+    /**
+     * @return the proxyEstimatedProfitsForAllOrders
+     */
+    public Float getProxyEstimatedProfitsForAllOrders()
+    {
+        return mProxyEstimatedProfitsForAllOrders;
+    }
+
+    /**
+     * @return the proxyActualProfitsForAllOrders
+     */
+    public Float getProxyActualProfitsForAllOrders()
+    {
+        return mProxyActualProfitsForAllOrders;
     }
 }
