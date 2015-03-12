@@ -101,7 +101,10 @@ public abstract class LogpieControllerImplementation
                 final String decodedBuyerName = new String(buyerName.getBytes("iso-8859-1"),
                         "UTF-8");
                 orderList = orderDAO.getOrdersForBuyerName(decodedBuyerName);
-                orderList = filterOutOrdersNotBelongToAdmin(orderList, mCurrentAdmin);
+                if (!mCurrentAdmin.isSuperAdmin())
+                {
+                    orderList = filterOutOrdersNotBelongToAdmin(orderList, mCurrentAdmin);
+                }
             } catch (UnsupportedEncodingException e)
             {
                 orderList = injectOrderManagementOrderList();
@@ -110,7 +113,10 @@ public abstract class LogpieControllerImplementation
         else if (packageId != null)
         {
             orderList = orderDAO.getOrdersForPackage(packageId);
-            orderList = filterOutOrdersNotBelongToAdmin(orderList, mCurrentAdmin);
+            if (!mCurrentAdmin.isSuperAdmin())
+            {
+                orderList = filterOutOrdersNotBelongToAdmin(orderList, mCurrentAdmin);
+            }
         }
         else
         {
