@@ -275,15 +275,15 @@ public class AccountingLogic
         for (final Order order : orderList)
         {
             final Admin orderProxyAdmin = order.getOrderProxy();
-            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
-            // if customer hasn't paid the money, we won't include it into the
-            // calculate. We do this to prevent it being a negative number,
+
+            final Float orderProfit = order.getOrderFinalProfit();
+            // We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0.001f)
+            if (orderProfit < 0.001f)
             {
                 continue;
             }
-            final Float orderProfit = order.getOrderFinalProfit();
+
             if (orderProxyAdmin != null)
             {
                 final String proxyAdminName = orderProxyAdmin.getAdminName();
@@ -314,15 +314,14 @@ public class AccountingLogic
         {
             final String brandName = order.getOrderProduct().getProductBrand()
                     .getBrandChineseName();
-            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
-            // if customer hasn't paid the money, we won't include it into the
-            // calculate. We do this to prevent it being a negative number,
+            final Float orderProfit = order.getOrderFinalProfit();
+            // We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0.001f)
+            if (orderProfit < 0.001f)
             {
                 continue;
             }
-            final Float orderProfit = order.getOrderFinalProfit();
+
             if (brandName != null)
             {
                 if (!orderProfitInBrandMap.containsKey(brandName))
@@ -352,15 +351,13 @@ public class AccountingLogic
         {
             final String categoryName = order.getOrderProduct().getProductBrand()
                     .getBrandCategory().getCategoryName();
-            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
-            // if customer hasn't paid the money, we won't include it into the
-            // calculate. We do this to prevent it being a negative number,
+            final Float orderProfit = order.getOrderFinalProfit();
+            // We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0.001f)
+            if (orderProfit < 0.001f)
             {
                 continue;
             }
-            final Float orderProfit = order.getOrderFinalProfit();
             if (categoryName != null)
             {
                 if (!orderProfitInCategoryMap.containsKey(categoryName))
