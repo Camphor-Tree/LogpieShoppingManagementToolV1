@@ -30,7 +30,7 @@ import com.logpie.shopping.management.storage.ProductDAO;
 @Controller
 public class SimpleCreateController
 {
-    private static final Logger LOG = Logger.getLogger(OrderController.class);
+    private static final Logger LOG = Logger.getLogger(SimpleCreateController.class);
 
     @RequestMapping(value = "/category/create", method = RequestMethod.GET)
     public Object showCreateCategoryPage(final HttpServletRequest request,

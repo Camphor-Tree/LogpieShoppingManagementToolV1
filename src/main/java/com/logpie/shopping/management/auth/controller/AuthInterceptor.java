@@ -49,6 +49,13 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
                 return true;
             }
 
+            // if the request URI is calculator, then just let it pass.
+            if (requestURI.equals(LogpieUrlEnum.LogpieCalculatorURL))
+            {
+                LOG.info("Meeting calculator url, rendering the calculator page");
+                return true;
+            }
+
             final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
             if (authSuccess)
             {

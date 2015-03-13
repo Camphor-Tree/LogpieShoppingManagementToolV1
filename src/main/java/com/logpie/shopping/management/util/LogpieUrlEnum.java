@@ -24,4 +24,9 @@ public class LogpieUrlEnum
      */
     public static final String LogpieResourcesURL = LogpieBaseURL + "resources";
 
+    /**
+     * Calculator URL
+     */
+    public static final String LogpieCalculatorURL = LogpieBaseURL + "calculator";
+
 }

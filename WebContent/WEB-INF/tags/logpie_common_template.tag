@@ -53,6 +53,7 @@ h2{
 			<li><a href="<c:url value="/order_management" />">订单管理</a></li>
 			<li><a href="<c:url value="/package_management" />">包裹管理</a></li>
 			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
+			<li><a href="<c:url value="/calculator" />">定价计算器</a></li>
 			<li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">更多<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
