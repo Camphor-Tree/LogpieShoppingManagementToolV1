@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.ProductDAO;
+import com.logpie.shopping.management.util.NumberUtils;
 
 /**
  * @author zhoyilei
@@ -60,6 +61,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     private Float mOrderSellingPrice;
     private Float mOrderCustomerPaidMoney;// default to 0
     private Float mOrderFinalProfit;// may be null
+    private Float mOrderFinalActualCost;
     private Float mOrderCompanyReceivedMoney; // may be null
     private Boolean mOrderIsProfitPaid; // default false
     private String mOrderNote;// may be null
@@ -124,6 +126,7 @@ public class Order implements RowMapper<Order>, LogpieModel
                             - mOrderActualShippingFee));
             mOrderFinalProfit = Float.valueOf(profitString);
         }
+        mOrderFinalActualCost = mOrderCurrencyRate * mOrderActualCost + mOrderActualShippingFee;
     }
 
     /**
@@ -173,13 +176,13 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (mOrderCustomerPaidMoney != null && mOrderCurrencyRate != null
                 && mOrderActualCost != null)
         {
-            final String profitString = String.format(
-                    "%.2f",
-                    Float.valueOf(mOrderCustomerPaidMoney.intValue()
-                            - mOrderCurrencyRate.floatValue() * mOrderActualCost.floatValue()
-                            - mOrderActualShippingFee));
-            mOrderFinalProfit = Float.valueOf(profitString);
+            mOrderFinalProfit = NumberUtils.keepTwoDigitsDecimalForFloat(Float
+                    .valueOf(mOrderCustomerPaidMoney.intValue() - mOrderCurrencyRate.floatValue()
+                            * mOrderActualCost.floatValue() - mOrderActualShippingFee));
+
         }
+        mOrderFinalActualCost = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCurrencyRate
+                * mOrderActualCost + mOrderActualShippingFee);
     }
 
     @Override
@@ -553,9 +556,9 @@ public class Order implements RowMapper<Order>, LogpieModel
      * @param orderActualCost
      *            the orderActualCost to set
      */
-    public void setOrderActualCost(Float orderActualCost)
+    public void setOrderActualCost(Float actualCost)
     {
-        mOrderActualCost = orderActualCost;
+        mOrderActualCost = actualCost;
     }
 
     /**
@@ -732,6 +735,23 @@ public class Order implements RowMapper<Order>, LogpieModel
     public String getPrimaryKey()
     {
         return DB_KEY_ORDER_ID;
+    }
+
+    /**
+     * @return the orderFinalCost
+     */
+    public Float getOrderFinalActualCost()
+    {
+        return mOrderFinalActualCost;
+    }
+
+    /**
+     * @param orderFinalCost
+     *            the orderFinalCost to set
+     */
+    public void setOrderFinalActualCost(Float orderFinalActualCost)
+    {
+        mOrderFinalActualCost = orderFinalActualCost;
     }
 
 }

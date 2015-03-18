@@ -121,6 +121,14 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            final Set<String> orderBySet = new HashSet<String>();
+            orderBySet.add(Brand.DB_KEY_BRAND_ENGLISH_NAME);
+            return orderBySet;
+        }
     }
 
     private class GetBrandByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Brand>

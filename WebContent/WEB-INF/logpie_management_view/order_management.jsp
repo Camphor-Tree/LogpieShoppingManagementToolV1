@@ -46,56 +46,57 @@
 				  </ul>
 			</div>
         </div>  		
-      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
+      <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">
-        <th class="col-xs-1 col-md-1 text-center">No</th>
-        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
-        <th class="col-xs-4 col-md-4 text-center">商品名称</th>
-        <th class="col-xs-1 col-md-1 text-center">数量</th>
-        <th class="col-xs-2 col-md-2 text-center">重量</th>
-        <th class="col-xs-2 col-md-2 text-center">购买者</th>
-        <th class="col-xs-2 col-md-2 text-center">代理者</th>
-        <!--<th>订单代理分红百分比</th>-->
-        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
-        <!--<th>订单当日汇率</th>-->
-        <th class="col-xs-1 col-md-1 text-center">包裹</th>
-        <!--<th>订单估计运费(人民币)</th>-->
-        <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
-        <th class="col-xs-2 col-md-2 text-center">订单售价￥</th>
-        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
-        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
-        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
-        <th class="col-xs-1 col-md-1 text-center">利结</th>
-        <!--<th>订单备注</th>-->
-        <th class="col-xs-2 col-md-2 text-center">修改</th>
+	        <th class="col-xs-1 col-md-1 text-center">No</th>
+	        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
+	        <th class="col-xs-2 col-md-2 text-center">购买者</th>
+	        <th class="col-xs-4 col-md-4 text-center">商品名称</th>
+	        <th class="col-xs-1 col-md-1 text-center">数量</th>
+	        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
+	        <th class="col-xs-2 col-md-2 text-center">重量</th>
+	        <th class="col-xs-2 col-md-2 text-center">代理者</th>
+	        <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
+	        <th class="col-xs-1 col-md-1 text-center">利结</th>
+	        <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
         <tbody>
         <c:forEach items="${orderList}" var="order">
-        <tr >
-        <td><a href="./order?id=${order.orderId}">${order.orderId}</a></td>
+        <tr class='clickable-row' data-href='./order?id=${order.orderId}'>
+        <td>${order.orderId}</td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
-        <td>${order.orderProduct.productName}</td>
-        <td>${order.orderProductCount}</td>
-        <td>${order.orderWeight}</td>
         <td>${order.orderBuyerName}</td>
+        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
+        <td>${order.orderProductCount}</td>
+        <td>${order.orderActualCost}</td>
+        <td>${order.orderWeight}</td>
         <td>${order.orderProxy.adminName}</td>
         <!--<td>${order.orderProxyProfitPercentage}</td>-->
-        <td>${order.orderActualCost}</td>
         <!--<td>${order.orderCurrencyRate}</td>-->
-        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>><a href="./package?id=${order.orderPackage.packageId}">${order.orderPackage.packageId}</a></td>
         <!-- <td>${order.orderEstimatedShippingFee}</td>-->
         <td>${order.orderActualShippingFee}</td>
-        <td>${order.orderSellingPrice}</td>
-        <td>${order.orderCustomerPaidMoney}</td>
+        <td>${order.orderFinalActualCost}</td>
+        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
+        <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
         <td>${order.orderFinalProfit}</td>
         <td>${order.orderCompanyReceivedMoney}</td>
         <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
         <!--<td>${order.orderNote}</td>-->
-        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}">修改</a></td>
+        <td><a type="button" class="btn btn-info" href="./order/edit?id=${order.orderId}">修改</a></td>
+        </tr>
+        <tr>
+          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+          <td colspan="12" class="text-left">备注: ${order.orderNote}</td>
         </tr>
         </c:forEach>
         </tbody>
       </table>
+      <div id="bottom_anchor"></div>
       <div class="row">
      	<c:if test="${admin.isSuperAdmin==true}">
       	<div class="text-success">当前订单列表 Logpie 总估计利润: ${profitCalculator.estimatedProfitsForAllOrders}</div>
@@ -158,7 +159,7 @@
                   <input class="form-control" type="number" step="1" min="1" max="1000" id="order_product_count" name="OrderProductCount" value="1" required>
                   </div>
                   <div class="form-group col-sm-4">
-                  <label for="order_weight">订单重量</label>
+                  <label for="order_weight">订单重量（克）</label>
                   <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="0" required>
                   </div>
                   <div class="form-group col-sm-4">
@@ -178,7 +179,7 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                    <label for="estimated_shipping_fee">预计邮费：</label>
+                    <label for="estimated_shipping_fee">预计邮费（人民币）：</label>
                     <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" required>
                   </div>
                   <div class="form-group col-sm-6">
@@ -202,7 +203,7 @@
 	                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
 	                        <option value=""> </option>
 							<c:forEach items="${packageList}" var="logpiePackage">
-							    <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
+							    <option value="${logpiePackage.packageId}">No.${logpiePackage.packageId} ${fn:substring(logpiePackage.packageProxyName,0,10)} ${logpiePackage.packageDate}</option>
 							</c:forEach>
 					  </select>
 	                </div>
@@ -210,7 +211,7 @@
                 <!-- only super admin can modify how much money company already received -->
                 <c:if test="${admin.isSuperAdmin==true}">
 	                <div class="form-group">
-	                  <label for="order_company_received_money">公司已收汇款：</label>
+	                  <label for="order_company_received_money">公司已收汇款（人民币）：</label>
 	                  <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
 	                </div>
                 </c:if>
@@ -218,7 +219,7 @@
 	                  <input class="form-control" type="hidden" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
                 </c:if>
                 <div class="form-group">
-                  <label for="order_note">备注(可空缺)：</label>
+                  <label for="order_note">备注 (客户来源，规格颜色，美国跟踪号，国内运费，转寄地址，定金支付情况)</label>
                   <input class="form-control" type="text" id="order_note" name="OrderNote">
                 </div>
                 <!-- only super admin can modify whether the profit is paid -->
@@ -255,20 +256,20 @@
                   <input class="form-control" type="text" id="tracking_number" name="PackageTrackingNumber" required>
                 </div>
                 <div class="form-group">
-                  <label for="package_weight">包裹重量（g）：</label>
+                  <label for="package_weight">包裹重量（克）：</label>
                   <input class="form-control" type="number" id="package_weight" name="PackageWeight" required>
                 </div>
                 <div class="form-group">
-                  <label for="package_shipping_fee">邮寄费用：</label>
+                  <label for="package_shipping_fee">邮寄费用（人民币）：</label>
                   <input class="form-control" type="number" id="package_shipping_fee" name="PackgeShippingFee" required>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                    <label for="package_custom_fee">额外海关费用：</label>
+                    <label for="package_custom_fee">额外海关费用（人民币）：</label>
                     <input class="form-control" type="number" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="0" required>
                   </div>
                   <div class="form-group col-sm-6">
-                    <label for="package_insurance_fee">额外保险费用：</label>
+                    <label for="package_insurance_fee">额外保险费用（人民币）：</label>
                     <input class="form-control"  type="number" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="0" required>
                   </div>
                 </div>
@@ -363,14 +364,14 @@
                 </div>
                 <div class="form-group">
                   <label for="product-description">产品描述：</label>
-                  <input class="form-control" type="text" id="product-description" name="ProductDescription" required>
+                  <input class="form-control" type="text" id="product-description" name="ProductDescription" value="无" required>
                 </div>
                 <div class="form-group">
                   <label for="product-link">产品链接：</label>
-                  <input class="form-control" type="url" id="product-link" name="ProductLink" required>
+                  <input class="form-control" type="url" id="product-link" name="ProductLink" value="http://www.logpie.com" required>
                 </div>
                 <div class="form-group">
-                  <label for="product-weight">产品重量：</label>
+                  <label for="product-weight">产品重量（克）：</label>
                   <input class="form-control" type="number" id="product-weight" name="ProductWeight" required>
                 </div>
                 <div class="row">

@@ -36,7 +36,7 @@
         </tr>
         <tbody>
         <c:forEach items="${packageList}" var="logpiePackage">
-        <tr>
+        <tr class='clickable-row' data-href='./package?id=${logpiePackage.packageId}'>
         <td><a href="./package?id=${logpiePackage.packageId}">${logpiePackage.packageId}</a></td>
         <td>${logpiePackage.packageProxyName}</td>
         <td>${logpiePackage.packageTrackingNumber}</td>

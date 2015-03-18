@@ -27,20 +27,20 @@
                   <input class="form-control" type="text" id="package_destination" name="PackageDestination" value="${logpiePackage.packageDestination}" required>
                 </div>
                 <div class="form-group">
-                  <label for="package_weight">包裹重量（g）：</label>
+                  <label for="package_weight">包裹重量（克）：</label>
                   <input class="form-control" type="number" id="package_weight" name="PackageWeight" value="${logpiePackage.packageWeight}" required>
                 </div>
                 <div class="form-group">
-                  <label for="package_shipping_fee">邮寄费用：</label>
+                  <label for="package_shipping_fee">邮寄费用（人民币）：</label>
                   <input class="form-control" type="number" id="package_shipping_fee" name="PackgeShippingFee" value="${logpiePackage.packgeShippingFee}" required>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                    <label for="package_custom_fee">额外海关费用：</label>
+                    <label for="package_custom_fee">额外海关费用（人民币）：</label>
                     <input class="form-control" type="number" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="0" value="${logpiePackage.packageAdditionalCustomTaxFee}" required>
                   </div>
                   <div class="form-group col-sm-6">
-                    <label for="package_insurance_fee">额外保险费用：</label>
+                    <label for="package_insurance_fee">额外保险费用（人民币）：</label>
                     <input class="form-control"  type="number" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="0" value="${logpiePackage.packageAdditionalInsuranceFee}" required>
                   </div>
                 </div>

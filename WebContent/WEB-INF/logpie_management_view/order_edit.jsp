@@ -47,7 +47,7 @@
                   <input class="form-control" type="number" step="1" id="order_product_count" name="OrderProductCount" value="${order.orderProductCount}" required>
                   </div>
                   <div class="form-group col-sm-4">
-                  <label for="order_weight">订单重量</label>
+                  <label for="order_weight">订单重量（克）</label>
                   <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="${order.orderWeight}" required>
                   </div>
                   <div class="form-group col-sm-4">
@@ -67,7 +67,7 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                    <label for="estimated_shipping_fee">预计邮费：</label>
+                    <label for="estimated_shipping_fee">预计邮费(人民币)：</label>
                     <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}" required>
                   </div>
                   <div class="form-group col-sm-6">
@@ -93,10 +93,10 @@
                         <option value=""> </option>
 						<c:forEach items="${packageList}" var="logpiePackage">
 							  <c:if test="${order.orderPackage.packageId == logpiePackage.packageId}">
-						       		<option value="${logpiePackage.packageId}" selected>id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
+						       		<option value="${logpiePackage.packageId}" selected>id:${logpiePackage.packageId} ${logpiePackage.packageProxyName} date:${logpiePackage.packageDate}</option>
         					   </c:if>
 						       <c:if test="${order.orderPackage.packageId != logpiePackage.packageId}">
-						       		 <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} date:${logpiePackage.packageDate}</option>
+						       		 <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} ${logpiePackage.packageProxyName} date:${logpiePackage.packageDate}</option>
         					   </c:if>
 						    
 						</c:forEach>
@@ -109,7 +109,7 @@
                 <!-- only super admin can modify how much money company already received -->
                 <c:if test="${admin.isSuperAdmin==true}">
                 <div class="form-group">
-                  <label for="order_company_received_money">公司已收汇款：</label>
+                  <label for="order_company_received_money">公司已收汇款(人民币)：</label>
                   <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}" required>
                 </div>
                 </c:if>
@@ -117,7 +117,7 @@
 	                  <input class="form-control" type="hidden" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}" required>
                 </c:if>
                 <div class="form-group">
-                  <label for="order_note">备注(可空缺)：</label>
+                  <label for="order_note">备注 (客户来源，规格颜色，美国跟踪号，国内运费，转寄地址，定金支付情况)</label>
                   <input class="form-control" type="text" id="order_note" name="OrderNote" value="${order.orderNote}">
                 </div>
                 <!-- only super admin can modify whether the profit is paid -->

@@ -24,7 +24,7 @@
                   <input class="form-control" type="url" id="product-link" name="ProductLink" value="${product.productLink}" required>
                 </div>
                 <div class="form-group">
-                  <label for="product-weight">产品重量：</label>
+                  <label for="product-weight">产品重量（克）：</label>
                   <input class="form-control" type="number" id="product-weight" name="ProductWeight" value="${product.productWeight}" required>
                 </div>
                 <div class="row">

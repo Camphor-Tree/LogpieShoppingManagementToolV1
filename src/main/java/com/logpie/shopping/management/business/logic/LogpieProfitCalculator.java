@@ -157,8 +157,8 @@ public class LogpieProfitCalculator
      */
     private float getActualProfitForOrder(final Order order)
     {
-        float singleActualTheoryProfit = order.getOrderSellingPrice() - order.getOrderActualCost()
-                * order.getOrderCurrencyRate() - order.getOrderActualShippingFee();
+        float singleActualTheoryProfit = order.getOrderSellingPrice()
+                - order.getOrderFinalActualCost();
         return singleActualTheoryProfit;
     }
 

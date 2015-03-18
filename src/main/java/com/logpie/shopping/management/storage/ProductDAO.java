@@ -126,6 +126,14 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            final Set<String> orderBySet = new HashSet<String>();
+            orderBySet.add(Product.DB_KEY_PRODUCT_NAME);
+            return orderBySet;
+        }
     }
 
     private class GetProductByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Product>

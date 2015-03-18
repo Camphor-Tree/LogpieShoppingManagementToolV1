@@ -1,8 +1,10 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -100,6 +102,14 @@ public class ImageDAO extends LogpieBaseDAO<Image>
         GetAllImageQuery()
         {
             super(new Image(), ImageDAO.sImageTableName);
+        }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            final Set<String> orderBySet = new HashSet<String>();
+            orderBySet.add(Image.DB_KEY_IMAGE_DESCRIPTION);
+            return orderBySet;
         }
     }
 
