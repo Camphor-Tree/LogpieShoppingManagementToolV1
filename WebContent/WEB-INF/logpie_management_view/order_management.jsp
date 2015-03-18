@@ -174,7 +174,7 @@
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率：</label>
-                    <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="6.23" required>
+                    <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="${CurrencyRate}" required>
                   </div>
                 </div>
                 <div class="row">

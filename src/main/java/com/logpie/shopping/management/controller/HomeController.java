@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
 import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.util.CurrencyRateUtils;
 
 @Controller
 public class HomeController
@@ -22,9 +23,11 @@ public class HomeController
     {
         LOG.debug("Authenticate cookie is valid. Going to home page.");
         Admin admin = AuthenticationHelper.getAdminFromCookie(request);
-        final ModelAndView signinPage = new ModelAndView("home");
-        signinPage.addObject("AdminName", admin.getAdminName());
-        return signinPage;
+        final ModelAndView homePage = new ModelAndView("home");
+        homePage.addObject("AdminName", admin.getAdminName());
+        final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
+        homePage.addObject("CurrencyRate", currencyRate);
+        return homePage;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)

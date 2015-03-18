@@ -33,6 +33,7 @@ import com.logpie.shopping.management.storage.ImageDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
 import com.logpie.shopping.management.storage.ProductDAO;
+import com.logpie.shopping.management.util.CurrencyRateUtils;
 
 /**
  * Define what are the flows controller need to implement. Also the common
@@ -159,6 +160,10 @@ public abstract class LogpieControllerImplementation
 
         // inject the current admin into the page
         orderManagementPage.addObject("admin", mCurrentAdmin);
+
+        // inject the current currency rate into the page
+        final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
+        orderManagementPage.addObject("CurrencyRate", currencyRate);
 
         return orderManagementPage;
     }
