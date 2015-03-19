@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -218,7 +216,6 @@ public abstract class LogpieControllerImplementation
      * @param packageId
      * @return
      */
-    @RequestMapping(value = "/order", method = RequestMethod.GET)
     public Object showOrderDetailPage(final HttpServletRequest request,
             @RequestParam("id") String orderId)
     {
@@ -240,7 +237,6 @@ public abstract class LogpieControllerImplementation
         return orderDetailPage;
     }
 
-    @RequestMapping(value = "/order/edit", method = RequestMethod.GET)
     public Object showModifyOrderPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, @RequestParam("id") String orderId,
             final RedirectAttributes redirectAttrs)
@@ -279,7 +275,6 @@ public abstract class LogpieControllerImplementation
         return modifyOrderPage;
     }
 
-    @RequestMapping(value = "/order/edit", method = RequestMethod.POST)
     public Object modifyOrder(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
@@ -313,6 +308,26 @@ public abstract class LogpieControllerImplementation
 
         return "redirect:/order_management";
     }
+
+    /**
+     * Used to show the order settle down page, only super admin can see that
+     * page.
+     * 
+     * @return
+     */
+    public abstract Object showOrderSettleDownPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final RedirectAttributes redirectAttrs);
+
+    /**
+     * Used to handle the order settle down logic. Only super admin can operate
+     * this.
+     * 
+     * @return
+     */
+    public abstract Object handleOrderSettleDown(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final List<String> settleDownOrders, final RedirectAttributes redirectAttrs);
 
     private List<LogpiePackage> getPackageListFromOrderList(final List<Order> orderList)
     {

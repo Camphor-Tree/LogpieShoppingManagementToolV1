@@ -10,7 +10,7 @@ import com.logpie.shopping.management.model.Order;
  * @author zhoyilei
  *
  */
-public class LogpieClearingOrderLogic
+public class LogpieSettleDownOrderLogic
 {
     public boolean isOrderAlreadyCleared(final Order order)
     {

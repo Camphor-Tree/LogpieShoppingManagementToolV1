@@ -45,6 +45,16 @@
 					</c:forEach>
 				  </ul>
 			</div>
+			<c:if test="${adminList != null}">
+			<div class="dropdown col-md-2">
+	  			<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">快捷结算<span class="caret"></span></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+				  	<c:forEach items="${adminList}" var="admin">
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order/settledown?adminId=${admin.adminId}" />">${admin.adminName}</a></li>
+					</c:forEach>
+				  </ul>
+			</div>
+			</c:if>
         </div>  		
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">
@@ -87,7 +97,7 @@
         <td>${order.orderCompanyReceivedMoney}</td>
         <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
         <!--<td>${order.orderNote}</td>-->
-        <td><a type="button" class="btn btn-info" href="./order/edit?id=${order.orderId}">修改</a></td>
+        <td><a type="button" class="btn btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
         </tr>
         <tr>
           <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>

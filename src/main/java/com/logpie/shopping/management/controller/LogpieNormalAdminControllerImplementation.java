@@ -69,4 +69,20 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
         return orderDAO.getOrdersForProxy(mCurrentAdmin.getAdminId());
     }
 
+    @Override
+    public Object showOrderSettleDownPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
+    public Object handleOrderSettleDown(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final List<String> settleDownOrders, final RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
 }

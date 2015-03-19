@@ -1,6 +1,8 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,5 +78,32 @@ public class OrderController
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.modifyOrder(request, httpResponse, redirectAttrs);
+    }
+
+    // 订单结算界面
+    @RequestMapping(value = "/order/settledown", method = RequestMethod.GET)
+    public Object showOrderSettleDownPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("adminId") String adminId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.showOrderSettleDownPage(request, httpResponse,
+                adminId, redirectAttrs);
+    }
+
+    // 订单结算处理
+    @RequestMapping(value = "/order/settledown", method = RequestMethod.POST)
+    public Object handleOrderSettleDown(
+            final HttpServletRequest request,
+            final HttpServletResponse httpResponse,
+            @RequestParam("adminId") String adminId,
+            @RequestParam(value = "SettleDownOrders", required = false) List<String> settleDownOrders,
+            final RedirectAttributes redirectAttrs)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.handleOrderSettleDown(request, httpResponse, adminId,
+                settleDownOrders, redirectAttrs);
     }
 }

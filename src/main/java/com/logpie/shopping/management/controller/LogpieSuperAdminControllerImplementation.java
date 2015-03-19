@@ -1,7 +1,10 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,11 +15,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
+import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
+import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
  * @author zhoyilei
@@ -121,7 +127,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
 
     @Override
     public Object showModifyPackagePage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, @RequestParam("id") String packageId,
+            final HttpServletResponse httpResponse, final String packageId,
             final RedirectAttributes redirectAttrs)
     {
         final ModelAndView modifyOrderPage = new ModelAndView("package_edit");
@@ -167,4 +173,130 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         return orderDAO.getAllOrders();
     }
 
+    @Override
+    public Object showOrderSettleDownPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView orderSettleDownPage = new ModelAndView("order_settledown");
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    message);
+        }
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
+        }
+
+        final AdminDAO adminDAO = new AdminDAO();
+        final Admin currentAdminToSettleDown = adminDAO.queryAccountByAdminId(adminId);
+
+        if (currentAdminToSettleDown != null)
+        {
+            // inject the current admin to be settle down
+            orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
+            final OrderDAO orderDAO = new OrderDAO();
+            final List<Order> orderList = orderDAO.getOrdersForProxy(adminId);
+            orderSettleDownPage.addObject("orderList", orderList);
+        }
+        return orderSettleDownPage;
+    }
+
+    public List<Order> filterOutOrdersAlreadySettleDown(final List<Order> orderList)
+    {
+        final LogpieSettleDownOrderLogic logpieSettlwDownOrderLogic = new LogpieSettleDownOrderLogic();
+        final List<Order> orderListAfterFilter = new ArrayList<Order>();
+        for (final Order order : orderList)
+        {
+            if (!logpieSettlwDownOrderLogic.isOrderAlreadyCleared(order))
+            {
+                orderListAfterFilter.add(order);
+            }
+        }
+        return orderListAfterFilter;
+    }
+
+    @Override
+    public Object handleOrderSettleDown(HttpServletRequest request,
+            HttpServletResponse httpResponse, final String adminId, List<String> settleDownOrders,
+            RedirectAttributes redirectAttrs)
+    {
+        if (CollectionUtils.isEmpty(settleDownOrders))
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "未检测到结算包裹，请选中你想要结算的包裹 再点快捷清算");
+            return "redirect:/order/settledown?adminId=" + adminId;
+        }
+        final StringBuilder messageBuilder = new StringBuilder();
+        final Set<String> successSet = new HashSet<String>();
+        final Set<String> errorSet = new HashSet<String>();
+
+        final OrderDAO orderDAO = new OrderDAO();
+        for (final String orderId : settleDownOrders)
+        {
+            final Order order = orderDAO.getOrderById(orderId);
+            order.settleDown();
+            final boolean updateSuccess = orderDAO.updateOrderProfile(order);
+            if (updateSuccess)
+            {
+                successSet.add(orderId);
+            }
+            else
+            {
+                errorSet.add(orderId);
+            }
+        }
+        int i = 0;
+        for (final String orderId : successSet)
+        {
+            i++;
+            messageBuilder.append(orderId);
+            if (i < successSet.size())
+            {
+                messageBuilder.append("号,");
+            }
+            else
+            {
+                messageBuilder.append("号");
+            }
+        }
+        if (errorSet.size() == 0)
+        {
+            if (successSet.size() == 1)
+            {
+                messageBuilder.append("包裹 结算成功！");
+            }
+            else
+            {
+                messageBuilder.append("包裹 全部结算成功！");
+            }
+        }
+        else
+        {
+            messageBuilder.append("包裹 结算成功！");
+            i = 0;
+            for (final String orderId : errorSet)
+            {
+                i++;
+                messageBuilder.append(orderId);
+                if (i < successSet.size())
+                {
+                    messageBuilder.append("号,");
+                }
+                else
+                {
+                    messageBuilder.append("号");
+                }
+            }
+            messageBuilder.append("包裹 结算失败！");
+        }
+        redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                messageBuilder.toString());
+        return "redirect:/order/settledown?adminId=" + adminId;
+    }
 }

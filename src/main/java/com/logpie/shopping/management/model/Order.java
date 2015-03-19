@@ -408,6 +408,14 @@ public class Order implements RowMapper<Order>, LogpieModel
                 orderIsProfitPaid, orderNote);
     }
 
+    // 订单结算
+    public void settleDown()
+    {
+        this.mOrderCustomerPaidMoney = this.mOrderSellingPrice;
+        this.mOrderCompanyReceivedMoney = this.mOrderSellingPrice;
+        this.mOrderIsProfitPaid = true;
+    }
+
     /**
      * @return the orderId
      */
