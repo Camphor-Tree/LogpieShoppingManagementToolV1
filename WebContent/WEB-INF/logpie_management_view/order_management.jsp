@@ -358,9 +358,8 @@
 						</select>
                   </div>
                   <div class="dropdown col-sm-7" style="margin-bottom:10px">
-                    <label for="brand_image">相关尺寸图片(可无)：</label>
+                    <label for="brand_image">相关尺寸图片：</label>
 						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId">
-						    <option value=""></option>
 						   <c:forEach items="${imageList}" var="sizeChartImage">
 						    <option value="${sizeChartImage.imageId}">${sizeChartImage.imageDescription}</option>
 						   </c:forEach>

@@ -36,7 +36,7 @@ public class AuthController
         LOG.debug("receiving post signin request");
         final String email = request.getParameter("email");
         final String password = request.getParameter("password");
-        final AdminDAO adminDAO = new AdminDAO();
+        final AdminDAO adminDAO = new AdminDAO(null);
         final Admin admin = adminDAO.verifyAccount(email, password);
         if (admin == null)
         {
@@ -86,7 +86,7 @@ public class AuthController
             boolean updateAdminSuccess = false;
             if (modifiedAdmin != null)
             {
-                final AdminDAO adminDAO = new AdminDAO();
+                final AdminDAO adminDAO = new AdminDAO(admin);
                 updateAdminSuccess = adminDAO.updateAdminProfile(modifiedAdmin);
             }
 

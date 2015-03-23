@@ -139,4 +139,20 @@ public class Image implements RowMapper<Image>, LogpieModel
         return DB_KEY_IMAGE_ID;
     }
 
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof Image)
+        {
+            final Image compareToImage = (Image) object;
+            if (compareToImage.mImageId.equals(mImageId)
+                    && compareToImage.mImageDescription.equals(mImageDescription)
+                    && compareToImage.mImageUrl.equals(mImageUrl))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

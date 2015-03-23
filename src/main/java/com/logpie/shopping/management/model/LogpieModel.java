@@ -12,4 +12,6 @@ public interface LogpieModel
     public Map<String, Object> getModelMap();
 
     public String getPrimaryKey();
+
+    public boolean compareTo(Object object);
 }

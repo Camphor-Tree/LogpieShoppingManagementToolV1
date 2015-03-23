@@ -71,7 +71,7 @@ public class AuthenticationHelper
             if (cookieName != null && cookieName.equals(CookieManager.AUTH_COOKIE_NAME))
             {
                 final String adminId = sCookieManager.getAdminIdFromCookie(cookie.getValue());
-                AdminDAO adminDAO = new AdminDAO();
+                AdminDAO adminDAO = new AdminDAO(null);
                 return adminDAO.queryAccountByAdminId(adminId);
             }
         }

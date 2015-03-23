@@ -8,20 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
-import com.logpie.shopping.management.model.Admin;
-import com.logpie.shopping.management.model.Brand;
-import com.logpie.shopping.management.model.Category;
-import com.logpie.shopping.management.model.Image;
-import com.logpie.shopping.management.model.Product;
-import com.logpie.shopping.management.storage.AdminDAO;
-import com.logpie.shopping.management.storage.BrandDAO;
-import com.logpie.shopping.management.storage.CategoryDAO;
-import com.logpie.shopping.management.storage.ImageDAO;
-import com.logpie.shopping.management.storage.ProductDAO;
 
 /**
  * @author zhoyilei
@@ -36,35 +23,18 @@ public class SimpleCreateController
     public Object showCreateCategoryPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse)
     {
-        final ModelAndView createCategoryPage = new ModelAndView("create_category");
-        return createCategoryPage;
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.showCreateCategoryPage(request, httpResponse);
     }
 
     @RequestMapping(value = "/category/create", method = RequestMethod.POST)
     public Object createCategory(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        LOG.debug("Authenticate cookie is valid. Going to create a new category.");
-        final Category newCategory = Category.readNewCategoryFromRequest(request);
-        boolean createCategorySuccess = false;
-        if (newCategory != null)
-        {
-            final CategoryDAO categoryDAO = new CategoryDAO();
-            createCategorySuccess = categoryDAO.addCategory(newCategory);
-        }
-
-        if (createCategorySuccess)
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "创建新的分类:" + newCategory.getCategoryName() + " 成功!");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
-        }
-
-        return "redirect:/order_management";
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createCategory(request, httpResponse, redirectAttrs);
     }
 
     /**
@@ -78,110 +48,35 @@ public class SimpleCreateController
     public Object createAdmin(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        final Admin newAdmin = Admin.readNewAdminFromRequest(request);
-        boolean createAdminSuccess = false;
-        if (newAdmin != null)
-        {
-            final AdminDAO adminDAO = new AdminDAO();
-            createAdminSuccess = adminDAO.addAdmin(newAdmin);
-        }
-
-        if (createAdminSuccess)
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "创建新的管理员:" + newAdmin.getAdminName() + " 成功!");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
-        }
-
-        return "redirect:/order_management";
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createAdmin(request, httpResponse, redirectAttrs);
     }
 
     @RequestMapping(value = "/image/create", method = RequestMethod.POST)
     public Object createImage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        LOG.debug("Authenticate cookie is valid. Going to create a new image.");
-        final Image newImage = Image.readNewImageFromRequest(request);
-        boolean createImageSuccess = false;
-        if (newImage != null)
-        {
-            final ImageDAO imageDAO = new ImageDAO();
-            createImageSuccess = imageDAO.addImage(newImage);
-        }
-
-        if (createImageSuccess)
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "创建新的图片:" + newImage.getImageDescription() + " 成功!");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "创建新的图片:" + newImage.getImageDescription() + " 失败!");
-        }
-
-        return "redirect:/order_management";
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createImage(request, httpResponse, redirectAttrs);
     }
 
     @RequestMapping(value = "/brand/create", method = RequestMethod.POST)
     public Object createBrand(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-        final Brand newBrand = Brand.readNewBrandFromRequest(request);
-        boolean createBrandSuccess = false;
-        if (newBrand != null)
-        {
-            final BrandDAO brandDAO = new BrandDAO();
-            createBrandSuccess = brandDAO.addBrand(newBrand);
-        }
-
-        if (createBrandSuccess)
-        {
-            redirectAttrs.addFlashAttribute(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
-                            + newBrand.getBrandChineseName() + " 成功!");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
-                            + newBrand.getBrandChineseName() + " 失败!");
-        }
-
-        return "redirect:/order_management";
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createBrand(request, httpResponse, redirectAttrs);
     }
 
     @RequestMapping(value = "/product/create", method = RequestMethod.POST)
     public Object createProduct(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
-        final Product newProduct = Product.readNewProductFromRequest(request);
-        boolean createNewProductSuccess = false;
-        if (newProduct != null)
-        {
-            final ProductDAO productDAO = new ProductDAO();
-            createNewProductSuccess = productDAO.addProduct(newProduct);
-        }
-
-        if (createNewProductSuccess)
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "创建新的产品:" + newProduct.getProductName() + " 成功!");
-        }
-        else
-        {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "创建新的产品:" + newProduct.getProductName() + " 失败!");
-        }
-
-        return "redirect:/order_management";
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createProduct(request, httpResponse, redirectAttrs);
     }
 }

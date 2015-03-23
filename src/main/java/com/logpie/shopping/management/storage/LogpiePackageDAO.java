@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -17,6 +18,14 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
 {
+    /**
+     * @param admin
+     */
+    public LogpiePackageDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(LogpiePackageDAO.class);
     public static final String sPackageTableName = "Packages";
 
@@ -54,7 +63,7 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
     {
         final UpdateLogpiePackageUpdate updateLogpiePackageUpdate = new UpdateLogpiePackageUpdate(
                 logpiePackage, sPackageTableName, logpiePackage.getPackageId());
-        return super.updateData(updateLogpiePackageUpdate);
+        return super.updateData(updateLogpiePackageUpdate, "更新了包裹信息");
     }
 
     /**

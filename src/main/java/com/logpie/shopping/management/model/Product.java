@@ -130,8 +130,8 @@ public class Product implements RowMapper<Product>, LogpieModel
         {
             return null;
         }
-        final ImageDAO imageDAO = new ImageDAO();
-        final BrandDAO brandDAO = new BrandDAO();
+        final ImageDAO imageDAO = new ImageDAO(null);
+        final BrandDAO brandDAO = new BrandDAO(null);
 
         final String productName = request.getParameter("ProductName");
         final String productDescription = request.getParameter("ProductDescription");
@@ -155,8 +155,8 @@ public class Product implements RowMapper<Product>, LogpieModel
         {
             return null;
         }
-        final ImageDAO imageDAO = new ImageDAO();
-        final BrandDAO brandDAO = new BrandDAO();
+        final ImageDAO imageDAO = new ImageDAO(null);
+        final BrandDAO brandDAO = new BrandDAO(null);
 
         final String productId = request.getParameter("ProductId");
         final String productName = request.getParameter("ProductName");
@@ -331,6 +331,28 @@ public class Product implements RowMapper<Product>, LogpieModel
     public String getPrimaryKey()
     {
         return DB_KEY_PRODUCT_ID;
+    }
+
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof Product)
+        {
+            final Product compareToProduct = (Product) object;
+            if (compareToProduct.mProductId.equals(mProductId)
+                    && compareToProduct.mProductIsActivated.equals(mProductIsActivated)
+                    && compareToProduct.mProductBrand.compareTo(mProductBrand)
+                    && compareToProduct.mProductDescription.equals(mProductDescription)
+                    && compareToProduct.mProductImage.compareTo(mProductImage)
+                    && compareToProduct.mProductLink.equals(mProductLink)
+                    && compareToProduct.mProductName.equals(mProductName)
+                    && compareToProduct.mProductPostDate.equals(mProductPostDate)
+                    && compareToProduct.mProductWeight.equals(mProductWeight))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

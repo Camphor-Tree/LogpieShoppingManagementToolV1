@@ -115,4 +115,19 @@ public class Category implements RowMapper<Category>, LogpieModel
     {
         return DB_KEY_CATEGORY_ID;
     }
+
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof Category)
+        {
+            final Category compareToCategory = (Category) object;
+            if (compareToCategory.mCategoryId.equals(mCategoryId)
+                    && compareToCategory.mCategoryName.equals(mCategoryName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -80,7 +80,7 @@ public abstract class LogpieControllerImplementation
                     LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
             orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
         }
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         List<Order> orderList;
 
         if (adminId != null)
@@ -139,21 +139,21 @@ public abstract class LogpieControllerImplementation
         final List<String> orderBuyersList = getBuyerList(orderList);
         orderManagementPage.addObject("orderBuyersList", orderBuyersList);
 
-        final CategoryDAO categoryDAO = new CategoryDAO();
+        final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
         final List<Category> categoryList = categoryDAO.getAllCategory();
         orderManagementPage.addObject("categoryList", categoryList);
 
-        final ImageDAO imageDAO = new ImageDAO();
+        final ImageDAO imageDAO = new ImageDAO(mCurrentAdmin);
         final List<Image> imageList = imageDAO.getAllImage();
         orderManagementPage.addObject("imageList", imageList);
 
-        final BrandDAO brandDAO = new BrandDAO();
+        final BrandDAO brandDAO = new BrandDAO(mCurrentAdmin);
         final List<Brand> brandList = brandDAO.getAllBrand();
         orderManagementPage.addObject("brandList", brandList);
 
         if (mCurrentAdmin.isSuperAdmin())
         {
-            final AdminDAO adminDAO = new AdminDAO();
+            final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
             final List<Admin> adminList = adminDAO.getAllAdmins();
             orderManagementPage.addObject("adminList", adminList);
         }
@@ -161,7 +161,7 @@ public abstract class LogpieControllerImplementation
         final List<LogpiePackage> packageList = getPackageListFromOrderList(orderList);
         orderManagementPage.addObject("packageList", packageList);
 
-        final ProductDAO productDAO = new ProductDAO();
+        final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
         final List<Product> productList = productDAO.getAllProduct();
         orderManagementPage.addObject("productList", productList);
 
@@ -203,7 +203,7 @@ public abstract class LogpieControllerImplementation
         boolean createOrderSuccess = false;
         if (newOrder != null)
         {
-            final OrderDAO orderDAO = new OrderDAO();
+            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
             createOrderSuccess = orderDAO.addOrder(newOrder);
         }
 
@@ -233,7 +233,7 @@ public abstract class LogpieControllerImplementation
     {
         LOG.debug("Authenticate cookie is valid. Going to order page.");
         final ModelAndView orderDetailPage = new ModelAndView("order_detail");
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         final Order order = orderDAO.getOrderById(orderId);
         if (order != null)
         {
@@ -254,7 +254,7 @@ public abstract class LogpieControllerImplementation
             final RedirectAttributes redirectAttrs)
     {
         final ModelAndView modifyOrderPage = new ModelAndView("order_edit");
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         final Order order = orderDAO.getOrderById(orderId);
 
         if (order != null)
@@ -268,15 +268,15 @@ public abstract class LogpieControllerImplementation
             }
             modifyOrderPage.addObject("order", order);
 
-            final AdminDAO adminDAO = new AdminDAO();
+            final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
             final List<Admin> adminList = adminDAO.getAllAdmins();
             modifyOrderPage.addObject("adminList", adminList);
 
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
             final List<LogpiePackage> packageList = packageDAO.getAllPackage();
             modifyOrderPage.addObject("packageList", packageList);
 
-            final ProductDAO productDAO = new ProductDAO();
+            final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
             final List<Product> productList = productDAO.getAllProduct();
             modifyOrderPage.addObject("productList", productList);
 
@@ -303,7 +303,7 @@ public abstract class LogpieControllerImplementation
             {
                 return showNoPermissionPage();
             }
-            final OrderDAO orderDAO = new OrderDAO();
+            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
             updateOrderSuccess = orderDAO.updateOrderProfile(modifiedOrder);
         }
 
@@ -404,12 +404,12 @@ public abstract class LogpieControllerImplementation
     {
         LOG.debug("Authenticate cookie is valid. Going to package page.");
         final ModelAndView packageDetailPage = new ModelAndView("package_detail");
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
         if (logpiePackage != null)
         {
             packageDetailPage.addObject("logpiePackage", logpiePackage);
-            final OrderDAO orderDAO = new OrderDAO();
+            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
             final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
             packageDetailPage.addObject("orderList", orderList);
             // Calculate the total weight
@@ -458,7 +458,7 @@ public abstract class LogpieControllerImplementation
             final HttpServletResponse httpResponse)
     {
         final ModelAndView createbrandPage = new ModelAndView("brand_management");
-        final BrandDAO BrandDAO = new BrandDAO();
+        final BrandDAO BrandDAO = new BrandDAO(mCurrentAdmin);
         final List<Brand> brandList = BrandDAO.getAllBrand();
         createbrandPage.addObject("brandList", brandList);
         return createbrandPage;
@@ -470,15 +470,15 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView modifybrandPage = new ModelAndView("brand_edit");
 
-        final BrandDAO BrandDAO = new BrandDAO();
+        final BrandDAO BrandDAO = new BrandDAO(mCurrentAdmin);
         final Brand brand = BrandDAO.getBrandById(brandId);
         modifybrandPage.addObject("brand", brand);
 
-        final CategoryDAO categoryDAO = new CategoryDAO();
+        final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
         final List<Category> categoryList = categoryDAO.getAllCategory();
         modifybrandPage.addObject("categoryList", categoryList);
 
-        final ImageDAO imageDAO = new ImageDAO();
+        final ImageDAO imageDAO = new ImageDAO(mCurrentAdmin);
         final List<Image> imageList = imageDAO.getAllImage();
         modifybrandPage.addObject("imageList", imageList);
 
@@ -492,7 +492,7 @@ public abstract class LogpieControllerImplementation
         boolean updatCateogrySuccess = false;
         if (modifiedBrand != null)
         {
-            final BrandDAO BrandDAO = new BrandDAO();
+            final BrandDAO BrandDAO = new BrandDAO(mCurrentAdmin);
             updatCateogrySuccess = BrandDAO.updateBrandProfile(modifiedBrand);
         }
 
@@ -517,7 +517,7 @@ public abstract class LogpieControllerImplementation
             final HttpServletResponse httpResponse)
     {
         final ModelAndView createCategoryPage = new ModelAndView("category_management");
-        final CategoryDAO categoryDAO = new CategoryDAO();
+        final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
         final List<Category> categoryList = categoryDAO.getAllCategory();
         createCategoryPage.addObject("categoryList", categoryList);
 
@@ -530,7 +530,7 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView modifyCategoryPage = new ModelAndView("category_edit");
 
-        final CategoryDAO categoryDAO = new CategoryDAO();
+        final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
         final Category category = categoryDAO.getCategoryById(categoryId);
         modifyCategoryPage.addObject("category", category);
 
@@ -544,7 +544,7 @@ public abstract class LogpieControllerImplementation
         boolean updatCateogrySuccess = false;
         if (modifiedCateogry != null)
         {
-            final CategoryDAO categoryDAO = new CategoryDAO();
+            final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
             updatCateogrySuccess = categoryDAO.updateCategoryProfile(modifiedCateogry);
         }
 
@@ -569,7 +569,7 @@ public abstract class LogpieControllerImplementation
             final HttpServletResponse httpResponse)
     {
         final ModelAndView createimagePage = new ModelAndView("image_management");
-        final ImageDAO ImageDAO = new ImageDAO();
+        final ImageDAO ImageDAO = new ImageDAO(mCurrentAdmin);
         final List<Image> imageList = ImageDAO.getAllImage();
         createimagePage.addObject("imageList", imageList);
 
@@ -582,7 +582,7 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView modifyimagePage = new ModelAndView("image_edit");
 
-        final ImageDAO ImageDAO = new ImageDAO();
+        final ImageDAO ImageDAO = new ImageDAO(mCurrentAdmin);
         final Image image = ImageDAO.getImageById(imageId);
         modifyimagePage.addObject("image", image);
 
@@ -596,7 +596,7 @@ public abstract class LogpieControllerImplementation
         boolean updatCateogrySuccess = false;
         if (modifiedImage != null)
         {
-            final ImageDAO ImageDAO = new ImageDAO();
+            final ImageDAO ImageDAO = new ImageDAO(mCurrentAdmin);
             updatCateogrySuccess = ImageDAO.updateImageProfile(modifiedImage);
         }
 
@@ -622,7 +622,7 @@ public abstract class LogpieControllerImplementation
     {
         LOG.debug("Authenticate cookie is valid. Going to product manage page.");
         final ModelAndView productManagementPage = new ModelAndView("product_management");
-        final ProductDAO ProductDAO = new ProductDAO();
+        final ProductDAO ProductDAO = new ProductDAO(mCurrentAdmin);
         final List<Product> productList = ProductDAO.getAllProduct();
         productManagementPage.addObject("productList", productList);
         return productManagementPage;
@@ -634,15 +634,15 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView modifyproductPage = new ModelAndView("product_edit");
 
-        final ProductDAO ProductDAO = new ProductDAO();
+        final ProductDAO ProductDAO = new ProductDAO(mCurrentAdmin);
         final Product product = ProductDAO.getProductById(productId);
         modifyproductPage.addObject("product", product);
 
-        final BrandDAO brandDAO = new BrandDAO();
+        final BrandDAO brandDAO = new BrandDAO(mCurrentAdmin);
         final List<Brand> brandList = brandDAO.getAllBrand();
         modifyproductPage.addObject("brandList", brandList);
 
-        final ImageDAO imageDAO = new ImageDAO();
+        final ImageDAO imageDAO = new ImageDAO(mCurrentAdmin);
         final List<Image> imageList = imageDAO.getAllImage();
         modifyproductPage.addObject("imageList", imageList);
 
@@ -656,7 +656,7 @@ public abstract class LogpieControllerImplementation
         boolean updatCateogrySuccess = false;
         if (modifiedProduct != null)
         {
-            final ProductDAO ProductDAO = new ProductDAO();
+            final ProductDAO ProductDAO = new ProductDAO(mCurrentAdmin);
             updatCateogrySuccess = ProductDAO.updateProductProfile(modifiedProduct);
         }
 
@@ -674,12 +674,170 @@ public abstract class LogpieControllerImplementation
     }
 
     /**
+     * Used to show log page
+     * 
+     * @return
+     */
+    public abstract Object showLogPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse);
+
+    /**
      * @return
      */
     protected Object showNoPermissionPage()
     {
         ModelAndView noPermissionPage = new ModelAndView("no_permission");
         return noPermissionPage;
+    }
+
+    /*
+     * For Simple Create Controller
+     */
+    public Object showCreateCategoryPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse)
+    {
+        final ModelAndView createCategoryPage = new ModelAndView("create_category");
+        return createCategoryPage;
+    }
+
+    public Object createCategory(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new category.");
+        final Category newCategory = Category.readNewCategoryFromRequest(request);
+        boolean createCategorySuccess = false;
+        if (newCategory != null)
+        {
+            final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
+            createCategorySuccess = categoryDAO.addCategory(newCategory);
+        }
+
+        if (createCategorySuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的分类:" + newCategory.getCategoryName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
+    }
+
+    /**
+     * Only super admin can create admin account
+     * 
+     * @param request
+     * @param httpResponse
+     * @return
+     */
+    public Object createAdmin(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final Admin newAdmin = Admin.readNewAdminFromRequest(request);
+        boolean createAdminSuccess = false;
+        if (newAdmin != null)
+        {
+            final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
+            createAdminSuccess = adminDAO.addAdmin(newAdmin);
+        }
+
+        if (createAdminSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的管理员:" + newAdmin.getAdminName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
+    }
+
+    public Object createImage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new image.");
+        final Image newImage = Image.readNewImageFromRequest(request);
+        boolean createImageSuccess = false;
+        if (newImage != null)
+        {
+            final ImageDAO imageDAO = new ImageDAO(mCurrentAdmin);
+            createImageSuccess = imageDAO.addImage(newImage);
+        }
+
+        if (createImageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的图片:" + newImage.getImageDescription() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的图片:" + newImage.getImageDescription() + " 失败!");
+        }
+
+        return "redirect:/order_management";
+    }
+
+    public Object createBrand(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final Brand newBrand = Brand.readNewBrandFromRequest(request);
+        boolean createBrandSuccess = false;
+        if (newBrand != null)
+        {
+            final BrandDAO brandDAO = new BrandDAO(mCurrentAdmin);
+            createBrandSuccess = brandDAO.addBrand(newBrand);
+        }
+
+        if (createBrandSuccess)
+        {
+            redirectAttrs.addFlashAttribute(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
+                            + newBrand.getBrandChineseName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
+                            + newBrand.getBrandChineseName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
+    }
+
+    public Object createProduct(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final Product newProduct = Product.readNewProductFromRequest(request);
+        boolean createNewProductSuccess = false;
+        if (newProduct != null)
+        {
+            final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
+            createNewProductSuccess = productDAO.addProduct(newProduct);
+        }
+
+        if (createNewProductSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的产品:" + newProduct.getProductName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的产品:" + newProduct.getProductName() + " 失败!");
+        }
+
+        return "redirect:/order_management";
     }
 
     private List<Order> filterOutOrdersNotBelongToAdmin(final List<Order> orderList,
@@ -711,4 +869,5 @@ public abstract class LogpieControllerImplementation
         }
         return orderAfterFilter;
     }
+
 }

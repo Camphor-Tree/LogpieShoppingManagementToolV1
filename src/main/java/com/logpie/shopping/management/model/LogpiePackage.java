@@ -471,4 +471,31 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         return DB_KEY_PACKAGE_ID;
     }
 
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof LogpiePackage)
+        {
+            final LogpiePackage compareToLogpiePackage = (LogpiePackage) object;
+            if (compareToLogpiePackage.mPackageId.equals(mPackageId)
+                    && compareToLogpiePackage.mPackageIsDelivered.equals(mPackageIsDelivered)
+                    && compareToLogpiePackage.mPackageIsShipped.equals(mPackageIsShipped)
+                    && compareToLogpiePackage.mPackageAdditionalCustomTaxFee
+                            .equals(mPackageAdditionalCustomTaxFee)
+                    && compareToLogpiePackage.mPackageAdditionalInsuranceFee
+                            .equals(mPackageAdditionalInsuranceFee)
+                    && compareToLogpiePackage.mPackageDate.equals(mPackageDate)
+                    && compareToLogpiePackage.mPackageDestination.equals(mPackageDestination)
+                    && compareToLogpiePackage.mPackageNote.equals(mPackageNote)
+                    && compareToLogpiePackage.mPackageProxyName.equals(mPackageProxyName)
+                    && compareToLogpiePackage.mPackageReceiver.equals(mPackageReceiver)
+                    && compareToLogpiePackage.mPackageTrackingNumber.equals(mPackageTrackingNumber)
+                    && compareToLogpiePackage.mPackageWeight.equals(mPackageWeight)
+                    && compareToLogpiePackage.mPackgeShippingFee.equals(mPackgeShippingFee))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

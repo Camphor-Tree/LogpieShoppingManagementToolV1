@@ -17,9 +17,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
 import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.storage.AdminDAO;
+import com.logpie.shopping.management.storage.DBLogDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -59,7 +61,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             packageManagementPage
                     .addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
         }
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         List<LogpiePackage> packageList = packageDAO.getAllPackage();
 
         if (showAll == null || showAll == false)
@@ -88,11 +90,11 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             @RequestParam("id") String packageId)
     {
         LOG.debug("Authenticate cookie is valid. Going to package page.");
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
         if (logpiePackage != null)
         {
-            final OrderDAO orderDAO = new OrderDAO();
+            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
             final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
             final Float totalWeight = calculateTotalWeight(orderList);
             for (final Order order : orderList)
@@ -118,7 +120,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         boolean createLogpiePackageSuccess = false;
         if (newLogpiePackage != null)
         {
-            final LogpiePackageDAO logpiePackageDAO = new LogpiePackageDAO();
+            final LogpiePackageDAO logpiePackageDAO = new LogpiePackageDAO(mCurrentAdmin);
             createLogpiePackageSuccess = logpiePackageDAO.addPackage(newLogpiePackage);
         }
 
@@ -143,7 +145,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     {
         final ModelAndView modifyOrderPage = new ModelAndView("package_edit");
 
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
         modifyOrderPage.addObject("logpiePackage", logpiePackage);
 
@@ -160,7 +162,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         boolean updatePackageSuccess = false;
         if (modifiedPackage != null)
         {
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
             updatePackageSuccess = packageDAO.updateLogpiePackageProfile(modifiedPackage);
         }
 
@@ -180,7 +182,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     @Override
     public List<Order> injectOrderManagementOrderList()
     {
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         return orderDAO.getAllOrders();
     }
 
@@ -204,14 +206,14 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
         }
 
-        final AdminDAO adminDAO = new AdminDAO();
+        final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
         final Admin currentAdminToSettleDown = adminDAO.queryAccountByAdminId(adminId);
 
         if (currentAdminToSettleDown != null)
         {
             // inject the current admin to be settle down
             orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
-            final OrderDAO orderDAO = new OrderDAO();
+            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
             final List<Order> orderList = orderDAO.getOrdersForProxy(adminId);
             orderSettleDownPage.addObject("orderList", orderList);
         }
@@ -247,7 +249,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         final Set<String> successSet = new HashSet<String>();
         final Set<String> errorSet = new HashSet<String>();
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         for (final String orderId : settleDownOrders)
         {
             final Order order = orderDAO.getOrderById(orderId);
@@ -324,5 +326,17 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             }
         }
         return packagesAfterFilter;
+    }
+
+    @Override
+    public Object showLogPage(HttpServletRequest request, HttpServletResponse httpResponse)
+    {
+        final ModelAndView logPage = new ModelAndView("log");
+
+        final DBLogDAO dbLogDAO = new DBLogDAO(mCurrentAdmin);
+        final List<DBLog> dbLogList = dbLogDAO.getAllDBLog();
+        logPage.addObject("dbLogList", dbLogList);
+
+        return logPage;
     }
 }

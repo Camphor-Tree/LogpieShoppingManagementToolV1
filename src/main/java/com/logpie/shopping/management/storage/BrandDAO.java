@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
@@ -21,10 +22,18 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class BrandDAO extends LogpieBaseDAO<Brand>
 {
+    /**
+     * @param admin
+     */
+    public BrandDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(BrandDAO.class);
     public static final String sBrandTableName = "Brands";
-    public static final String sBrandImageTableAlias = "BrandImage";
-    public static final String sBrandSizeChartImageAlias = "BrandSizeChartImage";
+    public static final String sBrandImageTableAlias = "BrandImages";
+    public static final String sBrandSizeChartImageAlias = "BrandSizeChartImages";
 
     /**
      * For adding a new brand into the database
@@ -77,7 +86,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
     {
         final UpdateBrandUpdate updateBrandUpdate = new UpdateBrandUpdate(brand, sBrandTableName,
                 brand.getBrandId());
-        return super.updateData(updateBrandUpdate);
+        return super.updateData(updateBrandUpdate, "更新了品牌信息");
     }
 
     private class AddBrandInsert implements LogpieDataInsert<Brand>

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -18,6 +19,14 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class ImageDAO extends LogpieBaseDAO<Image>
 {
+    /**
+     * @param admin
+     */
+    public ImageDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(ImageDAO.class);
     public static final String sImageTableName = "Images";
 
@@ -72,7 +81,7 @@ public class ImageDAO extends LogpieBaseDAO<Image>
     {
         final UpdateImageUpdate updateImageUpdate = new UpdateImageUpdate(image, sImageTableName,
                 image.getImageId());
-        return super.updateData(updateImageUpdate);
+        return super.updateData(updateImageUpdate, "更新了图片信息");
     }
 
     private class AddImageInsert implements LogpieDataInsert<Image>

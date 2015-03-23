@@ -65,7 +65,7 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     @Override
     public List<Order> injectOrderManagementOrderList()
     {
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         return orderDAO.getOrdersForProxy(mCurrentAdmin.getAdminId());
     }
 
@@ -81,6 +81,12 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     public Object handleOrderSettleDown(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final String adminId,
             final List<String> settleDownOrders, final RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
+    public Object showLogPage(HttpServletRequest request, HttpServletResponse httpResponse)
     {
         return showNoPermissionPage();
     }

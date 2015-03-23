@@ -256,4 +256,25 @@ public class Admin implements RowMapper<Admin>, LogpieModel
     {
         return mAdminPassVersion;
     }
+
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof Admin)
+        {
+            final Admin compareToAdmin = (Admin) object;
+            if (compareToAdmin.mAdminId.equals(mAdminId)
+                    && compareToAdmin.mAdminEmail.equals(mAdminEmail)
+                    && compareToAdmin.mAdminIdentityNumber.equals(mAdminIdentityNumber)
+                    && compareToAdmin.mAdminName.equals(mAdminName)
+                    && compareToAdmin.mAdminPassword.equals(mAdminPassword)
+                    && compareToAdmin.mAdminPhone.equals(mAdminPhone)
+                    && compareToAdmin.mAdminQQ.equals(mAdminQQ)
+                    && compareToAdmin.mAdminWechat.equals(mAdminWechat))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -16,6 +17,14 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class CategoryDAO extends LogpieBaseDAO<Category>
 {
+    /**
+     * @param admin
+     */
+    public CategoryDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(CategoryDAO.class);
     public static final String sCategoryTableName = "Categories";
 
@@ -71,7 +80,7 @@ public class CategoryDAO extends LogpieBaseDAO<Category>
     {
         final UpdateCategoryUpdate updateCategoryUpdate = new UpdateCategoryUpdate(category,
                 sCategoryTableName, category.getCategoryId());
-        return super.updateData(updateCategoryUpdate);
+        return super.updateData(updateCategoryUpdate, "更新了类别信息");
     }
 
     private class AddCategoryInsert implements LogpieDataInsert<Category>

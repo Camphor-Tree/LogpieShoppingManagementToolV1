@@ -106,7 +106,7 @@ public class CookieManager
             // TODO: we have implemented passVersion
             // final String adminPassVersion =
             // cookieJSON.getString("passVersion");
-            AdminDAO adminDAO = new AdminDAO();
+            AdminDAO adminDAO = new AdminDAO(null);
             Admin admin = adminDAO.queryAccountByAdminId(adminId);
             if (admin == null)
             {

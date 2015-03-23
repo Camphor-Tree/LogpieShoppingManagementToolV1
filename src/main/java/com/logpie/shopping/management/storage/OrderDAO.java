@@ -24,6 +24,14 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class OrderDAO extends LogpieBaseDAO<Order>
 {
+    /**
+     * @param admin
+     */
+    public OrderDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(OrderDAO.class);
     public static final String sOrderTableName = "Orders";
 
@@ -147,9 +155,11 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      */
     public boolean updateOrderProfile(final Order order)
     {
+        final Order previousOrder = this.getOrderById(order.getOrderId());
+        final String updateLog = order.getDeltaChange(previousOrder);
         final ModifyOrderUpdate updateOrderUpdate = new ModifyOrderUpdate(order, sOrderTableName,
                 order.getOrderId());
-        return super.updateData(updateOrderUpdate);
+        return super.updateData(updateOrderUpdate, updateLog);
     }
 
     private class AddOrderInsert implements LogpieDataInsert<Order>

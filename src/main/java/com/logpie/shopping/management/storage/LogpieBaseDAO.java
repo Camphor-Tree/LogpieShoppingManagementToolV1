@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -26,8 +28,11 @@ public class LogpieBaseDAO<T>
 
     public static final String sNonAliasPrefix = "LogpieNoAlias";
 
-    public LogpieBaseDAO()
+    protected Admin mCurrentAdmin;
+
+    public LogpieBaseDAO(final Admin admin)
     {
+        mCurrentAdmin = admin;
     }
 
     /**
@@ -76,10 +81,15 @@ public class LogpieBaseDAO<T>
         return results;
     }
 
-    public boolean updateData(final LogpieDataUpdate<T> update)
+    public boolean updateData(final LogpieDataUpdate<T> update, String updateLog)
     {
         final JdbcTemplate jdbcTemplate = LogpieDataSourceFactory.getJdbcTemplate();
         final String updateSQL = buildUpdateSQL(update);
+        if (updateLog != null)
+        {
+            logInformation(updateSQL, updateLog);
+        }
+
         try
         {
             jdbcTemplate.execute(updateSQL);
@@ -218,9 +228,9 @@ public class LogpieBaseDAO<T>
 
             if (value instanceof String)
             {
-                valueBuilder.append("\'");
+                valueBuilder.append("\"");
                 valueBuilder.append(value);
-                valueBuilder.append("\'");
+                valueBuilder.append("\"");
             }
             else
             {
@@ -290,5 +300,12 @@ public class LogpieBaseDAO<T>
             updateSqlBuilder.append(buildConditionsSQL(condition));
         }
         return updateSqlBuilder.toString();
+    }
+
+    public void logInformation(final String SQL, final String comment)
+    {
+        final DBLog dbLog = new DBLog(mCurrentAdmin, SQL, comment);
+        final DBLogDAO dbLogDAO = new DBLogDAO(mCurrentAdmin);
+        dbLogDAO.addDBLog(dbLog);
     }
 }

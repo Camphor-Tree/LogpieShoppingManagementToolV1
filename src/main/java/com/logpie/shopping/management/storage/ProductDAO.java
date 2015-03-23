@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
@@ -22,9 +23,17 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class ProductDAO extends LogpieBaseDAO<Product>
 {
+    /**
+     * @param admin
+     */
+    public ProductDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(ProductDAO.class);
     public static final String sProductTableName = "Products";
-    public static final String sProductImageTableAlias = "ProductImage";
+    public static final String sProductImageTableAlias = "ProductImages";
 
     /**
      * For adding a new product into the database
@@ -82,7 +91,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
     {
         final UpdateProductUpdate updateProductUpdate = new UpdateProductUpdate(product,
                 sProductTableName, product.getProductId());
-        return super.updateData(updateProductUpdate);
+        return super.updateData(updateProductUpdate, "更新了商品信息");
     }
 
     private class AddProductInsert implements LogpieDataInsert<Product>
@@ -180,9 +189,9 @@ public class ProductDAO extends LogpieBaseDAO<Product>
                 Category.DB_KEY_CATEGORY_ID));
         conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
                 ProductDAO.sProductImageTableAlias, Image.DB_KEY_IMAGE_ID));
-        conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_IMAGE_ID,
                 BrandDAO.sBrandImageTableAlias, Image.DB_KEY_IMAGE_ID));
-        conditions.add(String.format("%s = %s.%s", Product.DB_KEY_PRODUCT_IMAGE_ID,
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_SIZE_CHART_ID,
                 BrandDAO.sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
         return conditions;
     }

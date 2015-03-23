@@ -62,6 +62,8 @@ public class LogpieInitialization
                 .execute("create table if not exists Admins(AdminId serial primary key, AdminName text not null, AdminPassword text not null, AdminEmail text not null, AdminQQ text, AdminWechat text, AdminPhone text not null, AdminIdentityNumber text)");
         jdbcTemplate
                 .execute("create table if not exists Orders(OrderId serial primary key, OrderDate timestamp not null default current_timestamp, OrderProductId bigint unsigned not null, OrderProductCount int not null, OrderWeight float default 0, OrderBuyerName text not null, OrderProxyId bigint unsigned, OrderProxyProfitPercentage float not null, OrderActualCost float, OrderCurrencyRate float not null, OrderPackageId bigint unsigned, OrderEstimatedShippingFee float not null, OrderActualShippingFee float, OrderSellingPrice float not null, OrderCustomerPaidMoney float, OrderCompanyReceivedMoney float, OrderIsProfitPaid boolean not null default false, OrderNote text, foreign key (OrderPackageId) references Packages(PackageId) on update cascade on delete cascade, foreign key (OrderProxyId) references Admins(AdminId) on update cascade on delete cascade, foreign key (OrderProductId) references Products(ProductId) on update cascade on delete cascade)");
+        jdbcTemplate
+                .execute("create table if not exists DbLog(DbLogId serial primary key, DbLogAdminId bigint unsigned, DbLogTime timestamp not null default current_timestamp, DBLogSQL text not null, DBLogComment text,foreign key (DbLogAdminId) references Admins(AdminId))");
         // jdbcTemplate
         // .execute("create table if not exists ExchangeRate(Date timestamp primary key default current_timestamp, Rate float not null)");
         // jdbcTemplate
@@ -75,7 +77,7 @@ public class LogpieInitialization
 
     private void initSuperAdminAccount()
     {
-        final AdminDAO adminDAO = new AdminDAO();
+        final AdminDAO adminDAO = new AdminDAO(null);
         final List<Admin> adminList = adminDAO.getAllAdmins();
         // If there is no account, then create a super admin
         if (CollectionUtils.isEmpty(adminList))

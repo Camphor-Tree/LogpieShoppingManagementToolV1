@@ -20,6 +20,14 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class AdminDAO extends LogpieBaseDAO<Admin>
 {
+    /**
+     * @param admin
+     */
+    public AdminDAO(Admin admin)
+    {
+        super(admin);
+    }
+
     private static final Logger LOG = Logger.getLogger(AdminDAO.class);
 
     public static final String sAdminTableName = "Admins";
@@ -81,7 +89,7 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
     {
         final UpdateAdminUpdate updateAdminUpdate = new UpdateAdminUpdate(admin, sAdminTableName,
                 admin.getAdminId());
-        return super.updateData(updateAdminUpdate);
+        return super.updateData(updateAdminUpdate, "更新了用户档案");
     }
 
     public List<Admin> getAllAdmins()

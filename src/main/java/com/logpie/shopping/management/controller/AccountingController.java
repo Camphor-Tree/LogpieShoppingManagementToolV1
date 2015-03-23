@@ -30,6 +30,8 @@ import com.logpie.shopping.management.storage.OrderDAO;
  *
  */
 @Controller
+// TODO move to LogpieControllerImplementation. Don't forget to inject current
+// admin to DAOs
 public class AccountingController
 {
     private static final Logger LOG = Logger.getLogger(AccountingController.class);
@@ -126,7 +128,7 @@ public class AccountingController
     private Object handleOrderNumbers()
     {
         final ModelAndView orderNumberLineChartPage = new ModelAndView("accounting_linechart");
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie订单量 最近12天 走势图",
                 "日期", "订单数量");
         final List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(12);
@@ -153,7 +155,7 @@ public class AccountingController
     private Object handleOrderProfits()
     {
         final ModelAndView orderNumberLineChartPage = new ModelAndView("accounting_linechart");
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie 利润 最近12天 走势图",
                 "日期", "订单数量");
         final List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(12);
@@ -184,7 +186,7 @@ public class AccountingController
         final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各类别 所有订单数量分布图", "订单类别",
                 "订单数量");
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final List<Order> allOrderList = orderDAO.getAllOrders();
         final Map<String, Integer> orderInCategoryMap = AccountingLogic
                 .getOrdersInCategory(allOrderList);
@@ -224,7 +226,7 @@ public class AccountingController
         final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各品牌 所有订单数量分布图", "订单品牌",
                 "订单数量");
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final List<Order> allOrderList = orderDAO.getAllOrders();
         final Map<String, Integer> orderInBrandMap = AccountingLogic.getOrdersInBrand(allOrderList);
         final List<KeyValue> pieDataList = GoogleChartHelper.getPieDataListFromMap(orderInBrandMap);
@@ -259,7 +261,7 @@ public class AccountingController
         final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各代理 所有订单数量分布图", "订单类别",
                 "订单数量");
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final List<Order> allOrderList = orderDAO.getAllOrders();
         final Map<String, Integer> orderInAdminMap = AccountingLogic.getOrdersInAdmin(allOrderList);
         final List<KeyValue> pieDataList = GoogleChartHelper.getPieDataListFromMap(orderInAdminMap);
@@ -295,7 +297,7 @@ public class AccountingController
         final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各类别 所有订单利润分布图", "订单类别",
                 "订单利润");
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final List<Order> allOrderList = orderDAO.getAllOrders();
         final Map<String, Double> orderProfitInBrandMap = AccountingLogic
                 .getOrderProfitsInCategory(allOrderList);
@@ -333,7 +335,7 @@ public class AccountingController
         final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各代理 所有订单利润分布图", "订单代理",
                 "订单利润");
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final List<Order> allOrderList = orderDAO.getAllOrders();
         final Map<String, Double> orderInAdminMap = AccountingLogic
                 .getOrderProfitsInAdmin(allOrderList);
@@ -370,7 +372,7 @@ public class AccountingController
         final LogpiePieChart orderInCategoryPieChart1 = new LogpiePieChart("各品牌 所有订单利润分布图", "订单品牌",
                 "订单利润");
 
-        final OrderDAO orderDAO = new OrderDAO();
+        final OrderDAO orderDAO = new OrderDAO(null);
         final List<Order> allOrderList = orderDAO.getAllOrders();
         final Map<String, Double> orderProfitInBrandMap = AccountingLogic
                 .getOrderProfitsInBrand(allOrderList);

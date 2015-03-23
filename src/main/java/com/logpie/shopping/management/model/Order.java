@@ -215,7 +215,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         LogpiePackage package1 = null;
         if (packageId != null)
         {
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(null);
             package1 = packageDAO.getPackageById(String.valueOf(packageId));
         }
         final Float estimatedShippingFee = rs.getFloat(DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE);
@@ -283,14 +283,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         // OrderData is auto generated
         // final String orderDate = request.getParameter("OrderDate");
         final String orderProductId = request.getParameter("OrderProductId");
-        final ProductDAO productDAO = new ProductDAO();
+        final ProductDAO productDAO = new ProductDAO(null);
         final Product orderProduct = productDAO.getProductById(orderProductId);
         final Integer orderProductCount = Integer.parseInt(request
                 .getParameter("OrderProductCount"));
         final Float orderWeight = Float.parseFloat(request.getParameter("OrderWeight"));
         final String orderBuyerName = request.getParameter("OrderBuyerName");
         final String orderProxyId = request.getParameter("OrderProxyId");
-        final AdminDAO adminDAO = new AdminDAO();
+        final AdminDAO adminDAO = new AdminDAO(null);
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
         final Float orderProxyProfitPercentage = Float.parseFloat(request
                 .getParameter("OrderProxyProfitPercentage"));
@@ -308,7 +308,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderPackageId = request.getParameter("OrderPackageId");
         if (!StringUtils.isEmpty(orderPackageId))
         {
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(null);
             orderPackage = packageDAO.getPackageById(orderPackageId);
         }
         final Float orderEstimatedShippingFee = Float.parseFloat(request
@@ -357,14 +357,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         // OrderData is auto generated
         // final String orderDate = request.getParameter("OrderDate");
         final String orderProductId = request.getParameter("OrderProductId");
-        final ProductDAO productDAO = new ProductDAO();
+        final ProductDAO productDAO = new ProductDAO(null);
         final Product orderProduct = productDAO.getProductById(orderProductId);
         final Integer orderProductCount = Integer.parseInt(request
                 .getParameter("OrderProductCount"));
         final Float orderWeight = Float.parseFloat(request.getParameter("OrderWeight"));
         final String orderBuyerName = request.getParameter("OrderBuyerName");
         final String orderProxyId = request.getParameter("OrderProxyId");
-        final AdminDAO adminDAO = new AdminDAO();
+        final AdminDAO adminDAO = new AdminDAO(null);
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
         final Float orderProxyProfitPercentage = Float.parseFloat(request
                 .getParameter("OrderProxyProfitPercentage"));
@@ -377,7 +377,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         final Float orderCurrencyRate = Float.parseFloat(request.getParameter("OrderCurrencyRate"));
         final String orderPackageId = request.getParameter("OrderPackageId");
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(null);
         final LogpiePackage orderPackage = packageDAO.getPackageById(orderPackageId);
         final Float orderEstimatedShippingFee = Float.parseFloat(request
                 .getParameter("OrderEstimatedShippingFee"));
@@ -414,6 +414,134 @@ public class Order implements RowMapper<Order>, LogpieModel
         this.mOrderCustomerPaidMoney = this.mOrderSellingPrice;
         this.mOrderCompanyReceivedMoney = this.mOrderSellingPrice;
         this.mOrderIsProfitPaid = true;
+    }
+
+    public String getDeltaChange(final Order compareToOrder)
+    {
+        if (compareToOrder == null || !compareToOrder.getOrderId().equals(mOrderId))
+        {
+            return null;
+        }
+
+        if (compareTo(compareToOrder))
+        {
+            // Order doesn't change.
+            return null;
+        }
+        final StringBuilder changeStringBuilder = new StringBuilder();
+
+        changeStringBuilder.append("改动订单:" + mOrderId + " ");
+
+        if (!compareToOrder.mOrderIsProfitPaid.equals(mOrderIsProfitPaid))
+        {
+            changeStringBuilder.append("OrderIsProfitPaid：" + compareToOrder.mOrderIsProfitPaid
+                    + "->" + mOrderIsProfitPaid);
+        }
+        if (!compareToOrder.mOrderActualCost.equals(mOrderActualCost))
+        {
+            changeStringBuilder.append("OrderActualCost：" + compareToOrder.mOrderActualCost + "->"
+                    + mOrderActualCost);
+        }
+        if (!compareToOrder.mOrderActualShippingFee.equals(mOrderActualShippingFee))
+        {
+            changeStringBuilder.append("OrderActualShippingFee："
+                    + compareToOrder.mOrderActualShippingFee + "->" + mOrderActualShippingFee);
+        }
+        if (!compareToOrder.mOrderBuyerName.equals(mOrderBuyerName))
+        {
+            changeStringBuilder.append("mOrderBuyerName：" + compareToOrder.mOrderBuyerName + "->"
+                    + mOrderBuyerName);
+        }
+        if (!compareToOrder.mOrderCompanyReceivedMoney.equals(mOrderCompanyReceivedMoney))
+        {
+            changeStringBuilder
+                    .append("OrderCompanyReceivedMoney："
+                            + compareToOrder.mOrderCompanyReceivedMoney + "->"
+                            + mOrderCompanyReceivedMoney);
+        }
+        if (!compareToOrder.mOrderCurrencyRate.equals(mOrderCurrencyRate))
+        {
+            changeStringBuilder.append("OrderCurrencyRate：" + compareToOrder.mOrderCurrencyRate
+                    + "->" + mOrderCurrencyRate);
+        }
+        if (!compareToOrder.mOrderCustomerPaidMoney.equals(mOrderCustomerPaidMoney))
+        {
+            changeStringBuilder.append("OrderCustomerPaidMoney："
+                    + compareToOrder.mOrderCustomerPaidMoney + "->" + mOrderCustomerPaidMoney);
+        }
+        if (!compareToOrder.mOrderDate.equals(mOrderDate))
+        {
+            changeStringBuilder
+                    .append("OrderDate：" + compareToOrder.mOrderDate + "->" + mOrderDate);
+        }
+        if (!compareToOrder.mOrderEstimatedShippingFee.equals(mOrderEstimatedShippingFee))
+        {
+            changeStringBuilder
+                    .append("OrderEstimatedShippingFee："
+                            + compareToOrder.mOrderEstimatedShippingFee + "->"
+                            + mOrderEstimatedShippingFee);
+        }
+        if (!compareToOrder.mOrderFinalActualCost.equals(mOrderFinalActualCost))
+        {
+            changeStringBuilder.append("OrderFinalActualCost："
+                    + compareToOrder.mOrderFinalActualCost + "->" + mOrderFinalActualCost);
+        }
+        if (!compareToOrder.mOrderFinalProfit.equals(mOrderFinalProfit))
+        {
+            changeStringBuilder.append("OrderFinalProfit：" + compareToOrder.mOrderFinalProfit
+                    + "->" + mOrderFinalProfit);
+        }
+        if (!compareToOrder.mOrderNote.equals(mOrderNote))
+        {
+            changeStringBuilder
+                    .append("OrderNote：" + compareToOrder.mOrderNote + "->" + mOrderNote);
+        }
+        if (compareToOrder.mOrderPackage != null && mOrderPackage != null
+                && !compareToOrder.mOrderPackage.compareTo(mOrderPackage))
+        {
+            changeStringBuilder.append("OrderPackage："
+                    + compareToOrder.mOrderPackage.getPackageId() + "->"
+                    + mOrderPackage.getPackageId());
+        }
+        if (compareToOrder.mOrderPackage == null && mOrderPackage != null)
+        {
+            changeStringBuilder.append("OrderPackage：null" + "->" + mOrderPackage.getPackageId());
+        }
+
+        if (!compareToOrder.mOrderProduct.compareTo(mOrderProduct))
+        {
+            changeStringBuilder.append("OrderProduct："
+                    + compareToOrder.mOrderProduct.getProductId() + "->"
+                    + mOrderProduct.getProductId());
+        }
+        if (!compareToOrder.mOrderProductCount.equals(mOrderProductCount))
+        {
+            changeStringBuilder.append("OrderProductCount：" + compareToOrder.mOrderProductCount
+                    + "->" + mOrderProductCount);
+        }
+        if (!compareToOrder.mOrderProxy.compareTo(mOrderProxy))
+        {
+            changeStringBuilder.append("OrderProxy：" + compareToOrder.mOrderProxy.getAdminName()
+                    + "->" + mOrderProxy.getAdminName());
+        }
+        if (!compareToOrder.mOrderProxyProfitPercentage.equals(mOrderProxyProfitPercentage))
+        {
+            changeStringBuilder.append("OrderProxyProfitPercentage："
+                    + compareToOrder.mOrderProxyProfitPercentage + "->"
+                    + mOrderProxyProfitPercentage);
+        }
+        if (!compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice))
+        {
+            changeStringBuilder.append("OrderSellingPrice：" + compareToOrder.mOrderSellingPrice
+                    + "->" + mOrderSellingPrice);
+        }
+        if (!compareToOrder.mOrderWeight.equals(mOrderWeight))
+        {
+            changeStringBuilder.append("OrderWeight：" + compareToOrder.mOrderWeight + "->"
+                    + mOrderWeight);
+        }
+        return changeStringBuilder.toString();
+
     }
 
     /**
@@ -760,6 +888,41 @@ public class Order implements RowMapper<Order>, LogpieModel
     public void setOrderFinalActualCost(Float orderFinalActualCost)
     {
         mOrderFinalActualCost = orderFinalActualCost;
+    }
+
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof Order)
+        {
+            final Order compareToOrder = (Order) object;
+            if (compareToOrder.mOrderId.equals(mOrderId)
+                    && compareToOrder.mOrderIsProfitPaid.equals(mOrderIsProfitPaid)
+                    && compareToOrder.mOrderActualCost.equals(mOrderActualCost)
+                    && compareToOrder.mOrderActualShippingFee.equals(mOrderActualShippingFee)
+                    && compareToOrder.mOrderBuyerName.equals(mOrderBuyerName)
+                    && compareToOrder.mOrderCompanyReceivedMoney.equals(mOrderCompanyReceivedMoney)
+                    && compareToOrder.mOrderCurrencyRate.equals(mOrderCurrencyRate)
+                    && compareToOrder.mOrderCustomerPaidMoney.equals(mOrderCustomerPaidMoney)
+                    && compareToOrder.mOrderDate.equals(mOrderDate)
+                    && compareToOrder.mOrderEstimatedShippingFee.equals(mOrderEstimatedShippingFee)
+                    && compareToOrder.mOrderFinalActualCost.equals(mOrderFinalActualCost)
+                    && compareToOrder.mOrderFinalProfit.equals(mOrderFinalProfit)
+                    && compareToOrder.mOrderNote.equals(mOrderNote)
+                    && ((compareToOrder.mOrderPackage == null && mOrderPackage == null) || (compareToOrder.mOrderPackage != null && compareToOrder.mOrderPackage
+                            .compareTo(mOrderPackage)))
+                    && compareToOrder.mOrderProduct.compareTo(mOrderProduct)
+                    && compareToOrder.mOrderProductCount.equals(mOrderProductCount)
+                    && compareToOrder.mOrderProxy.compareTo(mOrderProxy)
+                    && compareToOrder.mOrderProxyProfitPercentage
+                            .equals(mOrderProxyProfitPercentage)
+                    && compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice)
+                    && compareToOrder.mOrderWeight.equals(mOrderWeight))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

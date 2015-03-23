@@ -90,7 +90,7 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         Image brandSizeChartImage = null;
         if (sizeChartImageId != null)
         {
-            final ImageDAO imageDAO = new ImageDAO();
+            final ImageDAO imageDAO = new ImageDAO(null);
             brandSizeChartImage = imageDAO.getImageById(String.valueOf(sizeChartImageId));
         }
         final Category brandCategory = Category.getCategoryByResultSet(rs, rowNum);
@@ -126,8 +126,8 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         {
             return null;
         }
-        final ImageDAO imageDAO = new ImageDAO();
-        final CategoryDAO categoryDAO = new CategoryDAO();
+        final ImageDAO imageDAO = new ImageDAO(null);
+        final CategoryDAO categoryDAO = new CategoryDAO(null);
 
         final String brandImageId = request.getParameter("BrandImageId");
         final Image brandImage = imageDAO.getImageById(brandImageId);
@@ -155,8 +155,8 @@ public class Brand implements RowMapper<Brand>, LogpieModel
             return null;
         }
         final String brandId = request.getParameter("BrandId");
-        final ImageDAO imageDAO = new ImageDAO();
-        final CategoryDAO categoryDAO = new CategoryDAO();
+        final ImageDAO imageDAO = new ImageDAO(null);
+        final CategoryDAO categoryDAO = new CategoryDAO(null);
 
         final String brandImageId = request.getParameter("BrandImageId");
         final Image brandImage = imageDAO.getImageById(brandImageId);
@@ -302,4 +302,23 @@ public class Brand implements RowMapper<Brand>, LogpieModel
         return DB_KEY_BRAND_ID;
     }
 
+    @Override
+    public boolean compareTo(Object object)
+    {
+        if (object instanceof Brand)
+        {
+            final Brand compareToBrand = (Brand) object;
+            if (compareToBrand.mBrandId.equals(mBrandId)
+                    && compareToBrand.mBrandEnglishName.equals(mBrandEnglishName)
+                    && compareToBrand.mBrandChineseName.equals(mBrandChineseName)
+                    && compareToBrand.mBrandCategory.compareTo(mBrandCategory)
+                    && compareToBrand.mBrandIsActivated.equals(mBrandIsActivated)
+                    && compareToBrand.mBrandImage.compareTo(mBrandImage)
+                    && compareToBrand.mBrandSizeChartImage.compareTo(mBrandSizeChartImage))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
