@@ -17,11 +17,11 @@
 	            </div>
 			</c:if>
 	        <div class="col-md-2">
-	            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-lg" style="margin-left:30px;font-size:16px;">新建基础数据</button>
+	            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-lg" style="font-size:16px;">新建基础数据</button>
 			</div>
 			<c:if test="${adminList != null}">
 			<div class="dropdown col-md-2">
-	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按代理筛选<span class="caret"></span></button>
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按代理筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 				  	<c:forEach items="${adminList}" var="admin">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?admin=${admin.adminId}" />">${admin.adminName}</a></li>
@@ -30,7 +30,7 @@
 			</div>
 			</c:if>
 			<div class="dropdown col-md-2">
-	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按购买者筛选<span class="caret"></span></button>
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按购买者筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
 				  	<c:forEach items="${orderBuyersList}" var="buyer">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?buyer=${buyer}" />">${buyer}</a></li>
@@ -38,7 +38,7 @@
 				  </ul>
 			</div>
 			<div class="dropdown col-md-2">
-	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">按包裹筛选<span class="caret"></span></button>
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按包裹筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
 				  	<c:forEach items="${packageList}" var="orderPackage">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?packageId=${orderPackage.packageId}" />">${orderPackage.packageId}-${orderPackage.packageProxyName}-${fn:substring(orderPackage.packageDate,5,10)}</a></li>
@@ -55,6 +55,9 @@
 				  </ul>
 			</div>
 			</c:if>
+			<div class="col-md-2">
+	            <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">显示所有订单</a>
+			</div>
         </div>  		
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">

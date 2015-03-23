@@ -27,12 +27,13 @@ public class OrderController
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
             @RequestParam(value = "admin", required = false) final String adminId,
             @RequestParam(value = "buyer", required = false) final String buyerName,
-            @RequestParam(value = "packageId", required = false) final String packageId)
+            @RequestParam(value = "packageId", required = false) final String packageId,
+            @RequestParam(value = "showAll", required = false) final Boolean showAll)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showOrderManagementPage(request, httpResponse,
-                redirectAttrs, adminId, buyerName, packageId);
+                redirectAttrs, adminId, buyerName, packageId, showAll);
     }
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)

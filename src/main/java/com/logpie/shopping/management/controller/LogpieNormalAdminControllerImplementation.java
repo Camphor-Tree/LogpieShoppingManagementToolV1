@@ -30,7 +30,7 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
      */
     @Override
     Object showPackageManagementPage(HttpServletRequest request, HttpServletResponse httpResponse,
-            RedirectAttributes redirectAttrs)
+            RedirectAttributes redirectAttrs, final Boolean showAll)
     {
         return showNoPermissionPage();
     }

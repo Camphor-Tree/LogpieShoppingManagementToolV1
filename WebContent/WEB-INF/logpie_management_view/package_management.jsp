@@ -17,6 +17,10 @@
                     <strong>${action_message_fail}</strong>
             </div>
 		</c:if>
+		
+	    <div class="col-md-2" style="margin-bottom:10px">
+	        <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/package_management?showAll=true" />">显示所有包裹</a>
+		</div>
    		
       <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">

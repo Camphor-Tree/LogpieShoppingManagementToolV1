@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.logpie.shopping.management.auth.controller.PageHistoryHandler;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
+import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
@@ -61,9 +62,8 @@ public abstract class LogpieControllerImplementation
      */
     public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            @RequestParam(value = "admin", required = false) final String adminId,
-            @RequestParam(value = "buyer", required = false) final String buyerName,
-            @RequestParam(value = "packageId", required = false) final String packageId)
+            final String adminId, final String buyerName, final String packageId,
+            final Boolean showAll)
     {
         LOG.debug("Authenticate cookie is valid. Going to order manage page.");
         final ModelAndView orderManagementPage = new ModelAndView("order_management");
@@ -121,6 +121,11 @@ public abstract class LogpieControllerImplementation
         else
         {
             orderList = injectOrderManagementOrderList();
+        }
+
+        if (showAll == null || showAll == false)
+        {
+            orderList = filterOutOrdersAlreadySettledDown(orderList);
         }
         orderManagementPage.addObject("orderList", orderList);
 
@@ -385,7 +390,8 @@ public abstract class LogpieControllerImplementation
      * The package info should only be viewed and modified by super admin.
      */
     abstract Object showPackageManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs);
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
+            final Boolean showAll);
 
     public Object showPackageDetailPage(final HttpServletRequest request,
             @RequestParam("id") String packageId)
@@ -685,4 +691,18 @@ public abstract class LogpieControllerImplementation
 
     }
 
+    private List<Order> filterOutOrdersAlreadySettledDown(final List<Order> orderList)
+    {
+        final LogpieSettleDownOrderLogic settleDownLogic = new LogpieSettleDownOrderLogic();
+        final List<Order> orderAfterFilter = new ArrayList<Order>();
+        for (final Order order : orderList)
+        {
+            // If haven't settle down, then add to the list
+            if (settleDownLogic.isOrderNeedSettleDown(order))
+            {
+                orderAfterFilter.add(order);
+            }
+        }
+        return orderAfterFilter;
+    }
 }

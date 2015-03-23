@@ -19,12 +19,13 @@ public class PackageController
 {
     @RequestMapping(value = "/package_management", method = RequestMethod.GET)
     public Object showPackageManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
+            @RequestParam(value = "showAll", required = false) final Boolean showAll)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showPackageManagementPage(request, httpResponse,
-                redirectAttrs);
+                redirectAttrs, showAll);
     }
 
     /**

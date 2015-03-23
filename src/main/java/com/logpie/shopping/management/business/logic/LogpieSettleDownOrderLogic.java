@@ -36,9 +36,9 @@ public class LogpieSettleDownOrderLogic
         return false;
     }
 
-    public boolean isOrderNeedClearing(final Order order)
+    public boolean isOrderNeedSettleDown(final Order order)
     {
-        return !isOrderNeedClearing(order);
+        return !isOrderAlreadyCleared(order);
     }
 
     private boolean floatEquals(final float numberA, final float numberB)

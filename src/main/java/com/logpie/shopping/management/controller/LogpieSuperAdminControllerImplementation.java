@@ -39,7 +39,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
 
     @Override
     public Object showPackageManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
+            final Boolean showAll)
     {
         LOG.debug("Authenticate cookie is valid. Going to package management page.");
 
@@ -59,7 +60,12 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
                     .addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
         }
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO();
-        final List<LogpiePackage> packageList = packageDAO.getAllPackage();
+        List<LogpiePackage> packageList = packageDAO.getAllPackage();
+
+        if (showAll == null || showAll == false)
+        {
+            packageList = filterOutPackageAlreadyReceived(packageList);
+        }
         packageManagementPage.addObject("packageList", packageList);
 
         return packageManagementPage;
@@ -298,5 +304,20 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                 messageBuilder.toString());
         return "redirect:/order/settledown?adminId=" + adminId;
+    }
+
+    private List<LogpiePackage> filterOutPackageAlreadyReceived(
+            final List<LogpiePackage> packageList)
+    {
+        final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
+        for (final LogpiePackage logpiePackage : packagesAfterFilter)
+        {
+            // If haven't received, then add to the list
+            if (!logpiePackage.getPackageIsDelivered())
+            {
+                packagesAfterFilter.add(logpiePackage);
+            }
+        }
+        return packagesAfterFilter;
     }
 }
