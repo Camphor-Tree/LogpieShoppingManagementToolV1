@@ -65,6 +65,11 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         if (showAll == null || showAll == false)
         {
             packageList = filterOutPackageAlreadyReceived(packageList);
+            packageManagementPage.addObject("showAll", false);
+        }
+        else
+        {
+            packageManagementPage.addObject("showAll", true);
         }
         packageManagementPage.addObject("packageList", packageList);
 

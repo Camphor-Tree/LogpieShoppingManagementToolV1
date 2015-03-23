@@ -126,7 +126,13 @@ public abstract class LogpieControllerImplementation
         if (showAll == null || showAll == false)
         {
             orderList = filterOutOrdersAlreadySettledDown(orderList);
+            orderManagementPage.addObject("showAll", false);
         }
+        else
+        {
+            orderManagementPage.addObject("showAll", true);
+        }
+
         orderManagementPage.addObject("orderList", orderList);
 
         // Use all the orders list to generate the buyers list.

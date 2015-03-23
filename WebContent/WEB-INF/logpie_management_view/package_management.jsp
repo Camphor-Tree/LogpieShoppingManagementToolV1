@@ -5,7 +5,7 @@
 <tag:logpie_common_template>
     <jsp:body>
         <div class="row" style="margin-bottom:10px">
-        	<h3>欢迎来到 包裹管理</h3>
+        	<h3>欢迎来到 包裹管理 （默认只显示未到包裹）</h3>
         </div>
         <c:if test="${action_message_success !=null}">
   	        <div class="alert alert-success" role="alert">
@@ -19,7 +19,13 @@
 		</c:if>
 		
 	    <div class="col-md-2" style="margin-bottom:10px">
+	    	<c:if test="${showAll==false}">
 	        <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/package_management?showAll=true" />">显示所有包裹</a>
+	        </c:if>
+	        <c:if test="${showAll==true}">
+	        <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/package_management" />">显示未到包裹</a>
+	        </c:if>
+
 		</div>
    		
       <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">

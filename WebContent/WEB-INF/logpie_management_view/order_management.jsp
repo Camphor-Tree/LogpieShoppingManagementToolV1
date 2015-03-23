@@ -56,7 +56,12 @@
 			</div>
 			</c:if>
 			<div class="col-md-2">
+				<c:if test="${showAll==false}">
 	            <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">显示所有订单</a>
+	            </c:if>
+	            <c:if test="${showAll==true}">
+	            <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">显示未结算订单</a>
+	            </c:if>
 			</div>
         </div>  		
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
