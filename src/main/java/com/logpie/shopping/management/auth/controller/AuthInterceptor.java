@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.omg.CORBA.SystemException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.logpie.shopping.management.auth.logic.AuthenticationHelper;
@@ -55,6 +56,13 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
                 LOG.info("Meeting calculator url, rendering the calculator page");
                 return true;
             }
+
+            String requestUrl = request.getRequestURL().toString();
+            if (!StringUtils.isEmpty(request.getQueryString()))
+            {
+                requestUrl += "?" + request.getQueryString();
+            }
+            PageHistoryHandler.handlePageHistory(request, response, requestUrl);
 
             final boolean authSuccess = AuthenticationHelper.handleAuthentication(request);
             if (authSuccess)

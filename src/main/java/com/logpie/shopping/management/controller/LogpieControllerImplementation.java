@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.logpie.shopping.management.auth.controller.PageHistoryHandler;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
 import com.logpie.shopping.management.model.Admin;
@@ -304,6 +305,12 @@ public abstract class LogpieControllerImplementation
         {
             redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                     "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 失败");
+        }
+
+        final String previous1Url = PageHistoryHandler.getPrevious1Url(request);
+        if (previous1Url != null)
+        {
+            return "redirect:" + previous1Url;
         }
 
         return "redirect:/order_management";
