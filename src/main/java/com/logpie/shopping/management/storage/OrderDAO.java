@@ -155,6 +155,7 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      */
     public boolean updateOrderProfile(final Order order)
     {
+        // Log the change.
         final Order previousOrder = this.getOrderById(order.getOrderId());
         final String updateLog = order.getDeltaChange(previousOrder);
         final ModifyOrderUpdate updateOrderUpdate = new ModifyOrderUpdate(order, sOrderTableName,

@@ -317,7 +317,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             final List<LogpiePackage> packageList)
     {
         final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
-        for (final LogpiePackage logpiePackage : packagesAfterFilter)
+        for (final LogpiePackage logpiePackage : packageList)
         {
             // If haven't received, then add to the list
             if (!logpiePackage.getPackageIsDelivered())

@@ -435,113 +435,113 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (!compareToOrder.mOrderIsProfitPaid.equals(mOrderIsProfitPaid))
         {
             changeStringBuilder.append("OrderIsProfitPaid：" + compareToOrder.mOrderIsProfitPaid
-                    + "->" + mOrderIsProfitPaid);
+                    + "->" + mOrderIsProfitPaid + " ");
         }
         if (!compareToOrder.mOrderActualCost.equals(mOrderActualCost))
         {
             changeStringBuilder.append("OrderActualCost：" + compareToOrder.mOrderActualCost + "->"
-                    + mOrderActualCost);
+                    + mOrderActualCost + " ");
         }
         if (!compareToOrder.mOrderActualShippingFee.equals(mOrderActualShippingFee))
         {
-            changeStringBuilder.append("OrderActualShippingFee："
-                    + compareToOrder.mOrderActualShippingFee + "->" + mOrderActualShippingFee);
+            changeStringBuilder
+                    .append("OrderActualShippingFee：" + compareToOrder.mOrderActualShippingFee
+                            + "->" + mOrderActualShippingFee + " ");
         }
         if (!compareToOrder.mOrderBuyerName.equals(mOrderBuyerName))
         {
             changeStringBuilder.append("mOrderBuyerName：" + compareToOrder.mOrderBuyerName + "->"
-                    + mOrderBuyerName);
+                    + mOrderBuyerName + " ");
         }
         if (!compareToOrder.mOrderCompanyReceivedMoney.equals(mOrderCompanyReceivedMoney))
         {
-            changeStringBuilder
-                    .append("OrderCompanyReceivedMoney："
-                            + compareToOrder.mOrderCompanyReceivedMoney + "->"
-                            + mOrderCompanyReceivedMoney);
+            changeStringBuilder.append("OrderCompanyReceivedMoney："
+                    + compareToOrder.mOrderCompanyReceivedMoney + "->" + mOrderCompanyReceivedMoney
+                    + " ");
         }
         if (!compareToOrder.mOrderCurrencyRate.equals(mOrderCurrencyRate))
         {
             changeStringBuilder.append("OrderCurrencyRate：" + compareToOrder.mOrderCurrencyRate
-                    + "->" + mOrderCurrencyRate);
+                    + "->" + mOrderCurrencyRate + " ");
         }
         if (!compareToOrder.mOrderCustomerPaidMoney.equals(mOrderCustomerPaidMoney))
         {
-            changeStringBuilder.append("OrderCustomerPaidMoney："
-                    + compareToOrder.mOrderCustomerPaidMoney + "->" + mOrderCustomerPaidMoney);
+            changeStringBuilder
+                    .append("OrderCustomerPaidMoney：" + compareToOrder.mOrderCustomerPaidMoney
+                            + "->" + mOrderCustomerPaidMoney + " ");
         }
         if (!compareToOrder.mOrderDate.equals(mOrderDate))
         {
-            changeStringBuilder
-                    .append("OrderDate：" + compareToOrder.mOrderDate + "->" + mOrderDate);
+            changeStringBuilder.append("OrderDate：" + compareToOrder.mOrderDate + "->" + mOrderDate
+                    + " ");
         }
         if (!compareToOrder.mOrderEstimatedShippingFee.equals(mOrderEstimatedShippingFee))
         {
-            changeStringBuilder
-                    .append("OrderEstimatedShippingFee："
-                            + compareToOrder.mOrderEstimatedShippingFee + "->"
-                            + mOrderEstimatedShippingFee);
+            changeStringBuilder.append("OrderEstimatedShippingFee："
+                    + compareToOrder.mOrderEstimatedShippingFee + "->" + mOrderEstimatedShippingFee
+                    + " ");
         }
         if (!compareToOrder.mOrderFinalActualCost.equals(mOrderFinalActualCost))
         {
             changeStringBuilder.append("OrderFinalActualCost："
-                    + compareToOrder.mOrderFinalActualCost + "->" + mOrderFinalActualCost);
+                    + compareToOrder.mOrderFinalActualCost + "->" + mOrderFinalActualCost + " ");
         }
         if (!compareToOrder.mOrderFinalProfit.equals(mOrderFinalProfit))
         {
             changeStringBuilder.append("OrderFinalProfit：" + compareToOrder.mOrderFinalProfit
-                    + "->" + mOrderFinalProfit);
+                    + "->" + mOrderFinalProfit + " ");
         }
         if (!compareToOrder.mOrderNote.equals(mOrderNote))
         {
-            changeStringBuilder
-                    .append("OrderNote：" + compareToOrder.mOrderNote + "->" + mOrderNote);
+            changeStringBuilder.append("OrderNote：" + compareToOrder.mOrderNote + "->" + mOrderNote
+                    + " ");
         }
         if (compareToOrder.mOrderPackage != null && mOrderPackage != null
                 && !compareToOrder.mOrderPackage.compareTo(mOrderPackage))
         {
             changeStringBuilder.append("OrderPackage："
                     + compareToOrder.mOrderPackage.getPackageId() + "->"
-                    + mOrderPackage.getPackageId());
+                    + mOrderPackage.getPackageId() + " ");
         }
         if (compareToOrder.mOrderPackage == null && mOrderPackage != null)
         {
-            changeStringBuilder.append("OrderPackage：null" + "->" + mOrderPackage.getPackageId());
+            changeStringBuilder.append("OrderPackage：null" + "->" + mOrderPackage.getPackageId()
+                    + " ");
         }
 
         if (!compareToOrder.mOrderProduct.compareTo(mOrderProduct))
         {
             changeStringBuilder.append("OrderProduct："
-                    + compareToOrder.mOrderProduct.getProductId() + "->"
-                    + mOrderProduct.getProductId());
+                    + compareToOrder.mOrderProduct.getProductName() + "->"
+                    + mOrderProduct.getProductName() + " ");
         }
         if (!compareToOrder.mOrderProductCount.equals(mOrderProductCount))
         {
             changeStringBuilder.append("OrderProductCount：" + compareToOrder.mOrderProductCount
-                    + "->" + mOrderProductCount);
+                    + "->" + mOrderProductCount + " ");
         }
         if (!compareToOrder.mOrderProxy.compareTo(mOrderProxy))
         {
             changeStringBuilder.append("OrderProxy：" + compareToOrder.mOrderProxy.getAdminName()
-                    + "->" + mOrderProxy.getAdminName());
+                    + "->" + mOrderProxy.getAdminName() + " ");
         }
         if (!compareToOrder.mOrderProxyProfitPercentage.equals(mOrderProxyProfitPercentage))
         {
             changeStringBuilder.append("OrderProxyProfitPercentage："
                     + compareToOrder.mOrderProxyProfitPercentage + "->"
-                    + mOrderProxyProfitPercentage);
+                    + mOrderProxyProfitPercentage + " ");
         }
         if (!compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice))
         {
             changeStringBuilder.append("OrderSellingPrice：" + compareToOrder.mOrderSellingPrice
-                    + "->" + mOrderSellingPrice);
+                    + "->" + mOrderSellingPrice + " ");
         }
         if (!compareToOrder.mOrderWeight.equals(mOrderWeight))
         {
             changeStringBuilder.append("OrderWeight：" + compareToOrder.mOrderWeight + "->"
-                    + mOrderWeight);
+                    + mOrderWeight + " ");
         }
         return changeStringBuilder.toString();
-
     }
 
     /**

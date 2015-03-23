@@ -61,9 +61,11 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
      */
     public boolean updateLogpiePackageProfile(final LogpiePackage logpiePackage)
     {
+        final LogpiePackage previousPackage = this.getPackageById(logpiePackage.getPackageId());
+        final String updateLog = logpiePackage.getDeltaChange(previousPackage);
         final UpdateLogpiePackageUpdate updateLogpiePackageUpdate = new UpdateLogpiePackageUpdate(
                 logpiePackage, sPackageTableName, logpiePackage.getPackageId());
-        return super.updateData(updateLogpiePackageUpdate, "更新了包裹信息");
+        return super.updateData(updateLogpiePackageUpdate, updateLog);
     }
 
     /**

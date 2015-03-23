@@ -244,6 +244,93 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
                 packageIsDelivered, packageNote);
     }
 
+    public String getDeltaChange(final LogpiePackage compareToLogpiePackage)
+    {
+        if (compareToLogpiePackage == null
+                || !compareToLogpiePackage.getPackageId().equals(mPackageId))
+        {
+            return null;
+        }
+
+        if (compareTo(compareToLogpiePackage))
+        {
+            // Package doesn't change.
+            return null;
+        }
+        final StringBuilder changeStringBuilder = new StringBuilder();
+
+        changeStringBuilder.append("改动包裹:" + mPackageId + " ");
+
+        if (!compareToLogpiePackage.mPackageIsDelivered.equals(mPackageIsDelivered))
+        {
+            changeStringBuilder.append("PackageIsDelivered："
+                    + compareToLogpiePackage.mPackageIsDelivered + "->" + mPackageIsDelivered);
+        }
+        if (!compareToLogpiePackage.mPackageIsShipped.equals(mPackageIsShipped))
+        {
+            changeStringBuilder.append("PackageIsShipped："
+                    + compareToLogpiePackage.mPackageIsShipped + "->" + mPackageIsShipped);
+        }
+        if (!compareToLogpiePackage.mPackageAdditionalCustomTaxFee
+                .equals(mPackageAdditionalCustomTaxFee))
+        {
+            changeStringBuilder.append("PackageAdditionalCustomTaxFee："
+                    + compareToLogpiePackage.mPackageAdditionalCustomTaxFee + "->"
+                    + mPackageAdditionalCustomTaxFee);
+        }
+        if (!compareToLogpiePackage.mPackageAdditionalInsuranceFee
+                .equals(mPackageAdditionalInsuranceFee))
+        {
+            changeStringBuilder.append("PackageAdditionalInsuranceFee："
+                    + compareToLogpiePackage.mPackageAdditionalInsuranceFee + "->"
+                    + mPackageAdditionalInsuranceFee);
+        }
+        if (!compareToLogpiePackage.mPackageDate.equals(mPackageDate))
+        {
+            changeStringBuilder.append("PackageDate：" + compareToLogpiePackage.mPackageDate + "->"
+                    + mPackageDate);
+        }
+        if (!compareToLogpiePackage.mPackageDestination.equals(mPackageDestination))
+        {
+            changeStringBuilder.append("PackageDestination："
+                    + compareToLogpiePackage.mPackageDestination + "->" + mPackageDestination);
+        }
+        if (!compareToLogpiePackage.mPackageNote.equals(mPackageNote))
+        {
+            changeStringBuilder.append("PackageNote：" + compareToLogpiePackage.mPackageNote + "->"
+                    + mPackageNote);
+        }
+        if (!compareToLogpiePackage.mPackageProxyName.equals(mPackageProxyName))
+        {
+            changeStringBuilder.append("PackageProxyName："
+                    + compareToLogpiePackage.mPackageProxyName + "->" + mPackageProxyName);
+        }
+        if (!compareToLogpiePackage.mPackageReceiver.equals(mPackageReceiver))
+        {
+            changeStringBuilder.append("PackageReceiver：" + compareToLogpiePackage.mPackageReceiver
+                    + "->" + mPackageReceiver);
+        }
+        if (!compareToLogpiePackage.mPackageTrackingNumber.equals(mPackageTrackingNumber))
+        {
+            changeStringBuilder
+                    .append("PackageTrackingNumber："
+                            + compareToLogpiePackage.mPackageTrackingNumber + "->"
+                            + mPackageTrackingNumber);
+        }
+        if (!compareToLogpiePackage.mPackageWeight.equals(mPackageWeight))
+        {
+            changeStringBuilder.append("PackageWeight：" + compareToLogpiePackage.mPackageWeight
+                    + "->" + mPackageWeight);
+        }
+        if (!compareToLogpiePackage.mPackgeShippingFee.equals(mPackgeShippingFee))
+        {
+            changeStringBuilder.append("PackgeShippingFee："
+                    + compareToLogpiePackage.mPackgeShippingFee + "->" + mPackgeShippingFee);
+        }
+
+        return changeStringBuilder.toString();
+    }
+
     /**
      * @return the packageId
      */
