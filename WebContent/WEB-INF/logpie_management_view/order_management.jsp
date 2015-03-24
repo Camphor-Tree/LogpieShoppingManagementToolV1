@@ -24,7 +24,7 @@
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按代理筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 				  	<c:forEach items="${adminList}" var="admin">
-				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?admin=${admin.adminId}" />">${admin.adminName}</a></li>
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:if test="${showAll==false}"><c:url value="/order_management?admin=${admin.adminId}" /></c:if><c:if test="${showAll==true}"><c:url value="/order_management?admin=${admin.adminId}&showAll=true" /></c:if>">${admin.adminName}</a></li>
 					</c:forEach>
 				  </ul>
 			</div>
@@ -33,22 +33,22 @@
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按购买者筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
 				  	<c:forEach items="${orderBuyersList}" var="buyer">
-				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?buyer=${buyer}" />">${buyer}</a></li>
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:if test="${showAll==false}"><c:url value="/order_management?buyer=${buyer}" /></c:if><c:if test="${showAll==true}"><c:url value="/order_management?buyer=${buyer}&showAll=true" /></c:if>">${buyer}</a></li>
 					</c:forEach>
 				  </ul>
 			</div>
 			<div class="dropdown col-md-2">
-	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按包裹筛选<span class="caret"></span></button>
-				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按包裹筛选<span class="caret"></span></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
 				  	<c:forEach items="${packageList}" var="orderPackage">
-				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order_management?packageId=${orderPackage.packageId}" />">${orderPackage.packageId}-${orderPackage.packageProxyName}-${fn:substring(orderPackage.packageDate,5,10)}</a></li>
+				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:if test="${showAll==false}"><c:url value="/order_management?packageId=${orderPackage.packageId}" /></c:if><c:if test="${showAll==true}"><c:url value="/order_management?packageId=${orderPackage.packageId}&showAll=true" /></c:if>">${orderPackage.packageId}-${orderPackage.packageProxyName}-${fn:substring(orderPackage.packageDate,5,10)}</a></li>
 					</c:forEach>
 				  </ul>
 			</div>
 			<c:if test="${adminList != null}">
 			<div class="dropdown col-md-2">
-	  			<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">快捷结算<span class="caret"></span></button>
-				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+	  			<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">快捷结算<span class="caret"></span></button>
+				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu4">
 				  	<c:forEach items="${adminList}" var="admin">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order/settledown?adminId=${admin.adminId}" />">${admin.adminName}</a></li>
 					</c:forEach>
