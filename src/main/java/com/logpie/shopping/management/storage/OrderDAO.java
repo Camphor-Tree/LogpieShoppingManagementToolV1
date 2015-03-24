@@ -14,6 +14,7 @@ import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
+import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.util.CollectionUtils;
@@ -200,10 +201,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetOrdersForProxyQuery extends LogpieBaseQueryAllTemplateQuery<Order>
@@ -228,10 +235,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetOrdersForBuyerNameQuery extends LogpieBaseQueryAllTemplateQuery<Order>
@@ -256,10 +269,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetOrdersForPackageQuery extends LogpieBaseQueryAllTemplateQuery<Order>
@@ -284,10 +303,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetOrdersWithinNMonthsQuery extends LogpieBaseQueryAllTemplateQuery<Order>
@@ -312,10 +337,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetOrdersWithinNDaysQuery extends LogpieBaseQueryAllTemplateQuery<Order>
@@ -340,10 +371,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetAllOrdersInMonthQuery extends LogpieBaseQueryAllTemplateQuery<Order>
@@ -372,10 +409,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class GetOrderByIdQuery extends LogpieBaseQuerySingleRecordByIdTemplateQuery<Order>
@@ -395,10 +438,16 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
     }
 
     private class ModifyOrderUpdate extends LogpieBaseUpdateRecordTemplateUpdate<Order>
@@ -443,7 +492,6 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     private static Map<String, String> getForeignKeyConnectionTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(sNonAliasPrefix + sOrderTableName, sOrderTableName);
         // alias for multiple foreign key connection
         tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
 
@@ -459,5 +507,15 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,
                 CategoryDAO.sCategoryTableName);
         return tableMap;
+    }
+
+    // This is to handle the foregin key package may be null
+    private static Set<String> getOrderLeftJoinCondition()
+    {
+        final Set<String> leftJoinCondition = new HashSet<String>();
+        leftJoinCondition.add("LEFT JOIN " + LogpiePackageDAO.sPackageTableName + " ON "
+                + OrderDAO.sOrderTableName + "." + Order.DB_KEY_ORDER_PACKAGE_ID + "="
+                + LogpiePackageDAO.sPackageTableName + "." + LogpiePackage.DB_KEY_PACKAGE_ID);
+        return leftJoinCondition;
     }
 }

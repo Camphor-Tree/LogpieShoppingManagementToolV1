@@ -16,8 +16,12 @@ public interface LogpieDataQuery<T>
 
     public Set<String> getQueryConditions();
 
+    public String getMainQueryTable();
+
     // table alias => table names(used in multiple foreign keys connections)
-    public Map<String, String> getQueryTables();
+    public Map<String, String> getJoinTables();
+
+    public Set<String> getLeftJoinCondition();
 
     public Set<String> getOrderBy();
 }

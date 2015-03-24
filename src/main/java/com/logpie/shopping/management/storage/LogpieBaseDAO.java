@@ -67,15 +67,16 @@ public class LogpieBaseDAO<T>
         final JdbcTemplate jdbcTemplate = LogpieDataSourceFactory.getJdbcTemplate();
         final RowMapper<T> resultMapper = query.getQueryResultMapper();
         final Set<String> queryConditions = query.getQueryConditions();
-        final Map<String, String> queryTables = query.getQueryTables();
+        final Map<String, String> joinTables = query.getJoinTables();
         final Set<String> queryOrderBy = query.getOrderBy();
+        final String mainTable = query.getMainQueryTable();
+        // Left join condition is used to handle the situation foreign key may
+        // be null.
+        final Set<String> leftJoinCondition = query.getLeftJoinCondition();
 
-        if (queryTables == null || queryTables.size() == 0)
-        {
-            throw new IllegalArgumentException("The query talbe cannot be null or empty");
-        }
-        final String queryTablesSql = buildQueryTablesSQL(queryTables);
-        final String querySQL = buildQuerySQL(queryConditions, queryTablesSql, queryOrderBy);
+        final String joinTablesSql = buildJoinTablesSQL(joinTables, leftJoinCondition);
+        final String querySQL = buildQuerySQL(mainTable, queryConditions, joinTablesSql,
+                queryOrderBy);
         LOG.debug("querySQL is:" + querySQL);
         final List<T> results = jdbcTemplate.query(querySQL, resultMapper);
         return results;
@@ -102,22 +103,25 @@ public class LogpieBaseDAO<T>
     }
 
     /**
+     * 
+     * @param mainTable
      * @param queryConditions
      * @param queryTablesSql
+     * @param queryOrderBy
      * @return
      */
-    private String buildQuerySQL(final Set<String> queryConditions, final String queryTablesSql,
-            final Set<String> queryOrderBy)
+    private String buildQuerySQL(final String mainTable, final Set<String> queryConditions,
+            final String joinTablesSql, final Set<String> queryOrderBy)
     {
-        String querySQL;
+        String querySQL = sBaseQuerySQL + mainTable + " ";
+        if (joinTablesSql != null)
+        {
+            querySQL += joinTablesSql;
+        }
         if (!CollectionUtils.isEmpty(queryConditions))
         {
             final String queryConditionSql = buildConditionsSQL(queryConditions);
-            querySQL = sBaseQuerySQL + queryTablesSql + queryConditionSql;
-        }
-        else
-        {
-            querySQL = sBaseQuerySQL + queryTablesSql;
+            querySQL += queryConditionSql;
         }
 
         if (!CollectionUtils.isEmpty(queryOrderBy))
@@ -149,15 +153,20 @@ public class LogpieBaseDAO<T>
     }
 
     /**
-     * @param queryTables
+     * @param joinTables
      */
-    private String buildQueryTablesSQL(final Map<String, String> queryTables)
+    private String buildJoinTablesSQL(final Map<String, String> joinTables,
+            final Set<String> leftJoinCondition)
     {
-        final StringBuilder queryTablesBuilder = new StringBuilder();
-        final int countTables = queryTables.size();
-        int i = 0;
-        for (final Map.Entry<String, String> tableEntry : queryTables.entrySet())
+        if (joinTables == null || joinTables.size() == 0)
         {
+            return null;
+        }
+        final StringBuilder queryTablesBuilder = new StringBuilder();
+        queryTablesBuilder.append(" ");
+        for (final Map.Entry<String, String> tableEntry : joinTables.entrySet())
+        {
+            queryTablesBuilder.append("JOIN ");
             // value is the real table name
             queryTablesBuilder.append(tableEntry.getValue());
             // Append table name alias, which is used in multiple foreign keys
@@ -168,12 +177,14 @@ public class LogpieBaseDAO<T>
                 // key is the alias name, alias names won't be duplicate
                 queryTablesBuilder.append(tableEntry.getKey());
             }
-            if (++i < countTables)
+            queryTablesBuilder.append(" ");
+        }
+
+        if (!CollectionUtils.isEmpty(leftJoinCondition))
+        {
+            for (final String leftJoin : leftJoinCondition)
             {
-                queryTablesBuilder.append(",");
-            }
-            else
-            {
+                queryTablesBuilder.append(leftJoin);
                 queryTablesBuilder.append(" ");
             }
         }

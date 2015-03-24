@@ -1,7 +1,6 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -131,15 +130,25 @@ public class AdminDAO extends LogpieBaseDAO<Admin>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
-            final Map<String, String> tableMap = new HashMap<String, String>();
-            tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
-            return tableMap;
+            return null;
         }
 
         @Override
         public Set<String> getOrderBy()
+        {
+            return null;
+        }
+
+        @Override
+        public String getMainQueryTable()
+        {
+            return sAdminTableName;
+        }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
         {
             return null;
         }

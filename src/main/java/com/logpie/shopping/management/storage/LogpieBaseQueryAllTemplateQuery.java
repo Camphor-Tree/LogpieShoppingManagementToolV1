@@ -39,10 +39,9 @@ public class LogpieBaseQueryAllTemplateQuery<T> implements LogpieDataQuery<T>
     }
 
     @Override
-    public Map<String, String> getQueryTables()
+    public Map<String, String> getJoinTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(LogpieBaseDAO.sNonAliasPrefix + mTableName, mTableName);
         return tableMap;
     }
 
@@ -56,6 +55,18 @@ public class LogpieBaseQueryAllTemplateQuery<T> implements LogpieDataQuery<T>
             orderBySet.add(model.getPrimaryKey() + " DESC");
             return orderBySet;
         }
+        return null;
+    }
+
+    @Override
+    public String getMainQueryTable()
+    {
+        return mTableName;
+    }
+
+    @Override
+    public Set<String> getLeftJoinCondition()
+    {
         return null;
     }
 }

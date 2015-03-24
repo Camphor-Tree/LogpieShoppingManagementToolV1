@@ -83,7 +83,7 @@ public class DBLogDAO extends LogpieBaseDAO<DBLog>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
@@ -100,7 +100,6 @@ public class DBLogDAO extends LogpieBaseDAO<DBLog>
     public static Map<String, String> getForeignKeyConnectionTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(sNonAliasPrefix + sDBLogTableName, sDBLogTableName);
         tableMap.put(sNonAliasPrefix + AdminDAO.sAdminTableName, AdminDAO.sAdminTableName);
         return tableMap;
     }

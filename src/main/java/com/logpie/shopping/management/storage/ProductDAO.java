@@ -131,7 +131,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
@@ -162,7 +162,7 @@ public class ProductDAO extends LogpieBaseDAO<Product>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
@@ -199,7 +199,6 @@ public class ProductDAO extends LogpieBaseDAO<Product>
     public static Map<String, String> getForeignKeyConnectionTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(sNonAliasPrefix + sProductTableName, sProductTableName);
         // alias for multiple foreign key connection
         tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, BrandDAO.sBrandTableName);
         tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,

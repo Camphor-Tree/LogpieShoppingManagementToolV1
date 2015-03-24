@@ -139,6 +139,10 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         }
 
         final String packageId = rs.getString(DB_KEY_PACKAGE_ID);
+        if (packageId == null)
+        {
+            return null;
+        }
         final String packageProxyName = rs.getString(DB_KEY_PACKAGE_PROXY_NAME);
         final String packageTrackingNumber = rs.getString(DB_KEY_PACKAGE_TRACKING_NUMBER);
         final String packageReceiver = rs.getString(DB_KEY_PACKAGE_RECEIVER);

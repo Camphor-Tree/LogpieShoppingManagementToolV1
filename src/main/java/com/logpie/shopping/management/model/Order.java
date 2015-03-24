@@ -212,12 +212,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Float orderActualCost = rs.getFloat(DB_KEY_ORDER_ACTUAL_COST);
         final Float currencyRate = rs.getFloat(DB_KEY_ORDER_CURRENCY_RATE);
         final Integer packageId = rs.getInt(DB_KEY_ORDER_PACKAGE_ID);
-        LogpiePackage package1 = null;
-        if (packageId != null)
-        {
-            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(null);
-            package1 = packageDAO.getPackageById(String.valueOf(packageId));
-        }
+        final LogpiePackage package1 = LogpiePackage.getLogpiePackageByResultSet(rs, row);
         final Float estimatedShippingFee = rs.getFloat(DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE);
         final Float actualShippingFee = rs.getFloat(DB_KEY_ORDER_ACTUAL_SHIPPING_FEE);
         final Float sellingPrice = rs.getFloat(DB_KEY_ORDER_SELLING_PRICE);

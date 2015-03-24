@@ -126,7 +126,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
@@ -157,7 +157,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         }
 
         @Override
-        public Map<String, String> getQueryTables()
+        public Map<String, String> getJoinTables()
         {
             return getForeignKeyConnectionTables();
         }
@@ -192,7 +192,6 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
     public static Map<String, String> getForeignKeyConnectionTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(sNonAliasPrefix + sBrandTableName, sBrandTableName);
         // alias for multiple foreign key connection
         tableMap.put(sBrandImageTableAlias, ImageDAO.sImageTableName);
         // tableMap.put(sBrandSizeChartImageAlias, ImageDAO.sImageTableName);

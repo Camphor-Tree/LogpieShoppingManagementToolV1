@@ -43,15 +43,26 @@ public class LogpieBaseQuerySingleRecordByIdTemplateQuery<T> implements LogpieDa
     }
 
     @Override
-    public Map<String, String> getQueryTables()
+    public Map<String, String> getJoinTables()
     {
         final Map<String, String> tableMap = new HashMap<String, String>();
-        tableMap.put(LogpieBaseDAO.sNonAliasPrefix + mTableName, mTableName);
         return tableMap;
     }
 
     @Override
     public Set<String> getOrderBy()
+    {
+        return null;
+    }
+
+    @Override
+    public String getMainQueryTable()
+    {
+        return mTableName;
+    }
+
+    @Override
+    public Set<String> getLeftJoinCondition()
     {
         return null;
     }
