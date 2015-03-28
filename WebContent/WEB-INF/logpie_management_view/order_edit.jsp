@@ -79,8 +79,8 @@
                     <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" name="OrderDomesticShippingFee" value="${order.orderDomesticShippingFee}" required>
                   </div>
                   <div class="form-group col-sm-3">
-                    <label for="domestic_shipping_fee">国内已付邮费￥</label>
-                    <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" value="0" name="OrderCustomerPaidDomesticShippingFee" required>
+                    <label for="customer_paid_domestic_shipping_fee">国内已付邮费￥</label>
+                    <input class="form-control" type="number" step="0.01" id="customer_paid_domestic_shipping_fee" value="0" name="OrderCustomerPaidDomesticShippingFee" value="${order.orderCustomerPaidDomesticShippingFee}" required>
                   </div>
                 </div>
                 <div class="row">

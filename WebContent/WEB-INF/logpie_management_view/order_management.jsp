@@ -112,8 +112,8 @@
         <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
         </tr>
         <tr>
-          <td colspan="3" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-          <td colspan="13" class="text-left">备注: ${order.orderNote}</td>
+          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+          <td colspan="12" class="text-left">备注: ${order.orderNote}</td>
         </tr>
         </c:forEach>
         </tbody>
@@ -213,8 +213,8 @@
                     <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" value="0" name="OrderDomesticShippingFee" required>
                   </div>
                   <div class="form-group col-sm-3">
-                    <label for="domestic_shipping_fee">国内已付邮费￥</label>
-                    <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" value="0" name="OrderDomesticShippingFee" required>
+                    <label for="customer_paid_domestic_shipping_fee">国内已付邮费￥</label>
+                    <input class="form-control" type="number" step="0.01" id="customer_paid_domestic_shipping_fee" value="0" name="OrderCustomerPaidDomesticShippingFee" required>
                   </div>
                 </div>
                 <div class="row">
