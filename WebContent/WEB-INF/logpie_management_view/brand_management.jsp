@@ -36,7 +36,6 @@
         <td><a href="${brand.brandSizeChartImage.imageUrl}">${brand.brandSizeChartImage.imageUrl}</a></td>
         <td>${brand.brandCategory.categoryName}</td>
         <td><a type="button" class="btn btn-warning" href="./brand/edit?id=${brand.brandId}">修改</a></td>
-        
         </tr>
         </c:forEach>
         </tbody>

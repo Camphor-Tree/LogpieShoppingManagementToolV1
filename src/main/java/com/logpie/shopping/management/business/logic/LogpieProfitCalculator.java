@@ -157,9 +157,7 @@ public class LogpieProfitCalculator
      */
     private float getActualProfitForOrder(final Order order)
     {
-        float singleActualTheoryProfit = order.getOrderSellingPrice()
-                - order.getOrderFinalActualCost();
-        return singleActualTheoryProfit;
+        return order.getOrderFinalProfit();
     }
 
     /**

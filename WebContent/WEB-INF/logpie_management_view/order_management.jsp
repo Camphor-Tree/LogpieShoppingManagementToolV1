@@ -64,23 +64,25 @@
 	            </c:if>
 			</div>
         </div>  		
-      <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
+      <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:14px;" >
         <tr class="info">
-	        <th class="col-xs-1 col-md-1 text-center">No</th>
+	        <th class="col-xs-2 col-md-2 text-center">订单号</th>
 	        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
-	        <th class="col-xs-2 col-md-2 text-center">购买者</th>
-	        <th class="col-xs-4 col-md-4 text-center">商品名称</th>
+	        <th class="col-xs-3 col-md-3 text-center">购买者</th>
+	        <th class="col-xs-6 col-md-6 text-center">商品名称</th>
 	        <th class="col-xs-1 col-md-1 text-center">数量</th>
 	        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
 	        <th class="col-xs-2 col-md-2 text-center">重量</th>
 	        <th class="col-xs-2 col-md-2 text-center">代理者</th>
 	        <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">国内运费￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">已付国内运费￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
-	        <th class="col-xs-1 col-md-1 text-center">利结</th>
+	        <th class="col-xs-2 col-md-2 text-center">利润已结算</th>
 	        <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
         <tbody>
@@ -98,6 +100,8 @@
         <!--<td>${order.orderCurrencyRate}</td>-->
         <!-- <td>${order.orderEstimatedShippingFee}</td>-->
         <td>${order.orderActualShippingFee}</td>
+        <td>${order.orderDomesticShippingFee}</td>
+        <td>${order.orderCustomerPaidDomesticShippingFee}</td>
         <td>${order.orderFinalActualCost}</td>
         <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
         <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
@@ -105,11 +109,11 @@
         <td>${order.orderCompanyReceivedMoney}</td>
         <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
         <!--<td>${order.orderNote}</td>-->
-        <td><a type="button" class="btn btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
+        <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
         </tr>
         <tr>
-          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-          <td colspan="12" class="text-left">备注: ${order.orderNote}</td>
+          <td colspan="3" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+          <td colspan="13" class="text-left">备注: ${order.orderNote}</td>
         </tr>
         </c:forEach>
         </tbody>
@@ -147,11 +151,11 @@
               <h3>新建一个订单</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/create" />" method="POST" >
                 <div class="form-group">
-                  <label for="order_buyer">订单购买者：</label>
+                  <label for="order_buyer">订单购买者</label>
                   <input class="form-control" id="order_buyer" name="OrderBuyerName" required autofocus>
                 </div>
                 <div class="form-group">
-                  <label for="order_proxy">订单代理人：</label>
+                  <label for="order_proxy">订单代理人</label>
                   <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
                   		  <c:if test="${adminList!=null}">
 						    <c:forEach items="${adminList}" var="admin">
@@ -164,7 +168,7 @@
 				  </select>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
-                  <label for="order_product">购买商品：</label>
+                  <label for="order_product">购买商品</label>
                   <select class="form-control" form="order_creation_form" name="OrderProductId">
 						<c:forEach items="${productList}" var="product">
 						    <option value="${product.productId}">${product.productName}</option>
@@ -187,37 +191,45 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                      <label for="order_actual_cost">实际购买成本(美元)(可空缺)：</label>
+                      <label for="order_actual_cost">实际购买成本(美元$)(可空缺)</label>
                       <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost">
                   </div>
                   <div class="form-group col-sm-6">
-                    <label for="order_currency_rate">订单当日汇率：</label>
+                    <label for="order_currency_rate">订单当日汇率</label>
                     <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="${CurrencyRate}" required>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-6">
-                    <label for="estimated_shipping_fee">预计邮费（人民币）：</label>
+                  <div class="form-group col-sm-3">
+                    <label for="estimated_shipping_fee">预计邮费￥</label>
                     <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" required>
                   </div>
-                  <div class="form-group col-sm-6">
-                    <label for="actural_shipping_fee">实际邮费(人民币)(可空缺)：</label>
+                  <div class="form-group col-sm-3">
+                    <label for="actural_shipping_fee">实际邮费￥</label>
                     <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee">
+                  </div>
+                  <div class="form-group col-sm-3">
+                    <label for="domestic_shipping_fee">国内邮费￥</label>
+                    <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" value="0" name="OrderDomesticShippingFee" required>
+                  </div>
+                  <div class="form-group col-sm-3">
+                    <label for="domestic_shipping_fee">国内已付邮费￥</label>
+                    <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" value="0" name="OrderDomesticShippingFee" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                      <label for="selling_price">最终售价(人民币)：</label>
+                      <label for="selling_price">最终售价￥</label>
                       <input class="form-control" type="number" step="0.01"  id="selling_price" name="OrderSellingPrice" required>
                   </div>
                   <div class="form-group col-sm-6">
-                    <label for="order_buyer_paid_money">买家付款(人民币)</label>
+                    <label for="order_buyer_paid_money">买家付款￥</label>
                     <input class="form-control" type="number" step="0.01"  id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="0" required>
                   </div>
                 </div>
                 <c:if test="${admin.isSuperAdmin==true}">
 	                <div class="form-group">
-	                  <label for="order_package">所属包裹(可空缺)：</label>
+	                  <label for="order_package">所属包裹(可空缺)</label>
 	                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
 	                        <option value=""> </option>
 							<c:forEach items="${packageList}" var="logpiePackage">
@@ -229,7 +241,7 @@
                 <!-- only super admin can modify how much money company already received -->
                 <c:if test="${admin.isSuperAdmin==true}">
 	                <div class="form-group">
-	                  <label for="order_company_received_money">公司已收汇款（人民币）：</label>
+	                  <label for="order_company_received_money">公司已收汇款￥</label>
 	                  <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="0" required>
 	                </div>
                 </c:if>
@@ -351,7 +363,7 @@
                 <div class="row">
                   <div class="dropdown col-sm-5" style="margin-bottom:10px">
                     <label for="brand_image">品牌图片：</label>
-						<select class="form-control" form="brand_creation_form" name="BrandImageId">
+						<select class="form-control" form="brand_creation_form" name="BrandImageId" required>
 						   <c:forEach items="${imageList}" var="brandImage">
 						    <option value="${brandImage.imageId}">${brandImage.imageDescription}</option>
 						    </c:forEach>
@@ -359,7 +371,7 @@
                   </div>
                   <div class="dropdown col-sm-7" style="margin-bottom:10px">
                     <label for="brand_image">相关尺寸图片：</label>
-						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId">
+						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId" required>
 						   <c:forEach items="${imageList}" var="sizeChartImage">
 						    <option value="${sizeChartImage.imageId}">${sizeChartImage.imageDescription}</option>
 						   </c:forEach>

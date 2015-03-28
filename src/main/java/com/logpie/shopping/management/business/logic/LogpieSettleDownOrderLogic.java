@@ -18,8 +18,12 @@ public class LogpieSettleDownOrderLogic
         {
             return false;
         }
-        // 订单的售价。也是应收账款。
+        // 订单的售价。（一般包括国际邮费）
         final float sellingPrice = order.getOrderSellingPrice();
+        // 用户已付国内邮费
+        final float customerPaidDomesticShippingFee = order
+                .getOrderCustomerPaidDomesticShippingFee();
+
         // 用户已付款。 可能付给代理也可能付给公司。 也是实收账款。
         final float customerPaidMoney = order.getOrderCustomerPaidMoney();
         // 公司已收到的钱
@@ -27,9 +31,12 @@ public class LogpieSettleDownOrderLogic
         // 利润是否已结算
         final boolean isProfitPaidToProxy = order.getOrderIsProfitPaid();
 
-        // 如果 应收账款等于实收账款 等于公司已收到的钱。并且利润已结算给代理。 那么改订单已结算。
-        if (floatEquals(sellingPrice, customerPaidMoney)
-                && floatEquals(sellingPrice, companyReceivedMoney) && isProfitPaidToProxy)
+        // 如果 用户付款数 等于 卖价+国内用户已付邮费（可能为0， 可能不等于国内运费)
+        // 如果 公司收款 等于 用户已付钱数
+        // 如果 利润已结算给代理
+        // 那么 改订单已完全清算。
+        if (floatEquals(sellingPrice + customerPaidDomesticShippingFee, customerPaidMoney)
+                && floatEquals(customerPaidMoney, companyReceivedMoney) && isProfitPaidToProxy)
         {
             return true;
         }
@@ -43,7 +50,7 @@ public class LogpieSettleDownOrderLogic
 
     private boolean floatEquals(final float numberA, final float numberB)
     {
-        if (numberA - numberB < 0.01f && numberA - numberB > -0.01f)
+        if (numberA - numberB <= 0.01f && numberA - numberB >= -0.01f)
         {
             return true;
         }

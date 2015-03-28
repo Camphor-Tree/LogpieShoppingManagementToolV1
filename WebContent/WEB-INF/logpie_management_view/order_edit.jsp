@@ -12,11 +12,11 @@
                 <input name="OrderId" value="${order.orderId}" type="hidden">
                 <input name="OrderDate" value="${order.orderDate}" type="hidden">
                 <div class="form-group">
-                  <label for="order_buyer">订单购买者：</label>
+                  <label for="order_buyer">订单购买者</label>
                   <input class="form-control" type="text" id="order_buyer" name="OrderBuyerName" value="${order.orderBuyerName}" required>
                 </div>
                 <div class="form-group">
-                  <label for="order_proxy">订单代理人：</label>
+                  <label for="order_proxy">订单代理人</label>
                   <select class="form-control" form="order_creation_form" name="OrderProxyId">
 						   <c:forEach items="${adminList}" var="admin">
 						       <c:if test="${order.orderProxy.adminId == admin.adminId}">
@@ -29,7 +29,7 @@
 				  </select>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
-                  <label for="order_product">购买商品：</label>
+                  <label for="order_product">购买商品</label>
                   <select class="form-control" form="order_creation_form" name="OrderProductId">
 						<c:forEach items="${productList}" var="product">
 							   <c:if test="${order.orderProduct.productId == product.productId}">
@@ -57,27 +57,35 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                      <label for="order_actual_cost">实际购买成本(美元)(可空缺)：</label>
+                      <label for="order_actual_cost">实际购买成本(美元)(可空缺)</label>
                       <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost" value="${order.orderActualCost}">
                   </div>
                   <div class="form-group col-sm-6">
-                    <label for="order_currency_rate">订单当日汇率：</label>
+                    <label for="order_currency_rate">订单当日汇率</label>
                     <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="${order.orderCurrencyRate}" required>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-6">
-                    <label for="estimated_shipping_fee">预计邮费(人民币)：</label>
+                  <div class="form-group col-sm-3">
+                    <label for="estimated_shipping_fee">预计邮费￥</label>
                     <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}" required>
                   </div>
-                  <div class="form-group col-sm-6">
-                    <label for="actural_shipping_fee">实际邮费(人民币)(可空缺)：</label>
+                  <div class="form-group col-sm-3">
+                    <label for="actural_shipping_fee">实际邮费￥(可空缺)</label>
                     <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee" value="${order.orderActualShippingFee}">
+                  </div>
+                  <div class="form-group col-sm-3">
+                    <label for="domestic_shipping_fee">国内邮费￥</label>
+                    <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" name="OrderDomesticShippingFee" value="${order.orderDomesticShippingFee}" required>
+                  </div>
+                  <div class="form-group col-sm-3">
+                    <label for="domestic_shipping_fee">国内已付邮费￥</label>
+                    <input class="form-control" type="number" step="0.01" id="domestic_shipping_fee" value="0" name="OrderCustomerPaidDomesticShippingFee" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                      <label for="selling_price">最终售价(人民币)：</label>
+                      <label for="selling_price">最终售价(人民币)</label>
                       <input class="form-control" type="number" step="0.01" id="selling_price" name="OrderSellingPrice" value="${order.orderSellingPrice}" required>
                   </div>
                   <div class="form-group col-sm-6">
@@ -88,7 +96,7 @@
                 <!-- only super admin can modify the package -->
                 <c:if test="${admin.isSuperAdmin==true}">
                 <div class="form-group">
-                  <label for="order_package">所属包裹(可空缺)：</label>
+                  <label for="order_package">所属包裹(可空缺)</label>
                   <select class="form-control" form="order_creation_form" name="OrderPackageId">
                         <option value=""> </option>
 						<c:forEach items="${packageList}" var="logpiePackage">
@@ -109,7 +117,7 @@
                 <!-- only super admin can modify how much money company already received -->
                 <c:if test="${admin.isSuperAdmin==true}">
                 <div class="form-group">
-                  <label for="order_company_received_money">公司已收汇款(人民币)：</label>
+                  <label for="order_company_received_money">公司已收汇款(人民币)</label>
                   <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}" required>
                 </div>
                 </c:if>

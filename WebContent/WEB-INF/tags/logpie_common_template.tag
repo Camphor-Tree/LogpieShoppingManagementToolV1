@@ -72,8 +72,8 @@ h2{
         </div>
       </div>
     </nav>
-    <div class="container">
-        <div class="bs-example">
+    <div class="container" style="width:98%;">
+        <div>
             <jsp:doBody/>
         </div>
     </div>

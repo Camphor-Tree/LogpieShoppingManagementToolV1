@@ -10,15 +10,15 @@
 			<form role="form" style="padding:20px" action="<c:url value="/brand/edit" />" method="POST" id="brand_creation_form">
                 <input type="hidden" name="BrandId" value="${brand.brandId}">
                 <div class="form-group">
-                  <label for="brand_en">品牌英文名称：</label>
+                  <label for="brand_en">品牌英文名称</label>
                   <input class="form-control" type="text" id="brand_en" name="BrandEnglishName" value="${brand.brandEnglishName}" required autofocus>
                 </div>
                 <div class="form-group">
-                  <label for="brand_cn">品牌中文名称：</label>
+                  <label for="brand_cn">品牌中文名称</label>
                   <input class="form-control" type="text" id="brand_cn" name="BrandChineseName" value="${brand.brandChineseName}" required>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
-                  <label for="brand_category">品牌所属类别：</label>
+                  <label for="brand_category">品牌所属类别</label>
                      <select class="form-control" form="brand_creation_form" name="BrandCategoryId">
                     	 <c:forEach items="${categoryList}" var="category">
 						  <c:if test="${brand.brandCategory.categoryId == category.categoryId}">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="row">
                   <div class="dropdown col-sm-5" style="margin-bottom:10px">
-                    <label for="brand_image">品牌图片：</label>
+                    <label for="brand_image">品牌图片</label>
 						<select class="form-control" form="brand_creation_form" name="BrandImageId">
 						    <c:forEach items="${imageList}" var="brandImage">
 							  <c:if test="${brand.brandImage.imageId == brandImage.imageId}">
@@ -45,9 +45,8 @@
 						</select>
                   </div>
                   <div class="dropdown col-sm-7" style="margin-bottom:10px">
-                    <label for="brand_image">相关尺寸图片(可无)：</label>
-						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId">
-						    <option value=""></option>
+                    <label for="brand_image">相关尺寸图片</label>
+						<select class="form-control" form="brand_creation_form" name="BrandSizeChartImageId" required>
 						    <c:forEach items="${imageList}" var="brandSizeChartImage">
 							  <c:if test="${brand.brandSizeChartImage.imageId == brandSizeChartImage.imageId}">
 						       		<option value="${brandSizeChartImage.imageId}" selected>${brandSizeChartImage.imageDescription}</option>
