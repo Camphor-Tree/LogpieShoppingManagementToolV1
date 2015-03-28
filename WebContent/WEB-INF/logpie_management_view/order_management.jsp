@@ -112,8 +112,8 @@
         <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
         </tr>
         <tr>
-          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-          <td colspan="12" class="text-left">备注: ${order.orderNote}</td>
+          <td colspan="4" class="text-left" style="color:#808080"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+          <td colspan="12" class="text-left" style="color:#808080">备注: ${order.orderNote}</td>
         </tr>
         </c:forEach>
         </tbody>
