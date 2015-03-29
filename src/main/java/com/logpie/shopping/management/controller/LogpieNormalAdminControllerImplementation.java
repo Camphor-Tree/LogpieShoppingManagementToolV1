@@ -63,10 +63,17 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     }
 
     @Override
-    public List<Order> injectOrderManagementOrderList()
+    public Object markPackageDelivered(HttpServletRequest request,
+            HttpServletResponse httpResponse, String packageId, RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
+    public List<Order> injectOrderManagementOrderList(final boolean orderByBuyerName)
     {
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-        return orderDAO.getOrdersForProxy(mCurrentAdmin.getAdminId());
+        return orderDAO.getOrdersForProxy(mCurrentAdmin.getAdminId(), orderByBuyerName);
     }
 
     @Override

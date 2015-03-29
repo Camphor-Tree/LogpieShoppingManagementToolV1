@@ -18,6 +18,7 @@
 		   <strong>订单代理人: </strong><c:out value="${order.orderProxy.adminName}"/><br />
 		   <strong>订单代理分红百分比: </strong><c:out value="${order.orderProxyProfitPercentage}"/><br />
 		   <strong>订单实际购买成本(美元): </strong><c:out value="${order.orderActualCost}"/><br />
+		   <strong>订单当日汇率: </strong><c:out value="${order.orderCurrencyRate}"/><br />
 		   <strong>订单所属包裹号: </strong><c:out value="${order.orderPackage.packageId}"/><br />
 		   <strong>订单估计运费(人民币): </strong><c:out value="${order.orderEstimatedShippingFee}"/><br />
 		   <strong>订单实际运费(人民币): </strong><c:out value="${order.orderActualShippingFee}"/><br />

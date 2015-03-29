@@ -23,17 +23,20 @@ public class OrderController
     private static final Logger LOG = Logger.getLogger(OrderController.class);
 
     @RequestMapping(value = "/order_management", method = RequestMethod.GET)
-    public Object showOrderManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
+    public Object showOrderManagementPage(
+            final HttpServletRequest request,
+            final HttpServletResponse httpResponse,
+            final RedirectAttributes redirectAttrs,
             @RequestParam(value = "admin", required = false) final String adminId,
             @RequestParam(value = "buyer", required = false) final String buyerName,
             @RequestParam(value = "packageId", required = false) final String packageId,
-            @RequestParam(value = "showAll", required = false) final Boolean showAll)
+            @RequestParam(value = "showAll", required = false) final Boolean showAll,
+            @RequestParam(value = "orderByBuyerName", required = false) final Boolean orderByBuyerName)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showOrderManagementPage(request, httpResponse,
-                redirectAttrs, adminId, buyerName, packageId, showAll);
+                redirectAttrs, adminId, buyerName, packageId, showAll, orderByBuyerName);
     }
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)

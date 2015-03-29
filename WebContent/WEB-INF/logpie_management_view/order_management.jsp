@@ -16,11 +16,11 @@
 	                    <strong>${action_message_fail}</strong>
 	            </div>
 			</c:if>
-	        <div class="col-md-2">
+	        <div class="col-md-1">
 	            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-lg" style="font-size:16px;">新建基础数据</button>
 			</div>
 			<c:if test="${adminList != null}">
-			<div class="dropdown col-md-2">
+			<div class="dropdown col-md-1" style="margin-left:20px">
 	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按代理筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 				  	<c:forEach items="${adminList}" var="admin">
@@ -29,25 +29,61 @@
 				  </ul>
 			</div>
 			</c:if>
-			<div class="dropdown col-md-2">
-	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按购买者筛选<span class="caret"></span></button>
+			<div class="dropdown col-md-1" style="margin-left:10px">
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true" style="font-size:16px;">按购买者筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
 				  	<c:forEach items="${orderBuyersList}" var="buyer">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:if test="${showAll==false}"><c:url value="/order_management?buyer=${buyer}" /></c:if><c:if test="${showAll==true}"><c:url value="/order_management?buyer=${buyer}&showAll=true" /></c:if>">${buyer}</a></li>
 					</c:forEach>
 				  </ul>
 			</div>
-			<div class="dropdown col-md-2">
-	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true" style="margin-left:10px;font-size:16px;">按包裹筛选<span class="caret"></span></button>
+			<div class="dropdown col-md-1" style="margin-left:17px">
+	  			<button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-expanded="true" style="font-size:16px;">按包裹筛选<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
 				  	<c:forEach items="${packageList}" var="orderPackage">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:if test="${showAll==false}"><c:url value="/order_management?packageId=${orderPackage.packageId}" /></c:if><c:if test="${showAll==true}"><c:url value="/order_management?packageId=${orderPackage.packageId}&showAll=true" /></c:if>">${orderPackage.packageId}-${orderPackage.packageProxyName}-${fn:substring(orderPackage.packageDate,5,10)}</a></li>
 					</c:forEach>
 				  </ul>
 			</div>
+			<div class="col-md-1" style="margin-left:20px">
+				<c:if test="${showAll==false}">
+				    <c:if test="${orderByBuyerName==false}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?orderByBuyerName=true" />">按购买者排序</a>
+	                </c:if>
+	                <c:if test="${orderByBuyerName==true}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?" />">按订单号排序</a>
+	                </c:if>
+	            </c:if>
+	            <c:if test="${showAll==true}">
+	            	<c:if test="${orderByBuyerName==false}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true&orderByBuyerName=true" />">按购买者排序</a>
+	                </c:if>
+	                <c:if test="${orderByBuyerName==true}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">按订单号排序</a>
+	                </c:if>
+	            </c:if>
+			</div>
+			<div class="col-md-1" style="margin-left:10px">
+				<c:if test="${showAll==false}">
+				   <c:if test="${orderByBuyerName==false}">
+	            	   <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">显示所有订单</a>
+	               </c:if>
+	               <c:if test="${orderByBuyerName==true}">
+	            	   <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true&orderByBuyerName=true" />">显示所有订单</a>
+	               </c:if>
+	            </c:if>
+	            <c:if test="${showAll==true}">
+	                <c:if test="${orderByBuyerName==false}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">显示未结算订单</a>
+	                </c:if>
+	                <c:if test="${orderByBuyerName==true}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?orderByBuyerName=true" />">显示未结算订单</a>
+	                </c:if>
+	            </c:if>
+			</div>
 			<c:if test="${adminList != null}">
-			<div class="dropdown col-md-2">
-	  			<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-expanded="true" style="margin-left:30px;font-size:16px;">快捷结算<span class="caret"></span></button>
+			<div class="dropdown col-md-1" style="margin-left:30px">
+	  			<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-expanded="true" style="font-size:16px;">快捷结算<span class="caret"></span></button>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu4">
 				  	<c:forEach items="${adminList}" var="admin">
 				  		<li role="presentation"><a role="menuitem" tabindex="-1" href="<c:url value="/order/settledown?adminId=${admin.adminId}" />">${admin.adminName}</a></li>
@@ -55,20 +91,13 @@
 				  </ul>
 			</div>
 			</c:if>
-			<div class="col-md-2">
-				<c:if test="${showAll==false}">
-	            <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">显示所有订单</a>
-	            </c:if>
-	            <c:if test="${showAll==true}">
-	            <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">显示未结算订单</a>
-	            </c:if>
-			</div>
-        </div>  		
-      <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:14px;" >
-        <tr class="info">
+        </div>
+        <p>当前显示模式：<b><c:if test="${showAll==true}">显示所有订单</c:if><c:if test="${showAll==false}">只显示未结算订单</c:if></b> 排序方式: <b><c:if test="${orderByBuyerName==true}">购买者名字排序</c:if><c:if test="${orderByBuyerName==false}">订单号排序</c:if></b></p>
+      <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle;" >
+        <tr class="info" style="font-size:15px;">
 	        <th class="col-xs-2 col-md-2 text-center">订单号</th>
 	        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
-	        <th class="col-xs-3 col-md-3 text-center">购买者</th>
+	        <th class="col-xs-4 col-md-4 text-center">购买者</th>
 	        <th class="col-xs-6 col-md-6 text-center">商品名称</th>
 	        <th class="col-xs-1 col-md-1 text-center">数量</th>
 	        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
@@ -87,7 +116,7 @@
         </tr>
         <tbody>
         <c:forEach items="${orderList}" var="order">
-        <tr class='clickable-row' data-href='./order?id=${order.orderId}'>
+        <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
         <td>${order.orderId}</td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
         <td>${order.orderBuyerName}</td>
@@ -111,9 +140,9 @@
         <!--<td>${order.orderNote}</td>-->
         <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
         </tr>
-        <tr>
-          <td colspan="4" class="text-left" style="color:#808080"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-          <td colspan="12" class="text-left" style="color:#808080">备注: ${order.orderNote}</td>
+        <tr style="font-size:13px;">
+          <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+          <td colspan="14" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
         </tr>
         </c:forEach>
         </tbody>

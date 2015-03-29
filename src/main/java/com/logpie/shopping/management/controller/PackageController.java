@@ -89,4 +89,15 @@ public class PackageController
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.modifyPackage(request, httpResponse, redirectAttrs);
     }
+
+    @RequestMapping(value = "/package/delivered", method = RequestMethod.GET)
+    public Object markPackageDelivered(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("id") String packageId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.markPackageDelivered(request, httpResponse,
+                packageId, redirectAttrs);
+    }
 }

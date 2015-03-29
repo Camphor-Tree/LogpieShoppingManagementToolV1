@@ -28,7 +28,7 @@
 
 		</div>
    		
-      <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
+      <table class="table table-striped text-center" style="table-layout:fixed; font-size:16px;">
         <tr class="info">
         <th class="col-xs-1 col-md-1 text-center">No.</th>
         <th class="col-xs-2 col-md-2 text-center">物流运营商</th>

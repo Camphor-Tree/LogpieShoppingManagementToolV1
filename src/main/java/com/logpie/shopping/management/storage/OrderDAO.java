@@ -53,9 +53,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * 
      * @return All existing orders
      */
-    public List<Order> getAllOrders()
+    public List<Order> getAllOrders(final boolean orderByBuyerName)
     {
-        final GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery();
+        final GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery(orderByBuyerName);
         return super.queryResult(getAllPackageQuery);
     }
 
@@ -99,10 +99,10 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * 
      * @return orders
      */
-    public List<Order> getOrdersForProxy(final String proxyAdminId)
+    public List<Order> getOrdersForProxy(final String proxyAdminId, final Boolean orderByBuyerName)
     {
         final GetOrdersForProxyQuery getOrdersForProxyQuery = new GetOrdersForProxyQuery(
-                proxyAdminId);
+                proxyAdminId, orderByBuyerName);
         return super.queryResult(getOrdersForProxyQuery);
     }
 
@@ -188,9 +188,12 @@ public class OrderDAO extends LogpieBaseDAO<Order>
 
     private class GetAllOrdersQuery extends LogpieBaseQueryAllTemplateQuery<Order>
     {
-        GetAllOrdersQuery()
+        private final Boolean mOrderByBuyerName;
+
+        GetAllOrdersQuery(final Boolean orderByBuyerName)
         {
             super(new Order(), OrderDAO.sOrderTableName);
+            mOrderByBuyerName = orderByBuyerName;
         }
 
         // foreign key connection
@@ -211,16 +214,30 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         {
             return getOrderLeftJoinCondition();
         };
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            if (mOrderByBuyerName)
+            {
+                final Set<String> orderBySet = new HashSet<String>();
+                orderBySet.add(Order.DB_KEY_ORDER_BUYER_NAME);
+                return orderBySet;
+            }
+            return super.getOrderBy();
+        }
     }
 
     private class GetOrdersForProxyQuery extends LogpieBaseQueryAllTemplateQuery<Order>
     {
         final String mProxyAdminId;
+        final Boolean mOrderByBuyerName;
 
-        GetOrdersForProxyQuery(final String proxyAdminId)
+        GetOrdersForProxyQuery(final String proxyAdminId, final Boolean orderByBuyerName)
         {
             super(new Order(), OrderDAO.sOrderTableName);
             mProxyAdminId = proxyAdminId;
+            mOrderByBuyerName = orderByBuyerName;
         }
 
         // foreign key connection
@@ -232,6 +249,18 @@ public class OrderDAO extends LogpieBaseDAO<Order>
             // add year month conditions
             conditions.add(String.format("%s=%s", Order.DB_KEY_ORDER_PROXY_ID, mProxyAdminId));
             return conditions;
+        }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            if (mOrderByBuyerName)
+            {
+                final Set<String> orderBySet = new HashSet<String>();
+                orderBySet.add(Order.DB_KEY_ORDER_BUYER_NAME);
+                return orderBySet;
+            }
+            return super.getOrderBy();
         }
 
         @Override

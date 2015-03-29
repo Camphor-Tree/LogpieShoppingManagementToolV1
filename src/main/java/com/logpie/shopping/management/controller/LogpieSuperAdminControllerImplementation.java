@@ -180,10 +180,50 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     }
 
     @Override
-    public List<Order> injectOrderManagementOrderList()
+    public Object markPackageDelivered(HttpServletRequest request,
+            HttpServletResponse httpResponse, String packageId, RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to modify the package as delivered.");
+
+        boolean updatePackageSuccess = false;
+        if (packageId != null)
+        {
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
+            final LogpiePackage logpiePackage = packageDAO.getPackageById(packageId);
+            if (logpiePackage == null)
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                        "该包裹Id无效");
+                return "redirect:/package_management";
+            }
+            logpiePackage.setPackageIsDelivered(true);
+            updatePackageSuccess = packageDAO.updateLogpiePackageProfile(logpiePackage);
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "该包裹Id无效");
+            return "redirect:/package_management";
+        }
+
+        if (updatePackageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "标记包裹:" + packageId + " 已签收送达，成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "标记包裹:"
+                    + packageId + " 已签收送达，失败!");
+        }
+        return "redirect:/package?id=" + packageId;
+    }
+
+    @Override
+    public List<Order> injectOrderManagementOrderList(final boolean orderByBuyerName)
     {
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-        return orderDAO.getAllOrders();
+        return orderDAO.getAllOrders(orderByBuyerName);
     }
 
     @Override
@@ -214,7 +254,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             // inject the current admin to be settle down
             orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
             final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-            final List<Order> orderList = orderDAO.getOrdersForProxy(adminId);
+            final List<Order> orderList = orderDAO.getOrdersForProxy(adminId, false);
             orderSettleDownPage.addObject("orderList", orderList);
         }
         return orderSettleDownPage;

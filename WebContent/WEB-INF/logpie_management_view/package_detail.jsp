@@ -5,6 +5,16 @@
 <tag:logpie_common_template>
     <jsp:body>
     	<c:if test="${logpiePackage !=null}">
+    	<c:if test="${action_message_success !=null}">
+  	        <div class="alert alert-success" role="alert">
+                    <strong>${action_message_success}</strong>
+            </div>
+		</c:if>
+		<c:if test="${action_message_fail !=null}">
+  	        <div class="alert alert-danger" role="alert">
+                    <strong>${action_message_fail}</strong>
+            </div>
+		</c:if>
     	<div class="row">
             <h3>${logpiePackage.packageId}号包裹详细信息 包裹日期：${logpiePackage.packageDate}</h3>
         </div>
@@ -58,7 +68,9 @@
 	        </tbody>
         </table>
         <div class="row">
-        <span>当前包裹总重：</span><span>${packageTotalWeight}</span> <c:if test="${admin.isSuperAdmin==true}"><a class="btn btn-info" href="./package/quickCalculateShippingFeeDistribution?id=${logpiePackage.packageId}">快捷计算分摊运费</a></c:if>
+        <span>当前包裹总重：</span><span>${packageTotalWeight} 克</span> <c:if test="${admin.isSuperAdmin==true}"><a class="btn btn-info" href="./package/quickCalculateShippingFeeDistribution?id=${logpiePackage.packageId}" style="margin-left:20px">快捷计算分摊运费</a></c:if>
+        <a type="button" class="btn btn-info" href=<c:url value="/package/edit?id=${logpiePackage.packageId}" /> style="margin-left:20px">修改订单</a>
+        <a type="button" class="btn btn-info" href=<c:url value="/package/delivered?id=${logpiePackage.packageId}" /> style="margin-left:20px">包裹已到</a>
         </div>
         <hr/>
   	    <div class="alert" role="alert">
