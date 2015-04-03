@@ -254,9 +254,12 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             // inject the current admin to be settle down
             orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
             final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-            final List<Order> orderList = orderDAO.getOrdersForProxy(adminId, false);
+            List<Order> orderList = orderDAO.getOrdersForProxy(adminId, false);
+            // filter out all the orders already settled down.
+            orderList = super.filterOutOrdersAlreadySettledDown(orderList);
             orderSettleDownPage.addObject("orderList", orderList);
         }
+        injectCurrentUrl(request, orderSettleDownPage);
         return orderSettleDownPage;
     }
 

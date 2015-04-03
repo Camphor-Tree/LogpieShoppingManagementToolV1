@@ -20,10 +20,10 @@
 		   <strong>订单实际购买成本(美元): </strong><c:out value="${order.orderActualCost}"/><br />
 		   <strong>订单当日汇率: </strong><c:out value="${order.orderCurrencyRate}"/><br />
 		   <strong>订单所属包裹号: </strong><c:out value="${order.orderPackage.packageId}"/><br />
-		   <strong>订单估计运费(人民币): </strong><c:out value="${order.orderEstimatedShippingFee}"/><br />
-		   <strong>订单实际运费(人民币): </strong><c:out value="${order.orderActualShippingFee}"/><br />
-		   <strong>订单国内运费(人民币): </strong><c:out value="${order.orderDomesticShippingFee}"/><br />
-		   <strong>订单客户已付国内运费(人民币): </strong><c:out value="${order.orderCustomerPaidDomesticShippingFee}"/><br />
+		   <strong>订单估计邮费(人民币): </strong><c:out value="${order.orderEstimatedShippingFee}"/><br />
+		   <strong>订单国际邮费(人民币): </strong><c:out value="${order.orderActualShippingFee}"/><br />
+		   <strong>订单国内邮费(人民币): </strong><c:out value="${order.orderDomesticShippingFee}"/><br />
+		   <strong>订单客户已付国内邮费(人民币): </strong><c:out value="${order.orderCustomerPaidDomesticShippingFee}"/><br />
 		   <strong>订单售价(人民币): </strong><c:out value="${order.orderSellingPrice}"/><br />
 		   <strong>订单客户已付钱数(人民币): </strong><c:out value="${order.orderCustomerPaidMoney}"/><br />
 		   <strong>订单最终利润(人民币): </strong><c:out value="${order.orderFinalProfit}"/><br />

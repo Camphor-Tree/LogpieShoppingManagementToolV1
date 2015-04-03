@@ -4,6 +4,7 @@
 <tag:logpie_common_template>
     <jsp:body>
     	<c:if test="${order !=null}">
+    	<br/>
         <div class="row"  style="padding:20px">
             <h3>修改订单  订单Id:${order.orderId} 订单时间:${order.orderDate}</h3>
         </div>
@@ -71,7 +72,7 @@
                     <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}" required>
                   </div>
                   <div class="form-group col-sm-3">
-                    <label for="actural_shipping_fee">实际邮费￥(可空缺)</label>
+                    <label for="actural_shipping_fee">国际邮费￥(可空缺)</label>
                     <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee" value="${order.orderActualShippingFee}">
                   </div>
                   <div class="form-group col-sm-3">
@@ -94,6 +95,9 @@
                   </div>
                 </div>
                 <!-- only super admin can modify the package -->
+                <c:if test="${admin.isSuperAdmin==false}">
+                <input type="hidden" name="OrderPackageId" value="${order.orderPackage.packageId}">
+                </c:if>
                 <c:if test="${admin.isSuperAdmin==true}">
                 <div class="form-group">
                   <label for="order_package">所属包裹(可空缺)</label>
@@ -110,9 +114,6 @@
 						</c:forEach>
 				  </select>
                 </div>
-                </c:if>
-                <c:if test="${admin.isSuperAdmin==false}">
-					<input type="hidden" id="order_package_id" name="OrderPackageId" value="${logpiePackage.packageId}"/>
                 </c:if>
                 <!-- only super admin can modify how much money company already received -->
                 <c:if test="${admin.isSuperAdmin==true}">
@@ -137,6 +138,7 @@
                 <c:if test="${admin.isSuperAdmin==false}">
 					<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="${order.orderIsProfitPaid}"/>
                 </c:if>
+                <input type="hidden" name="RedirectUrl" value="${RedirectUrl}">
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>

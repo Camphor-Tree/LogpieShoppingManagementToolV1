@@ -103,9 +103,9 @@
 	        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
 	        <th class="col-xs-2 col-md-2 text-center">重量</th>
 	        <th class="col-xs-2 col-md-2 text-center">代理者</th>
-	        <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
-	        <th class="col-xs-2 col-md-2 text-center">国内运费￥</th>
-	        <th class="col-xs-2 col-md-2 text-center">已付国内运费￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">国际邮费￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">国内邮费￥</th>
+	        <th class="col-xs-2 col-md-2 text-center">已付国内邮费￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
@@ -138,7 +138,7 @@
         <td>${order.orderCompanyReceivedMoney}</td>
         <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
         <!--<td>${order.orderNote}</td>-->
-        <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}" />>修改</a></td>
+        <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}&ru=${CurrentUrl}" />>修改</a></td>
         </tr>
         <tr style="font-size:13px;">
           <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>

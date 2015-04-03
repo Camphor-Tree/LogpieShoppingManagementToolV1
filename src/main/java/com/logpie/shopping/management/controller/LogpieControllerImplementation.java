@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -23,7 +25,6 @@ import com.logpie.shopping.management.accounting.logic.GoogleChartHelper;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValue;
 import com.logpie.shopping.management.accounting.logic.LogpieLineChart;
 import com.logpie.shopping.management.accounting.logic.LogpiePieChart;
-import com.logpie.shopping.management.auth.controller.PageHistoryHandler;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
 import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
@@ -192,7 +193,31 @@ public abstract class LogpieControllerImplementation
         final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
         orderManagementPage.addObject("CurrencyRate", currencyRate);
 
+        injectCurrentUrl(request, orderManagementPage);
+
         return orderManagementPage;
+    }
+
+    /**
+     * @param request
+     * @param orderManagementPage
+     */
+    protected void injectCurrentUrl(final HttpServletRequest request,
+            final ModelAndView orderManagementPage)
+    {
+        try
+        {
+            String requestUrl = request.getRequestURL().toString();
+            if (!StringUtils.isEmpty(request.getQueryString()))
+            {
+                requestUrl += "?" + request.getQueryString();
+            }
+            orderManagementPage.addObject("CurrentUrl",
+                    Base64.encodeBase64String(requestUrl.getBytes("UTF-8")));
+        } catch (UnsupportedEncodingException e)
+        {
+            LOG.error("no support for UTF-8", e);
+        }
     }
 
     /**
@@ -267,7 +292,7 @@ public abstract class LogpieControllerImplementation
     }
 
     public Object showModifyOrderPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, @RequestParam("id") String orderId,
+            final HttpServletResponse httpResponse, final String orderId, final String redirectUrl,
             final RedirectAttributes redirectAttrs)
     {
         final ModelAndView modifyOrderPage = new ModelAndView("order_edit");
@@ -299,6 +324,14 @@ public abstract class LogpieControllerImplementation
 
             // inject the current admin into the page
             modifyOrderPage.addObject("admin", mCurrentAdmin);
+            try
+            {
+                modifyOrderPage.addObject("RedirectUrl",
+                        new String(Base64.decodeBase64(redirectUrl), "UTF-8"));
+            } catch (UnsupportedEncodingException e)
+            {
+                LOG.error("UTF-8 is not supported", e);
+            }
         }
 
         return modifyOrderPage;
@@ -335,13 +368,8 @@ public abstract class LogpieControllerImplementation
                     "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 失败");
         }
 
-        final String previous1Url = PageHistoryHandler.getPrevious1Url(request);
-        if (previous1Url != null)
-        {
-            return "redirect:" + previous1Url;
-        }
-
-        return "redirect:/order_management";
+        final String redirectUrl = request.getParameter("RedirectUrl");
+        return "redirect:" + redirectUrl;
     }
 
     /**
@@ -436,6 +464,7 @@ public abstract class LogpieControllerImplementation
             // inject the current admin into the page
             packageDetailPage.addObject("admin", mCurrentAdmin);
         }
+        injectCurrentUrl(request, packageDetailPage);
         return packageDetailPage;
     }
 
@@ -861,7 +890,7 @@ public abstract class LogpieControllerImplementation
         return "redirect:/order_management";
     }
 
-    private List<Order> filterOutOrdersNotBelongToAdmin(final List<Order> orderList,
+    protected List<Order> filterOutOrdersNotBelongToAdmin(final List<Order> orderList,
             final Admin admin)
     {
         final List<Order> orderAfterFilter = new ArrayList<Order>();
@@ -876,7 +905,7 @@ public abstract class LogpieControllerImplementation
 
     }
 
-    private List<Order> filterOutOrdersAlreadySettledDown(final List<Order> orderList)
+    protected List<Order> filterOutOrdersAlreadySettledDown(final List<Order> orderList)
     {
         final LogpieSettleDownOrderLogic settleDownLogic = new LogpieSettleDownOrderLogic();
         final List<Order> orderAfterFilter = new ArrayList<Order>();

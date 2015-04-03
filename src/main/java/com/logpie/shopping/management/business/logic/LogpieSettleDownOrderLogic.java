@@ -31,13 +31,19 @@ public class LogpieSettleDownOrderLogic
         // 利润是否已结算
         final boolean isProfitPaidToProxy = order.getOrderIsProfitPaid();
 
-        // 如果 用户付款数 等于 卖价+国内用户已付邮费（可能为0， 可能不等于国内运费)
-        // 如果 公司收款 等于 用户已付钱数
-        // 如果 利润已结算给代理
+        // A. 如果 用户付款数 等于 卖价+国内用户已付邮费（可能为0， 可能不等于国内运费)
+        // B. 如果 公司收款 等于 用户已付钱数
+        // C. 如果 利润已结算给代理
+        // D. 如果 卖价不为0 那么用户付款数不能为0
         // 那么 改订单已完全清算。
         if (floatEquals(sellingPrice + customerPaidDomesticShippingFee, customerPaidMoney)
                 && floatEquals(customerPaidMoney, companyReceivedMoney) && isProfitPaidToProxy)
         {
+            if (!floatEquals(0.0f, sellingPrice) && floatEquals(customerPaidMoney, 0.0f))
+            {
+                // 如果卖价不为0 而买家付款为0 则该订单有问题 不该设成已结算
+                return false;
+            }
             return true;
         }
         return false;

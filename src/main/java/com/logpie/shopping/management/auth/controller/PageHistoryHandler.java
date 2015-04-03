@@ -28,6 +28,13 @@ public class PageHistoryHandler
             final HttpServletResponse httpServletResponse, final String currentUrl)
     {
         final Cookie[] cookies = httpServletRequest.getCookies();
+        final String method = httpServletRequest.getMethod();
+        // We don't need to track the post request in history. Because the post
+        // url may not be legal to directly load.
+        if (method.equals("POST"))
+        {
+            return;
+        }
         if (cookies == null || cookies.length == 0)
         {
             return;

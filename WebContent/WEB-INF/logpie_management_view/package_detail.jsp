@@ -59,7 +59,7 @@
 			        <td>${order.orderCompanyReceivedMoney}</td>
 			        <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
 			        <!--<td>${order.orderNote}</td>-->
-			        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}">修改</a></td>
+			        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}&ru=${CurrentUrl}">修改</a></td>
 		        </tr>
 		        <tr>
 		            <td colspan="16" class="text-left">备注: ${order.orderNote}</td>

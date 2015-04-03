@@ -67,12 +67,12 @@ public class OrderController
     @RequestMapping(value = "/order/edit", method = RequestMethod.GET)
     public Object showModifyOrderPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, @RequestParam("id") String orderId,
-            final RedirectAttributes redirectAttrs)
+            @RequestParam("ru") String redirectUrl, final RedirectAttributes redirectAttrs)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showModifyOrderPage(request, httpResponse, orderId,
-                redirectAttrs);
+                redirectUrl, redirectAttrs);
     }
 
     @RequestMapping(value = "/order/edit", method = RequestMethod.POST)

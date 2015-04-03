@@ -561,6 +561,11 @@ public class Order implements RowMapper<Order>, LogpieModel
             changeStringBuilder.append("OrderPackage：null" + "->" + mOrderPackage.getPackageId()
                     + " ");
         }
+        if (compareToOrder.mOrderPackage != null && mOrderPackage == null)
+        {
+            changeStringBuilder.append("OrderPackage："
+                    + compareToOrder.mOrderPackage.getPackageId() + "-> null");
+        }
 
         if (!compareToOrder.mOrderProduct.compareTo(mOrderProduct))
         {
