@@ -293,7 +293,7 @@ public abstract class LogpieControllerImplementation
 
     public Object showModifyOrderPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final String orderId, final String redirectUrl,
-            final RedirectAttributes redirectAttrs)
+            final String anchor, final RedirectAttributes redirectAttrs)
     {
         final ModelAndView modifyOrderPage = new ModelAndView("order_edit");
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
@@ -328,6 +328,10 @@ public abstract class LogpieControllerImplementation
             {
                 modifyOrderPage.addObject("RedirectUrl",
                         new String(Base64.decodeBase64(redirectUrl), "UTF-8"));
+                if (anchor != null)
+                {
+                    modifyOrderPage.addObject("Anchor", anchor);
+                }
             } catch (UnsupportedEncodingException e)
             {
                 LOG.error("UTF-8 is not supported", e);
@@ -368,7 +372,12 @@ public abstract class LogpieControllerImplementation
                     "更新订单 购买者:" + modifiedOrder.getOrderBuyerName() + " 失败");
         }
 
-        final String redirectUrl = request.getParameter("RedirectUrl");
+        String redirectUrl = request.getParameter("RedirectUrl");
+        final String anchor = request.getParameter("Anchor");
+        if (anchor != null)
+        {
+            redirectUrl += "#" + anchor;
+        }
         return "redirect:" + redirectUrl;
     }
 

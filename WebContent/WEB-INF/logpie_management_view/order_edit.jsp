@@ -139,6 +139,9 @@
 					<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="${order.orderIsProfitPaid}"/>
                 </c:if>
                 <input type="hidden" name="RedirectUrl" value="${RedirectUrl}">
+                <c:if test="${Anchor != null}">
+                <input type="hidden" name="Anchor" value="${Anchor}">
+                </c:if>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>
