@@ -23,18 +23,6 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
         super(admin);
     }
 
-    /**
-     * For Package Controller
-     * 
-     * Normal admin is not allowed to access package management.
-     */
-    @Override
-    Object showPackageManagementPage(HttpServletRequest request, HttpServletResponse httpResponse,
-            RedirectAttributes redirectAttrs, final Boolean showAll)
-    {
-        return showNoPermissionPage();
-    }
-
     @Override
     Object quickCalculateShippingFeeDistribution(HttpServletRequest request, String packageId)
     {

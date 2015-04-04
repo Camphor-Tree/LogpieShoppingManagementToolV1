@@ -447,11 +447,52 @@ public abstract class LogpieControllerImplementation
     /**
      * For Pacakge Controller
      * 
-     * The package info should only be viewed and modified by super admin.
+     * Normal admins can view the packages have order belong to them
      */
-    abstract Object showPackageManagementPage(final HttpServletRequest request,
+    public Object showPackageManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            final Boolean showAll);
+            final Boolean showAll)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to package management page.");
+
+        final ModelAndView packageManagementPage = new ModelAndView("package_management");
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    message);
+        }
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            packageManagementPage
+                    .addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
+        }
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
+        List<LogpiePackage> packageList = packageDAO.getAllPackage();
+
+        if (showAll == null || showAll == false)
+        {
+            packageList = filterOutPackageAlreadyReceived(packageList);
+            packageManagementPage.addObject("showAll", false);
+        }
+        else
+        {
+            packageManagementPage.addObject("showAll", true);
+        }
+
+        // If normal admin, only can view packages have order belong to him,
+        if (!mCurrentAdmin.isSuperAdmin())
+        {
+            packageList = filterOutPackageNotBelongToCurrentAdmin(packageList);
+        }
+        packageManagementPage.addObject("packageList", packageList);
+        packageManagementPage.addObject("admin", mCurrentAdmin);
+
+        return packageManagementPage;
+    }
 
     public Object showPackageDetailPage(final HttpServletRequest request,
             @RequestParam("id") String packageId)
@@ -952,6 +993,7 @@ public abstract class LogpieControllerImplementation
         calendar.add(Calendar.DATE, 1);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
         accountingHomePage.addObject("Today", dateFormat.format(calendar.getTime()));
+        accountingHomePage.addObject("admin", mCurrentAdmin);
         return accountingHomePage;
     }
 
@@ -1357,6 +1399,48 @@ public abstract class LogpieControllerImplementation
         }
 
         return accountingOrderInAdminPieChartPage;
+    }
+
+    private List<LogpiePackage> filterOutPackageAlreadyReceived(
+            final List<LogpiePackage> packageList)
+    {
+        final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
+        for (final LogpiePackage logpiePackage : packageList)
+        {
+            // If haven't received, then add to the list
+            if (!logpiePackage.getPackageIsDelivered())
+            {
+                packagesAfterFilter.add(logpiePackage);
+            }
+        }
+        return packagesAfterFilter;
+    }
+
+    private List<LogpiePackage> filterOutPackageNotBelongToCurrentAdmin(
+            final List<LogpiePackage> packageList)
+    {
+        final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
+        for (final LogpiePackage logpiePackage : packageList)
+        {
+            final String packageId = logpiePackage.getPackageId();
+            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
+            final List<Order> orderList = orderDAO.getOrdersForPackage(packageId);
+            boolean belongToCurrentAdmin = false;
+            for (final Order order : orderList)
+            {
+                if (order.getOrderProxy().getAdminId().equals(mCurrentAdmin.getAdminId()))
+                {
+                    belongToCurrentAdmin = true;
+                    break;
+                }
+            }
+
+            if (belongToCurrentAdmin)
+            {
+                packagesAfterFilter.add(logpiePackage);
+            }
+        }
+        return packagesAfterFilter;
     }
 
 }

@@ -28,7 +28,7 @@
 
 		</div>
    		
-      <table class="table table-striped text-center" style="table-layout:fixed; font-size:16px;">
+      <table class="table table-striped text-center" style="table-layout:fixed; font-size:18px;">
         <tr class="info">
         <th class="col-xs-1 col-md-1 text-center">No.</th>
         <th class="col-xs-2 col-md-2 text-center">物流运营商</th>
@@ -42,7 +42,9 @@
         <th class="col-xs-1 col-md-1 text-center">保险</th>
         <th class="col-xs-1 col-md-1 text-center">寄出</th>
         <th class="col-xs-1 col-md-1 text-center">收到</th>
-        <th class="col-xs-2 col-md-2 text-center">修改</th>
+        <c:if test="${admin.isSuperAdmin==true}">
+        	<th class="col-xs-2 col-md-2 text-center">修改</th>
+        </c:if>
         </tr>
         <tbody>
         <c:forEach items="${packageList}" var="logpiePackage">
@@ -59,12 +61,13 @@
         <td>${logpiePackage.packageAdditionalInsuranceFee}</td>
         <td><c:if test="${logpiePackage.packageIsShipped == true}">是</c:if><c:if test="${logpiePackage.packageIsShipped == false}">否</c:if></td>
         <td><c:if test="${logpiePackage.packageIsDelivered == true}">是</c:if><c:if test="${logpiePackage.packageIsDelivered == false}">否</c:if></td>
-        
+        <c:if test="${admin.isSuperAdmin==true}">
         <td><a type="button" class="btn btn-warning" href="./package/edit?id=${logpiePackage.packageId}">修改</a></td>
-        
+        </c:if>
         </tr>
         </c:forEach>
         </tbody>
         </table>
+        <h5>点击包裹可以进入包裹详情。</h5>
     </jsp:body>
 </tag:logpie_common_template>

@@ -17,11 +17,15 @@
 	        </div>
 	        <button type="submit" name="type" value="OrderInCategory" class="btn btn-primary btn-block" style="width:240px; font-size:13pt">类别订单数量分布图</button>
 	        <button type="submit" name="type" value="OrderInBrand" class="btn btn-primary btn-block" style="width:240px; font-size:13pt">品牌订单数量分布图</button>
+	        <c:if test="${admin.isSuperAdmin == true }">
 	        <button type="submit" name="type" value="OrderInAdmin" class="btn btn-primary btn-block" style="width:240px; font-size:13pt">代理订单数量分布图</button>
+	        </c:if>
 	        </br>
 	        <button type="submit" name="type" value="OrderProfitInCategory" class="btn btn-danger btn-block" style="width:240px; font-size:13pt">类别订单利润分布图</button>
 	        <button type="submit" name="type" value="OrderProfitInBrand" class="btn btn-danger btn-block" style="width:240px; font-size:13pt">品牌订单利润分布图</button>
+	        <c:if test="${admin.isSuperAdmin == true }">
 	        <button type="submit" name="type" value="OrderProfitInAdmin" class="btn btn-danger btn-block" style="width:240px; font-size:13pt">代理订单利润分布图</button>
+	        </c:if>
 	        </form>
 	        </div>
 	        <div class="col-md-4">

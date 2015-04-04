@@ -39,45 +39,6 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         super(admin);
     }
 
-    @Override
-    public Object showPackageManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            final Boolean showAll)
-    {
-        LOG.debug("Authenticate cookie is valid. Going to package management page.");
-
-        final ModelAndView packageManagementPage = new ModelAndView("package_management");
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            packageManagementPage
-                    .addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
-        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
-        List<LogpiePackage> packageList = packageDAO.getAllPackage();
-
-        if (showAll == null || showAll == false)
-        {
-            packageList = filterOutPackageAlreadyReceived(packageList);
-            packageManagementPage.addObject("showAll", false);
-        }
-        else
-        {
-            packageManagementPage.addObject("showAll", true);
-        }
-        packageManagementPage.addObject("packageList", packageList);
-
-        return packageManagementPage;
-    }
-
     /**
      * Quick calculate the distribution of the shipping fee in one package.
      * 
@@ -354,21 +315,6 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                 messageBuilder.toString());
         return "redirect:/order/settledown?adminId=" + adminId;
-    }
-
-    private List<LogpiePackage> filterOutPackageAlreadyReceived(
-            final List<LogpiePackage> packageList)
-    {
-        final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
-        for (final LogpiePackage logpiePackage : packageList)
-        {
-            // If haven't received, then add to the list
-            if (!logpiePackage.getPackageIsDelivered())
-            {
-                packagesAfterFilter.add(logpiePackage);
-            }
-        }
-        return packagesAfterFilter;
     }
 
     @Override
