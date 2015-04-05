@@ -73,10 +73,10 @@
        <button type="submit" class="btn btn-primary btn-block">快捷清算</button>
       </form>
        <p>点击快捷清算会将选中的订单的公司收入设成 买家付款（实收账款），并将利润已结算设成 “是”</p>
-       <div><b>当前选中订单数: </b><span id="chosenCount"></span></div>
-       <div><b>代理应付公司: </b><span id="output"></span></div>
-       <div><b>该次清算公司利润: </b><span id="companyProfit"></span></div>
-       <div><b>该次清算代理利润: </b><span id="proxyProfit"></span></div>
+       <div><h4>当前选中订单数: <span id="chosenCount"></span></h4></div>
+       <div><h4>代理应付公司: </b><span id="output"></span></h4></div>
+       <div><h4>该次清算公司利润: </b><span id="companyProfit"></span></h4></div>
+       <div><h4>该次清算代理利润: </b><span id="proxyProfit"></span></h4></div>
       </c:if>
       <c:if test="${admin == null}">
          	</br></br>
@@ -101,8 +101,8 @@
     	        });
     	        $("#chosenCount").html(chosenCount);
     	        $("#output").html(sum);
-    	        $("#companyProfit").html(companyProfit);
-    	        $("#proxyProfit").html(proxyProfit);
+    	        $("#companyProfit").html(companyProfit.toFixed(2));
+    	        $("#proxyProfit").html(proxyProfit.toFixed(2));
     	    }
     	    $("input[type=checkbox]").change(function() {
     	        recalculate();
