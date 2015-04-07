@@ -19,7 +19,7 @@
         <c:forEach items="${dbLogList}" var="dbLog">
         <tr>
         <td>${dbLog.dbLogId}</td>
-        <td>${dbLog.dbLogAdmin.adminName}</td>
+        <td>改动者:${dbLog.dbLogAdmin.adminName}</td>
         <td>${dbLog.dbLogTime}</td>
         <td>${dbLog.dbLogSQL}</td>
         <td>${dbLog.dbLogComment}</td>
