@@ -52,7 +52,7 @@
 						       		<option value="${image.imageId}" selected>${image.imageDescription}</option>
 	       					   </c:if>
 						       <c:if test="${product.productBrand.brandId != brand.brandId}">
-						       		 <option value="${image.imageId}">${image.imageDescription}}</option>
+						       		 <option value="${image.imageId}">${image.imageDescription}</option>
 	       					   </c:if>
        					   </c:forEach>
 						</select>

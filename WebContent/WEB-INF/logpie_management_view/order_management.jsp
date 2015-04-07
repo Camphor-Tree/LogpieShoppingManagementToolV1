@@ -205,23 +205,19 @@
 				  </select>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-4">
+                  <div class="form-group col-sm-6">
                   <label for="order_product_count">购买数量</label>
                   <input class="form-control" type="number" step="1" min="1" max="1000" id="order_product_count" name="OrderProductCount" value="1" required>
                   </div>
-                  <div class="form-group col-sm-4">
+                  <div class="form-group col-sm-6">
                   <label for="order_weight">订单重量（克）</label>
                   <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="0" required>
-                  </div>
-                  <div class="form-group col-sm-4">
-                    <label for="order_proxy_profit_percentage">代理分红百分比</label>
-                    <input class="form-control" type="number" step="0.01" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="0.4" required>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                      <label for="order_actual_cost">实际购买成本(美元$)(可空缺)</label>
-                      <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost">
+                      <label for="order_actual_cost">实际购买成本(美元$)</label>
+                      <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率</label>
@@ -234,7 +230,7 @@
                     <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" required>
                   </div>
                   <div class="form-group col-sm-3">
-                    <label for="actural_shipping_fee">实际邮费￥</label>
+                    <label for="actural_shipping_fee">国际邮费￥</label>
                     <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee">
                   </div>
                   <div class="form-group col-sm-3">

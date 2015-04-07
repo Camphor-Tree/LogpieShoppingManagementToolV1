@@ -322,8 +322,17 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderProxyId = request.getParameter("OrderProxyId");
         final AdminDAO adminDAO = new AdminDAO(null);
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
-        final Float orderProxyProfitPercentage = Float.parseFloat(request
-                .getParameter("OrderProxyProfitPercentage"));
+        Float orderProxyProfitPercentage;
+        // only super admin's orderProxyProfitPercentage is 0, normal admin will
+        // use default 0.4
+        if (orderProxy.isSuperAdmin())
+        {
+            orderProxyProfitPercentage = 0.0f;
+        }
+        else
+        {
+            orderProxyProfitPercentage = 0.4f;
+        }
         // OrderActualCost may be null
         Float orderActualCost = null;
         final String orderActualCostString = request.getParameter("OrderActualCost");
