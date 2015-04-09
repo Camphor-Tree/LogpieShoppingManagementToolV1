@@ -5,10 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
 
@@ -30,6 +35,20 @@ public class LogpieCloudStorage
     {
         // 初始化一个OSSClient
         mOssClient = new OSSClient(sAliyunEndpoint, sAccessKeyId, sAccessKeySecret);
+    }
+
+    public List<String> getFileKeysInBucket(final String bucketName)
+    {
+        // 构造 ListObjectsRequest 请求
+        ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
+        // listObjectsRequest.setPrefix("/");
+        ObjectListing listing = mOssClient.listObjects(listObjectsRequest);
+        final List<String> fileKeys = new ArrayList<String>();
+        for (OSSObjectSummary objectSummary : listing.getObjectSummaries())
+        {
+            fileKeys.add(objectSummary.getKey());
+        }
+        return fileKeys;
     }
 
     public void uploadFile(final String bucketName, final String key, final String filePath)

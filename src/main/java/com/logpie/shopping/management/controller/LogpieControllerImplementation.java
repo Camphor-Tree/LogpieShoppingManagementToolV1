@@ -26,6 +26,7 @@ import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValu
 import com.logpie.shopping.management.accounting.logic.LogpieLineChart;
 import com.logpie.shopping.management.accounting.logic.LogpiePieChart;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
+import com.logpie.shopping.management.backup.LogpieBackupManager;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
 import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
 import com.logpie.shopping.management.model.Admin;
@@ -1443,4 +1444,61 @@ public abstract class LogpieControllerImplementation
         return packagesAfterFilter;
     }
 
+    /**
+     * Show system backup page.
+     * 
+     * @param request
+     * @param httpResponse
+     * @return
+     */
+    public Object showSystemBackupPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView systemBackupPage = new ModelAndView("system_backup");
+        final LogpieBackupManager backupManager = new LogpieBackupManager();
+        final List<String> backupHistory = backupManager.getBackupHistory();
+        systemBackupPage.addObject("BackupHistory", backupHistory);
+        injectAlertActionMessage(redirectAttrs, systemBackupPage);
+        return systemBackupPage;
+    }
+
+    /**
+     * @param redirectAttrs
+     * @param page
+     */
+    protected void injectAlertActionMessage(final RedirectAttributes redirectAttrs,
+            final ModelAndView page)
+    {
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            page.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS, message);
+        }
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            page.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
+        }
+    }
+
+    public Object backupDatabase(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final LogpieBackupManager backupManager = new LogpieBackupManager();
+        final boolean backupSuccess = backupManager.backupDatabase();
+        if (backupSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "备份数据库成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "备份数据库失败!");
+        }
+
+        return "redirect:/system_backup";
+    }
 }
