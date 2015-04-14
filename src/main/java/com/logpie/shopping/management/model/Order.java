@@ -126,40 +126,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderIsProfitPaid = isProfitPaid;
         mOrderNote = orderNote;
 
-        refreshOrderFinalActualCost();
         refreshOrderFinalProfit();
-    }
-
-    /**
-     * This is to refresh the final actual profit. Since it is a calculation
-     * member variable. Every time
-     * mOrderCurrencyRate,mOrderActualCost,mOrderActualShippingFee
-     * ,mOrderDomesticShippingFee changes, should call this method to
-     * recalculate the final actual cost. This call internally calls
-     * refreshOrderFinalActualCost();
-     */
-    private void refreshOrderFinalProfit()
-    {
-        refreshOrderFinalActualCost();
-        if (mOrderCustomerPaidMoney != null && mOrderCurrencyRate != null
-                && mOrderActualCost != null)
-        {
-            mOrderFinalProfit = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCustomerPaidMoney
-                    - mOrderFinalActualCost);
-        }
-    }
-
-    /**
-     * This is to refresh the final actual cost. Since it is a calculation
-     * member variable. Every time
-     * mOrderCurrencyRate,mOrderActualCost,mOrderActualShippingFee
-     * ,mOrderDomesticShippingFee changes, should call this method to
-     * recalculate the final actual cost.
-     */
-    private void refreshOrderFinalActualCost()
-    {
-        mOrderFinalActualCost = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCurrencyRate
-                * mOrderActualCost + mOrderActualShippingFee + mOrderDomesticShippingFee);
     }
 
     /**
@@ -209,15 +176,39 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderIsProfitPaid = isProfitPaid;
         mOrderNote = orderNote;
 
+        refreshOrderFinalProfit();
+    }
+
+    /**
+     * This is to refresh the final actual profit. Since it is a calculation
+     * member variable. Every time
+     * mOrderCurrencyRate,mOrderActualCost,mOrderActualShippingFee
+     * ,mOrderDomesticShippingFee changes, should call this method to
+     * recalculate the final actual cost. This call internally calls
+     * refreshOrderFinalActualCost();
+     */
+    private void refreshOrderFinalProfit()
+    {
+        refreshOrderFinalActualCost();
         if (mOrderCustomerPaidMoney != null && mOrderCurrencyRate != null
                 && mOrderActualCost != null)
         {
-            mOrderFinalProfit = NumberUtils.keepTwoDigitsDecimalForFloat(Float
-                    .valueOf(mOrderCustomerPaidMoney.intValue() - mOrderCurrencyRate.floatValue()
-                            * mOrderActualCost.floatValue() - mOrderActualShippingFee));
-
+            mOrderFinalProfit = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCustomerPaidMoney
+                    - mOrderFinalActualCost);
         }
-        refreshOrderFinalActualCost();
+    }
+
+    /**
+     * This is to refresh the final actual cost. Since it is a calculation
+     * member variable. Every time
+     * mOrderCurrencyRate,mOrderActualCost,mOrderActualShippingFee
+     * ,mOrderDomesticShippingFee changes, should call this method to
+     * recalculate the final actual cost.
+     */
+    private void refreshOrderFinalActualCost()
+    {
+        mOrderFinalActualCost = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCurrencyRate
+                * mOrderActualCost + mOrderActualShippingFee + mOrderDomesticShippingFee);
     }
 
     @Override

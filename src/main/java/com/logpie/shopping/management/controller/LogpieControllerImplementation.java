@@ -75,8 +75,10 @@ public abstract class LogpieControllerImplementation
             final String adminId, final String buyerName, final String packageId,
             final Boolean showAll, final Boolean orderByBuyerName)
     {
+        long time1 = System.currentTimeMillis();
         LOG.debug("Authenticate cookie is valid. Going to order manage page.");
         final ModelAndView orderManagementPage = new ModelAndView("order_management");
+        long time2 = System.currentTimeMillis();
         if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
         {
             final String message = (String) redirectAttrs.getFlashAttributes().get(
@@ -90,6 +92,7 @@ public abstract class LogpieControllerImplementation
                     LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
             orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
         }
+        long time3 = System.currentTimeMillis();
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         List<Order> orderList;
 
@@ -141,6 +144,7 @@ public abstract class LogpieControllerImplementation
                 orderList = injectOrderManagementOrderList(false);
             }
         }
+        long time4 = System.currentTimeMillis();
 
         if (showAll == null || showAll == false)
         {
@@ -152,50 +156,100 @@ public abstract class LogpieControllerImplementation
             orderManagementPage.addObject("showAll", true);
         }
 
+        long time5 = System.currentTimeMillis();
+
         orderManagementPage.addObject("orderList", orderList);
 
         // Use all the orders list to generate the buyers list.
         final List<String> orderBuyersList = getBuyerList(orderList);
         orderManagementPage.addObject("orderBuyersList", orderBuyersList);
 
+        long time6 = System.currentTimeMillis();
+
         final CategoryDAO categoryDAO = new CategoryDAO(mCurrentAdmin);
         final List<Category> categoryList = categoryDAO.getAllCategory();
         orderManagementPage.addObject("categoryList", categoryList);
+        long time7 = System.currentTimeMillis();
 
         final ImageDAO imageDAO = new ImageDAO(mCurrentAdmin);
         final List<Image> imageList = imageDAO.getAllImage();
         orderManagementPage.addObject("imageList", imageList);
 
+        long time8 = System.currentTimeMillis();
+
         final BrandDAO brandDAO = new BrandDAO(mCurrentAdmin);
         final List<Brand> brandList = brandDAO.getAllBrand();
         orderManagementPage.addObject("brandList", brandList);
 
+        long time9 = System.currentTimeMillis();
         if (mCurrentAdmin.isSuperAdmin())
         {
             final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
             final List<Admin> adminList = adminDAO.getAllAdmins();
             orderManagementPage.addObject("adminList", adminList);
         }
-
+        long time10 = System.currentTimeMillis();
         final List<LogpiePackage> packageList = getPackageListFromOrderList(orderList);
         orderManagementPage.addObject("packageList", packageList);
+        long time11 = System.currentTimeMillis();
 
         final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
         final List<Product> productList = productDAO.getAllProduct();
         orderManagementPage.addObject("productList", productList);
+        long time12 = System.currentTimeMillis();
 
         final LogpieProfitCalculator profitCalculator = new LogpieProfitCalculator(orderList);
         orderManagementPage.addObject("profitCalculator", profitCalculator);
-
+        long time13 = System.currentTimeMillis();
         // inject the current admin into the page
         orderManagementPage.addObject("admin", mCurrentAdmin);
+        long time14 = System.currentTimeMillis();
 
         // inject the current currency rate into the page
         final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
         orderManagementPage.addObject("CurrencyRate", currencyRate);
 
+        long time15 = System.currentTimeMillis();
+
         injectCurrentUrl(request, orderManagementPage);
 
+        long time16 = System.currentTimeMillis();
+
+        long totaltime = time16 - time1;
+
+        final StringBuilder metricBuilder = new StringBuilder();
+        metricBuilder.append("总时间:" + totaltime + "<br/>");
+        metricBuilder.append("创建view:" + (time2 - time1) + " 耗时百分比:"
+                + ((double) (time2 - time1) / totaltime) + "<br/>");
+        metricBuilder.append("alertmessage:" + (time3 - time2) + " 耗时百分比:"
+                + ((double) (time3 - time2) / totaltime) + "<br/>");
+        metricBuilder.append("查询所有订单:" + (time4 - time3) + " 耗时百分比:"
+                + ((double) (time4 - time3) / totaltime) + "<br/>");
+        metricBuilder.append("去除已经清算的订单:" + (time5 - time4) + " 耗时百分比:"
+                + ((double) (time5 - time4) / totaltime) + "<br/>");
+        metricBuilder.append("获取购买者列表:" + (time6 - time5) + " 耗时百分比:"
+                + ((double) (time6 - time5) / totaltime) + "<br/>");
+        metricBuilder.append("获取分类列表:" + (time7 - time6) + " 耗时百分比:"
+                + ((double) (time7 - time6) / totaltime) + "<br/>");
+        metricBuilder.append("获取图片列表" + (time8 - time7) + " 耗时百分比:"
+                + ((double) (time8 - time7) / totaltime) + "<br/>");
+        metricBuilder.append("获取品牌列表:" + (time9 - time8) + " 耗时百分比:"
+                + ((double) (time9 - time8) / totaltime) + "<br/>");
+        metricBuilder.append("获取管理员列表:" + (time10 - time9) + " 耗时百分比:"
+                + ((double) (time10 - time9) / totaltime) + "<br/>");
+        metricBuilder.append("获取包裹列表:" + (time11 - time10) + " 耗时百分比:"
+                + ((double) (time11 - time10) / totaltime) + "<br/>");
+        metricBuilder.append("获取产品列表:" + (time12 - time11) + " 耗时百分比:"
+                + ((double) (time12 - time11) / totaltime) + "<br/>");
+        metricBuilder.append("利润计算:" + (time13 - time12) + " 耗时百分比:"
+                + ((double) (time13 - time12) / totaltime) + "<br/>");
+        metricBuilder.append("插入管理员:" + (time14 - time13) + " 耗时百分比:"
+                + ((double) (time14 - time13) / totaltime) + "<br/>");
+        metricBuilder.append("获取汇率:" + (time15 - time14) + " 耗时百分比:"
+                + ((double) (time15 - time14) / totaltime) + "<br/>");
+        metricBuilder.append("插入当前url:" + (time16 - time15) + " 耗时百分比:"
+                + ((double) (time16 - time15) / totaltime) + "<br/>");
+        orderManagementPage.addObject("metric", metricBuilder.toString());
         return orderManagementPage;
     }
 

@@ -160,6 +160,7 @@
       	<div class="text-primary">当前订单列表 代理:${admin.adminName} 已寄出包裹准确总利润: ${profitCalculator.proxyActualProfitsForAllOrders}</div>
       	</c:if>
       </div>
+      <div>${metric}</div>
         
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">

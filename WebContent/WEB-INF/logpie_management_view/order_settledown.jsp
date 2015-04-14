@@ -74,7 +74,7 @@
       </form>
        <p>点击快捷清算会将选中的订单的公司收入设成 买家付款（实收账款），并将利润已结算设成 “是”</p>
        <div><h4>当前选中订单数: <span id="chosenCount"></span></h4></div>
-       <div><h4>代理应付公司: </b><span id="output"></span></h4></div>
+       <div><h4>代理应付公司: </b><span id="proxyOweCompany"></span></h4></div>
        <div><h4>该次清算公司利润: </b><span id="companyProfit"></span></h4></div>
        <div><h4>该次清算代理利润: </b><span id="proxyProfit"></span></h4></div>
       </c:if>
@@ -90,17 +90,17 @@
       $(document).ready(function() {
     	    function recalculate() {
     	        var chosenCount = 0;
-    	        var sum = 0;
+    	        var proxyOweCompany = 0;
     	        var companyProfit = 0;
     	        var proxyProfit = 0;
     	        $("input[type=checkbox]:checked").each(function() {
-    	            sum += parseFloat($(this).attr("cp")) - parseFloat($(this).attr("cr"));
+    	        	proxyOweCompany += parseFloat($(this).attr("cp")) - parseFloat($(this).attr("cr"));
     	            chosenCount++;
     	            companyProfit +=  (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*(1-parseFloat($(this).attr("pp")));
     	            proxyProfit += (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*parseFloat($(this).attr("pp"));
     	        });
     	        $("#chosenCount").html(chosenCount);
-    	        $("#output").html(sum);
+    	        $("#proxyOweCompany").html(proxyOweCompany);
     	        $("#companyProfit").html(companyProfit.toFixed(2));
     	        $("#proxyProfit").html(proxyProfit.toFixed(2));
     	    }

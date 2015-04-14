@@ -508,9 +508,8 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         // Brand need to connect to Image
         conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_IMAGE_ID,
                 BrandDAO.sBrandImageTableAlias, Image.DB_KEY_IMAGE_ID));
-        // conditions.add(String.format("%s = %s.%s",
-        // Brand.DB_KEY_BRAND_SIZE_CHART_ID,
-        // BrandDAO.sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_SIZE_CHART_ID,
+                BrandDAO.sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
         conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
                 Category.DB_KEY_CATEGORY_ID));
         conditions.add(String.format("%s = %s", Product.DB_KEY_PRODUCT_BRAND_ID,
@@ -531,8 +530,7 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         tableMap.put(sNonAliasPrefix + BrandDAO.sBrandTableName, BrandDAO.sBrandTableName);
         tableMap.put(ProductDAO.sProductImageTableAlias, ImageDAO.sImageTableName);
         tableMap.put(BrandDAO.sBrandImageTableAlias, ImageDAO.sImageTableName);
-        // tableMap.put(BrandDAO.sBrandSizeChartImageAlias,
-        // ImageDAO.sImageTableName);
+        tableMap.put(BrandDAO.sBrandSizeChartImageAlias, ImageDAO.sImageTableName);
         tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,
                 CategoryDAO.sCategoryTableName);
         return tableMap;

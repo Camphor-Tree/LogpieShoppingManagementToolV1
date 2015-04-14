@@ -181,9 +181,8 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         final Set<String> conditions = new HashSet<String>();
         conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_IMAGE_ID,
                 sBrandImageTableAlias, Image.DB_KEY_IMAGE_ID));
-        // conditions.add(String.format("%s = %s.%s",
-        // Brand.DB_KEY_BRAND_SIZE_CHART_ID,
-        // sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
+        conditions.add(String.format("%s = %s.%s", Brand.DB_KEY_BRAND_SIZE_CHART_ID,
+                sBrandSizeChartImageAlias, Image.DB_KEY_IMAGE_ID));
         conditions.add(String.format("%s = %s", Brand.DB_KEY_BRAND_CATEGORY_ID,
                 Category.DB_KEY_CATEGORY_ID));
         return conditions;
@@ -194,7 +193,7 @@ public class BrandDAO extends LogpieBaseDAO<Brand>
         final Map<String, String> tableMap = new HashMap<String, String>();
         // alias for multiple foreign key connection
         tableMap.put(sBrandImageTableAlias, ImageDAO.sImageTableName);
-        // tableMap.put(sBrandSizeChartImageAlias, ImageDAO.sImageTableName);
+        tableMap.put(sBrandSizeChartImageAlias, ImageDAO.sImageTableName);
         tableMap.put(sNonAliasPrefix + CategoryDAO.sCategoryTableName,
                 CategoryDAO.sCategoryTableName);
         return tableMap;
