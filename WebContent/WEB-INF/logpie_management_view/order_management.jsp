@@ -47,11 +47,29 @@
 			</div>
 			<div class="col-md-1" style="margin-left:20px">
 				<c:if test="${showAll==false}">
+				    <c:if test="${orderByPackage==false}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?orderByPackage=true" />">按包裹排序</a>
+	                </c:if>
+	                <c:if test="${orderByPackage==true}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">按订单号排序</a>
+	                </c:if>
+	            </c:if>
+	            <c:if test="${showAll==true}">
+	            	<c:if test="${orderByPackage==false}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true&orderByPackage=true" />">按包裹排序</a>
+	                </c:if>
+	                <c:if test="${orderByPackage==true}">
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">按订单号排序</a>
+	                </c:if>
+	            </c:if>
+			</div>
+			<div class="col-md-1" style="margin-left:20px">
+				<c:if test="${showAll==false}">
 				    <c:if test="${orderByBuyerName==false}">
 	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?orderByBuyerName=true" />">按购买者排序</a>
 	                </c:if>
 	                <c:if test="${orderByBuyerName==true}">
-	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?" />">按订单号排序</a>
+	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">按订单号排序</a>
 	                </c:if>
 	            </c:if>
 	            <c:if test="${showAll==true}">
@@ -66,7 +84,12 @@
 			<div class="col-md-1" style="margin-left:10px">
 				<c:if test="${showAll==false}">
 				   <c:if test="${orderByBuyerName==false}">
-	            	   <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">显示所有订单</a>
+				       <c:if test="${orderByPackage==true}">
+	            	  	 <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true&orderByPackage=true" />">显示所有订单</a>
+	            	   </c:if>
+	            	   <c:if test="${orderByPackage==false}">
+	            	  	 <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true" />">显示所有订单</a>
+	            	   </c:if>
 	               </c:if>
 	               <c:if test="${orderByBuyerName==true}">
 	            	   <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?showAll=true&orderByBuyerName=true" />">显示所有订单</a>
@@ -74,7 +97,12 @@
 	            </c:if>
 	            <c:if test="${showAll==true}">
 	                <c:if test="${orderByBuyerName==false}">
-	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">显示未结算订单</a>
+	                   <c:if test="${orderByPackage==true}">
+	            	  	 <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?orderByPackage=true" />">显示未结算订单</a>
+	            	   </c:if>
+	            	   <c:if test="${orderByPackage==false}">
+	            	  	 	<a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management" />">显示未结算订单</a>
+	            	   </c:if>
 	                </c:if>
 	                <c:if test="${orderByBuyerName==true}">
 	                    <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?orderByBuyerName=true" />">显示未结算订单</a>
@@ -92,7 +120,7 @@
 			</div>
 			</c:if>
         </div>
-        <p>当前显示模式：<b><c:if test="${showAll==true}">显示所有订单</c:if><c:if test="${showAll==false}">只显示未结算订单</c:if></b> 排序方式: <b><c:if test="${orderByBuyerName==true}">购买者名字排序</c:if><c:if test="${orderByBuyerName==false}">订单号排序</c:if></b></p>
+        <p>当前显示模式：<b><c:if test="${showAll==true}">显示所有订单</c:if><c:if test="${showAll==false}">只显示未结算订单</c:if></b> 排序方式: <b><c:if test="${orderByBuyerName==true}">购买者名字排序</c:if><c:if test="${orderByBuyerName==false}"><c:if test="${orderByPackage==true}">包裹排序</c:if><c:if test="${orderByPackage==false}">订单号排序</c:if></c:if></b></p>
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle;" >
         <tr class="info" style="font-size:15px;">
 	        <th class="col-xs-2 col-md-2 text-center">订单号</th>

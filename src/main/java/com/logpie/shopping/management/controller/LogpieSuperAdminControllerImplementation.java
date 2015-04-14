@@ -181,10 +181,10 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     }
 
     @Override
-    public List<Order> injectOrderManagementOrderList(final boolean orderByBuyerName)
+    public List<Order> injectOrderManagementOrderList(final String orderByAttributes)
     {
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-        return orderDAO.getAllOrders(orderByBuyerName);
+        return orderDAO.getAllOrders(orderByAttributes);
     }
 
     @Override
@@ -215,7 +215,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             // inject the current admin to be settle down
             orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
             final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-            List<Order> orderList = orderDAO.getOrdersForProxy(adminId, false);
+            List<Order> orderList = orderDAO.getOrdersForProxy(adminId, null);
             // filter out all the orders already settled down.
             orderList = super.filterOutOrdersAlreadySettledDown(orderList);
             orderSettleDownPage.addObject("orderList", orderList);

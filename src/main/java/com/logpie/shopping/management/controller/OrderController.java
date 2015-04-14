@@ -31,12 +31,14 @@ public class OrderController
             @RequestParam(value = "buyer", required = false) final String buyerName,
             @RequestParam(value = "packageId", required = false) final String packageId,
             @RequestParam(value = "showAll", required = false) final Boolean showAll,
-            @RequestParam(value = "orderByBuyerName", required = false) final Boolean orderByBuyerName)
+            @RequestParam(value = "orderByBuyerName", required = false) final Boolean orderByBuyerName,
+            @RequestParam(value = "orderByPackage", required = false) final Boolean orderByPackage)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showOrderManagementPage(request, httpResponse,
-                redirectAttrs, adminId, buyerName, packageId, showAll, orderByBuyerName);
+                redirectAttrs, adminId, buyerName, packageId, showAll, orderByBuyerName,
+                orderByPackage);
     }
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)

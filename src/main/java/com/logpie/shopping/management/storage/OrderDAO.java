@@ -53,9 +53,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * 
      * @return All existing orders
      */
-    public List<Order> getAllOrders(final boolean orderByBuyerName)
+    public List<Order> getAllOrders(final String orderByAttributes)
     {
-        final GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery(orderByBuyerName);
+        final GetAllOrdersQuery getAllPackageQuery = new GetAllOrdersQuery(orderByAttributes);
         return super.queryResult(getAllPackageQuery);
     }
 
@@ -99,10 +99,10 @@ public class OrderDAO extends LogpieBaseDAO<Order>
      * 
      * @return orders
      */
-    public List<Order> getOrdersForProxy(final String proxyAdminId, final Boolean orderByBuyerName)
+    public List<Order> getOrdersForProxy(final String proxyAdminId, final String orderByAttributes)
     {
         final GetOrdersForProxyQuery getOrdersForProxyQuery = new GetOrdersForProxyQuery(
-                proxyAdminId, orderByBuyerName);
+                proxyAdminId, orderByAttributes);
         return super.queryResult(getOrdersForProxyQuery);
     }
 
@@ -188,12 +188,12 @@ public class OrderDAO extends LogpieBaseDAO<Order>
 
     private class GetAllOrdersQuery extends LogpieBaseQueryAllTemplateQuery<Order>
     {
-        private final Boolean mOrderByBuyerName;
+        private final String mOrderByAttributes;
 
-        GetAllOrdersQuery(final Boolean orderByBuyerName)
+        GetAllOrdersQuery(final String orderByAttributes)
         {
             super(new Order(), OrderDAO.sOrderTableName);
-            mOrderByBuyerName = orderByBuyerName;
+            mOrderByAttributes = orderByAttributes;
         }
 
         // foreign key connection
@@ -218,10 +218,10 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         @Override
         public Set<String> getOrderBy()
         {
-            if (mOrderByBuyerName)
+            if (mOrderByAttributes != null)
             {
                 final Set<String> orderBySet = new HashSet<String>();
-                orderBySet.add(Order.DB_KEY_ORDER_BUYER_NAME);
+                orderBySet.add(mOrderByAttributes);
                 return orderBySet;
             }
             return super.getOrderBy();
@@ -231,13 +231,13 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     private class GetOrdersForProxyQuery extends LogpieBaseQueryAllTemplateQuery<Order>
     {
         final String mProxyAdminId;
-        final Boolean mOrderByBuyerName;
+        final String mOrderByAttributes;
 
-        GetOrdersForProxyQuery(final String proxyAdminId, final Boolean orderByBuyerName)
+        GetOrdersForProxyQuery(final String proxyAdminId, final String orderByAttributes)
         {
             super(new Order(), OrderDAO.sOrderTableName);
             mProxyAdminId = proxyAdminId;
-            mOrderByBuyerName = orderByBuyerName;
+            mOrderByAttributes = orderByAttributes;
         }
 
         // foreign key connection
@@ -254,10 +254,10 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         @Override
         public Set<String> getOrderBy()
         {
-            if (mOrderByBuyerName)
+            if (mOrderByAttributes != null)
             {
                 final Set<String> orderBySet = new HashSet<String>();
-                orderBySet.add(Order.DB_KEY_ORDER_BUYER_NAME);
+                orderBySet.add(mOrderByAttributes);
                 return orderBySet;
             }
             return super.getOrderBy();

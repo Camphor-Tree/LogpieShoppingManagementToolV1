@@ -58,10 +58,10 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     }
 
     @Override
-    public List<Order> injectOrderManagementOrderList(final boolean orderByBuyerName)
+    public List<Order> injectOrderManagementOrderList(final String orderByAttributes)
     {
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-        return orderDAO.getOrdersForProxy(mCurrentAdmin.getAdminId(), orderByBuyerName);
+        return orderDAO.getOrdersForProxy(mCurrentAdmin.getAdminId(), orderByAttributes);
     }
 
     @Override

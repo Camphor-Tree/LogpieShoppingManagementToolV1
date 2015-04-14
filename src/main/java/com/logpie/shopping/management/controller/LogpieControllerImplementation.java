@@ -73,7 +73,7 @@ public abstract class LogpieControllerImplementation
     public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
             final String adminId, final String buyerName, final String packageId,
-            final Boolean showAll, final Boolean orderByBuyerName)
+            final Boolean showAll, final Boolean orderByBuyerName, final Boolean orderByPackage)
     {
         long time1 = System.currentTimeMillis();
         LOG.debug("Authenticate cookie is valid. Going to order manage page.");
@@ -100,7 +100,7 @@ public abstract class LogpieControllerImplementation
         {
             if (mCurrentAdmin.isSuperAdmin() || mCurrentAdmin.getAdminId().equals(adminId))
             {
-                orderList = orderDAO.getOrdersForProxy(adminId, false);
+                orderList = orderDAO.getOrdersForProxy(adminId, null);
             }
             else
             {
@@ -120,7 +120,7 @@ public abstract class LogpieControllerImplementation
                 }
             } catch (UnsupportedEncodingException e)
             {
-                orderList = injectOrderManagementOrderList(false);
+                orderList = injectOrderManagementOrderList(null);
             }
         }
         else if (packageId != null)
@@ -136,12 +136,23 @@ public abstract class LogpieControllerImplementation
             if (orderByBuyerName != null && orderByBuyerName == true)
             {
                 orderManagementPage.addObject("orderByBuyerName", true);
-                orderList = injectOrderManagementOrderList(true);
+                orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_BUYER_NAME);
             }
             else
             {
                 orderManagementPage.addObject("orderByBuyerName", false);
-                orderList = injectOrderManagementOrderList(false);
+                orderList = injectOrderManagementOrderList(null);
+            }
+
+            if (orderByPackage != null && orderByPackage == true)
+            {
+                orderManagementPage.addObject("orderByPackage", true);
+                orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_PACKAGE_ID);
+            }
+            else
+            {
+                orderManagementPage.addObject("orderByPackage", false);
+                orderList = injectOrderManagementOrderList(null);
             }
         }
         long time4 = System.currentTimeMillis();
@@ -282,7 +293,7 @@ public abstract class LogpieControllerImplementation
      * 
      * @return
      */
-    public abstract List<Order> injectOrderManagementOrderList(final boolean orderByBuyerName);
+    public abstract List<Order> injectOrderManagementOrderList(final String orderByAttributes);
 
     /**
      * All admin can create order.
@@ -1198,7 +1209,7 @@ public abstract class LogpieControllerImplementation
                 "订单数量");
 
         final OrderDAO orderDAO = new OrderDAO(null);
-        List<Order> allOrderList = orderDAO.getAllOrders(false);
+        List<Order> allOrderList = orderDAO.getAllOrders(null);
         if (!mCurrentAdmin.isSuperAdmin())
         {
             allOrderList = filterOutOrdersNotBelongToAdmin(allOrderList, mCurrentAdmin);
@@ -1247,7 +1258,7 @@ public abstract class LogpieControllerImplementation
                 "订单数量");
 
         final OrderDAO orderDAO = new OrderDAO(null);
-        List<Order> allOrderList = orderDAO.getAllOrders(false);
+        List<Order> allOrderList = orderDAO.getAllOrders(null);
         if (!mCurrentAdmin.isSuperAdmin())
         {
             allOrderList = filterOutOrdersNotBelongToAdmin(allOrderList, mCurrentAdmin);
@@ -1294,7 +1305,7 @@ public abstract class LogpieControllerImplementation
                 "订单数量");
 
         final OrderDAO orderDAO = new OrderDAO(null);
-        final List<Order> allOrderList = orderDAO.getAllOrders(false);
+        final List<Order> allOrderList = orderDAO.getAllOrders(null);
 
         final Map<String, Integer> orderInAdminMap = AccountingLogic.getOrdersInAdmin(allOrderList);
         final List<KeyValue> pieDataList = GoogleChartHelper.getPieDataListFromMap(orderInAdminMap);
@@ -1331,7 +1342,7 @@ public abstract class LogpieControllerImplementation
                 "订单利润");
 
         final OrderDAO orderDAO = new OrderDAO(null);
-        List<Order> allOrderList = orderDAO.getAllOrders(false);
+        List<Order> allOrderList = orderDAO.getAllOrders(null);
         if (!mCurrentAdmin.isSuperAdmin())
         {
             allOrderList = filterOutOrdersNotBelongToAdmin(allOrderList, mCurrentAdmin);
@@ -1381,7 +1392,7 @@ public abstract class LogpieControllerImplementation
                 "订单利润");
 
         final OrderDAO orderDAO = new OrderDAO(null);
-        final List<Order> allOrderList = orderDAO.getAllOrders(false);
+        final List<Order> allOrderList = orderDAO.getAllOrders(null);
         final Map<String, Double> orderInAdminMap = AccountingLogic
                 .getOrderProfitsInAdmin(allOrderList);
         final List<KeyValue> pieDataList = GoogleChartHelper.getPieDataListFromMap(orderInAdminMap);
@@ -1418,7 +1429,7 @@ public abstract class LogpieControllerImplementation
                 "订单利润");
 
         final OrderDAO orderDAO = new OrderDAO(null);
-        List<Order> allOrderList = orderDAO.getAllOrders(false);
+        List<Order> allOrderList = orderDAO.getAllOrders(null);
         if (!mCurrentAdmin.isSuperAdmin())
         {
             allOrderList = filterOutOrdersNotBelongToAdmin(allOrderList, mCurrentAdmin);
