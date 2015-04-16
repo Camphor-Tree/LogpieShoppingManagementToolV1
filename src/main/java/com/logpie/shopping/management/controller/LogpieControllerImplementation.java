@@ -98,9 +98,35 @@ public abstract class LogpieControllerImplementation
 
         if (adminId != null)
         {
-            if (mCurrentAdmin.isSuperAdmin() || mCurrentAdmin.getAdminId().equals(adminId))
+            if (mCurrentAdmin.isSuperAdmin())
             {
-                orderList = orderDAO.getOrdersForProxy(adminId, null);
+                if (orderByBuyerName != null && orderByBuyerName == true)
+                {
+                    orderManagementPage.addObject("orderByBuyerName", true);
+                    orderManagementPage.addObject("orderByPackage", true);
+                    orderList = orderDAO.getOrdersForProxy(adminId, Order.DB_KEY_ORDER_BUYER_NAME);
+                }
+                else
+                {
+                    orderManagementPage.addObject("orderByBuyerName", false);
+                    if (orderByPackage != null && orderByPackage == true)
+                    {
+                        orderManagementPage.addObject("orderByPackage", true);
+                        // Make the null value in front, then order by package
+                        // id by desc.
+                        // http://stackoverflow.com/questions/9307613/mysql-order-by-null-first-and-desc-after
+                        orderList = orderDAO.getOrdersForProxy(adminId,
+                                Order.DB_KEY_ORDER_PACKAGE_ID + " IS NULL DESC, "
+                                        + Order.DB_KEY_ORDER_PACKAGE_ID + " DESC");
+                    }
+                    else
+                    {
+                        orderManagementPage.addObject("orderByPackage", false);
+                        orderList = orderDAO.getOrdersForProxy(adminId, null);
+                    }
+                }
+                orderManagementPage.addObject("filterByAdmin", "admin=" + adminId);
+
             }
             else
             {
@@ -136,24 +162,28 @@ public abstract class LogpieControllerImplementation
             if (orderByBuyerName != null && orderByBuyerName == true)
             {
                 orderManagementPage.addObject("orderByBuyerName", true);
+                orderManagementPage.addObject("orderByPackage", false);
                 orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_BUYER_NAME);
             }
             else
             {
                 orderManagementPage.addObject("orderByBuyerName", false);
-                orderList = injectOrderManagementOrderList(null);
+                if (orderByPackage != null && orderByPackage == true)
+                {
+                    orderManagementPage.addObject("orderByPackage", true);
+                    // Make the null value in front, then order by package id by
+                    // desc.
+                    // http://stackoverflow.com/questions/9307613/mysql-order-by-null-first-and-desc-after
+                    orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_PACKAGE_ID
+                            + " IS NULL DESC, " + Order.DB_KEY_ORDER_PACKAGE_ID + " DESC");
+                }
+                else
+                {
+                    orderManagementPage.addObject("orderByPackage", false);
+                    orderList = injectOrderManagementOrderList(null);
+                }
             }
 
-            if (orderByPackage != null && orderByPackage == true)
-            {
-                orderManagementPage.addObject("orderByPackage", true);
-                orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_PACKAGE_ID);
-            }
-            else
-            {
-                orderManagementPage.addObject("orderByPackage", false);
-                orderList = injectOrderManagementOrderList(null);
-            }
         }
         long time4 = System.currentTimeMillis();
 

@@ -145,7 +145,7 @@
         <tbody>
         <c:forEach items="${orderList}" var="order">
         <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
-        <td class="anchor"><a name="a${order.orderId}"><div style="padding-top: 65px; margin-top: -65px;">${order.orderId}</div></a></td>
+        <td class="anchor"><a name="a${order.orderId}"><span style="padding-top: 65px; margin-top: -65px;">${order.orderId}</span></a></td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
         <td>${order.orderBuyerName}</td>
         <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
