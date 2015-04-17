@@ -25,6 +25,7 @@ import com.logpie.shopping.management.accounting.logic.GoogleChartHelper;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValue;
 import com.logpie.shopping.management.accounting.logic.LogpieLineChart;
 import com.logpie.shopping.management.accounting.logic.LogpiePieChart;
+import com.logpie.shopping.management.auth.controller.OrderFilterLogic;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.backup.LogpieBackupManager;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
@@ -73,7 +74,7 @@ public abstract class LogpieControllerImplementation
     public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
             final String adminId, final String buyerName, final String packageId,
-            final Boolean showAll, final Boolean orderByBuyerName, final Boolean orderByPackage)
+            final Boolean showAll, final String orderBy)
     {
         long time1 = System.currentTimeMillis();
         LOG.debug("Authenticate cookie is valid. Going to order manage page.");
@@ -94,24 +95,20 @@ public abstract class LogpieControllerImplementation
         }
         long time3 = System.currentTimeMillis();
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-        List<Order> orderList;
+        List<Order> orderList = null;
 
         if (adminId != null)
         {
             if (mCurrentAdmin.isSuperAdmin())
             {
-                if (orderByBuyerName != null && orderByBuyerName == true)
+                if (!StringUtils.isEmpty(orderBy))
                 {
-                    orderManagementPage.addObject("orderByBuyerName", true);
-                    orderManagementPage.addObject("orderByPackage", true);
-                    orderList = orderDAO.getOrdersForProxy(adminId, Order.DB_KEY_ORDER_BUYER_NAME);
-                }
-                else
-                {
-                    orderManagementPage.addObject("orderByBuyerName", false);
-                    if (orderByPackage != null && orderByPackage == true)
+                    if (orderBy.equals("orderId"))
                     {
-                        orderManagementPage.addObject("orderByPackage", true);
+                        orderList = orderDAO.getOrdersForProxy(adminId, null);
+                    }
+                    else if (orderBy.equals("package"))
+                    {
                         // Make the null value in front, then order by package
                         // id by desc.
                         // http://stackoverflow.com/questions/9307613/mysql-order-by-null-first-and-desc-after
@@ -119,14 +116,22 @@ public abstract class LogpieControllerImplementation
                                 Order.DB_KEY_ORDER_PACKAGE_ID + " IS NULL DESC, "
                                         + Order.DB_KEY_ORDER_PACKAGE_ID + " DESC");
                     }
+                    else if (orderBy.equals("buyerName"))
+                    {
+                        orderList = orderDAO.getOrdersForProxy(adminId,
+                                Order.DB_KEY_ORDER_BUYER_NAME);
+                    }
                     else
                     {
-                        orderManagementPage.addObject("orderByPackage", false);
                         orderList = orderDAO.getOrdersForProxy(adminId, null);
                     }
+                    orderManagementPage.addObject("orderBy", orderBy);
+                }
+                else
+                {
+                    orderList = orderDAO.getOrdersForProxy(adminId, null);
                 }
                 orderManagementPage.addObject("filterByAdmin", "admin=" + adminId);
-
             }
             else
             {
@@ -159,31 +164,35 @@ public abstract class LogpieControllerImplementation
         }
         else
         {
-            if (orderByBuyerName != null && orderByBuyerName == true)
+            if (!StringUtils.isEmpty(orderBy))
             {
-                orderManagementPage.addObject("orderByBuyerName", true);
-                orderManagementPage.addObject("orderByPackage", false);
-                orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_BUYER_NAME);
-            }
-            else
-            {
-                orderManagementPage.addObject("orderByBuyerName", false);
-                if (orderByPackage != null && orderByPackage == true)
+                if (orderBy.equals("orderId"))
                 {
-                    orderManagementPage.addObject("orderByPackage", true);
-                    // Make the null value in front, then order by package id by
-                    // desc.
+                    // it will default order by order id
+                    orderList = injectOrderManagementOrderList(null);
+                }
+                else if (orderBy.equals("package"))
+                {
+                    // Make the null value in front, then order by package
+                    // id by desc.
                     // http://stackoverflow.com/questions/9307613/mysql-order-by-null-first-and-desc-after
                     orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_PACKAGE_ID
                             + " IS NULL DESC, " + Order.DB_KEY_ORDER_PACKAGE_ID + " DESC");
                 }
+                else if (orderBy.equals("buyerName"))
+                {
+                    orderList = injectOrderManagementOrderList(Order.DB_KEY_ORDER_BUYER_NAME);
+                }
                 else
                 {
-                    orderManagementPage.addObject("orderByPackage", false);
-                    orderList = injectOrderManagementOrderList(null);
+                    orderList = orderDAO.getOrdersForProxy(adminId, null);
                 }
+                orderManagementPage.addObject("orderBy", orderBy);
             }
-
+            else
+            {
+                return "redirect:/order_management?orderBy=orderId";
+            }
         }
         long time4 = System.currentTimeMillis();
 
@@ -291,6 +300,10 @@ public abstract class LogpieControllerImplementation
         metricBuilder.append("插入当前url:" + (time16 - time15) + " 耗时百分比:"
                 + ((double) (time16 - time15) / totaltime) + "<br/>");
         orderManagementPage.addObject("metric", metricBuilder.toString());
+
+        final OrderFilterLogic filterLogic = new OrderFilterLogic(adminId, buyerName, orderBy,
+                showAll);
+        orderManagementPage.addObject("filterLogic", filterLogic);
         return orderManagementPage;
     }
 
@@ -356,7 +369,7 @@ public abstract class LogpieControllerImplementation
                     "创建一个新的订单 给购买者:" + newOrder.getOrderBuyerName() + " 失败");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     /**
@@ -919,7 +932,7 @@ public abstract class LogpieControllerImplementation
                     "创建新的分类:" + newCategory.getCategoryName() + " 失败!");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     /**
@@ -951,7 +964,7 @@ public abstract class LogpieControllerImplementation
                     "创建新的管理员:" + newAdmin.getAdminName() + " 失败!");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     public Object createImage(final HttpServletRequest request,
@@ -977,7 +990,7 @@ public abstract class LogpieControllerImplementation
                     "创建新的图片:" + newImage.getImageDescription() + " 失败!");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     public Object createBrand(final HttpServletRequest request,
@@ -1007,7 +1020,7 @@ public abstract class LogpieControllerImplementation
                             + newBrand.getBrandChineseName() + " 失败!");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     public Object createProduct(final HttpServletRequest request,
@@ -1033,7 +1046,7 @@ public abstract class LogpieControllerImplementation
                     "创建新的产品:" + newProduct.getProductName() + " 失败!");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     protected List<Order> filterOutOrdersNotBelongToAdmin(final List<Order> orderList,

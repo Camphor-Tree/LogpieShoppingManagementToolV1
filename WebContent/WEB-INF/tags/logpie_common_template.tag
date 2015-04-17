@@ -50,7 +50,7 @@ h2{
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="<c:url value="/home" />">主页</a></li>
-			<li><a href="<c:url value="/order_management" />">订单管理</a></li>
+			<li><a href="<c:url value="/order_management?orderBy=orderId" />">订单管理</a></li>
 			<li><a href="<c:url value="/package_management" />">包裹管理</a></li>
 			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
 			<li><a href="<c:url value="/calculator" />">定价计算器</a></li>

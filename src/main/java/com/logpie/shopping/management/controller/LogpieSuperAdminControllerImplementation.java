@@ -96,7 +96,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
                     + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
         }
 
-        return "redirect:/order_management";
+        return "redirect:/order_management?orderBy=orderId";
     }
 
     @Override
