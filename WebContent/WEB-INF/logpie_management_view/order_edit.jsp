@@ -12,22 +12,24 @@
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/edit" />" method="POST" >
                 <input name="OrderId" value="${order.orderId}" type="hidden">
                 <input name="OrderDate" value="${order.orderDate}" type="hidden">
-                <div class="form-group">
-                  <label for="order_buyer">订单购买者</label>
-                  <input class="form-control" type="text" id="order_buyer" name="OrderBuyerName" value="${order.orderBuyerName}" required>
-                </div>
-                <div class="form-group">
-                  <label for="order_proxy">订单代理人</label>
-                  <select class="form-control" form="order_creation_form" name="OrderProxyId">
-						   <c:forEach items="${adminList}" var="admin">
-						       <c:if test="${order.orderProxy.adminId == admin.adminId}">
-						       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
-        					   </c:if>
-						       <c:if test="${order.orderProxy.adminId!= admin.adminId}">
-						       		<option value="${admin.adminId}">${admin.adminName}</option>
-        					   </c:if>
-						    </c:forEach>
-				  </select>
+                <div class="row">
+	                <div class="form-group col-sm-6">
+	                  <label for="order_buyer">订单购买者</label>
+	                  <input class="form-control" type="text" id="order_buyer" name="OrderBuyerName" value="${order.orderBuyerName}" required>
+	                </div>
+	                <div class="form-group col-sm-6">
+	                  <label for="order_proxy">订单代理人</label>
+	                  <select class="form-control" form="order_creation_form" name="OrderProxyId">
+							   <c:forEach items="${adminList}" var="admin">
+							       <c:if test="${order.orderProxy.adminId == admin.adminId}">
+							       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
+	        					   </c:if>
+							       <c:if test="${order.orderProxy.adminId!= admin.adminId}">
+							       		<option value="${admin.adminId}">${admin.adminName}</option>
+	        					   </c:if>
+							    </c:forEach>
+					  </select>
+	                </div>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
                   <label for="order_product">购买商品</label>
@@ -129,15 +131,21 @@
                   <label for="order_note">备注 (客户来源，规格颜色，美国跟踪号，国内运费，转寄地址，定金支付情况)</label>
                   <input class="form-control" type="text" id="order_note" name="OrderNote" value="${order.orderNote}">
                 </div>
-                <!-- only super admin can modify whether the profit is paid -->
-                <c:if test="${admin.isSuperAdmin==true}">
-                <div class="checkbox" style="padding-left:20px">
-                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True" <c:if test="${order.orderIsProfitPaid==true}">checked</c:if>/>利润是否已和代理结算</label>
+                <div class="row">
+	                <!-- only super admin can modify whether the profit is paid -->
+	                <c:if test="${admin.isSuperAdmin==true}">
+	                <div class="col-sm-6">
+	                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True" <c:if test="${order.orderIsProfitPaid==true}">checked</c:if>/> 利润是否已和代理结算</label>
+	                </div>
+	                </c:if>
+	                <c:if test="${admin.isSuperAdmin==false}">
+						<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="${order.orderIsProfitPaid}"/>
+	                </c:if>
+	                
+	                <div class="col-sm-6">
+	                  <label><input type="checkbox" id="sent_to_user" name="OrderSentToUser" value="True" <c:if test="${order.orderSentToUser==true}">checked</c:if>/> 已向用户发货</label>
+	                </div>
                 </div>
-                </c:if>
-                <c:if test="${admin.isSuperAdmin==false}">
-					<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="${order.orderIsProfitPaid}"/>
-                </c:if>
                 <input type="hidden" name="RedirectUrl" value="${RedirectUrl}">
                 <c:if test="${Anchor != null}">
                 <input type="hidden" name="Anchor" value="${Anchor}">

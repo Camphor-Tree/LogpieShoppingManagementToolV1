@@ -25,7 +25,6 @@ import com.logpie.shopping.management.accounting.logic.GoogleChartHelper;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValue;
 import com.logpie.shopping.management.accounting.logic.LogpieLineChart;
 import com.logpie.shopping.management.accounting.logic.LogpiePieChart;
-import com.logpie.shopping.management.auth.controller.OrderFilterLogic;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.backup.LogpieBackupManager;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
@@ -198,7 +197,7 @@ public abstract class LogpieControllerImplementation
 
         if (showAll == null || showAll == false)
         {
-            orderList = filterOutOrdersAlreadySettledDown(orderList);
+            orderList = filterOutOrdersAlreadySettleDown(orderList);
             orderManagementPage.addObject("showAll", false);
         }
         else
@@ -1064,19 +1063,33 @@ public abstract class LogpieControllerImplementation
 
     }
 
-    protected List<Order> filterOutOrdersAlreadySettledDown(final List<Order> orderList)
+    protected List<Order> filterOutOrdersAlreadySettleDown(final List<Order> orderList)
     {
         final LogpieSettleDownOrderLogic settleDownLogic = new LogpieSettleDownOrderLogic();
         final List<Order> orderAfterFilter = new ArrayList<Order>();
         for (final Order order : orderList)
         {
             // If haven't settle down, then add to the list
-            if (settleDownLogic.isOrderNeedSettleDown(order))
+            if (!settleDownLogic.isOrderAlreadySettleDown(order))
             {
                 orderAfterFilter.add(order);
             }
         }
         return orderAfterFilter;
+    }
+
+    protected List<Order> getOrderNeedToSettleDown(final List<Order> orderList)
+    {
+        final LogpieSettleDownOrderLogic settleDownLogic = new LogpieSettleDownOrderLogic();
+        final List<Order> orderNeedToSettleDown = new ArrayList<Order>();
+        for (final Order order : orderList)
+        {
+            if (settleDownLogic.isOrderNeedSettleDown(order))
+            {
+                orderNeedToSettleDown.add(order);
+            }
+        }
+        return orderNeedToSettleDown;
     }
 
     /**

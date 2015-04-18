@@ -15,7 +15,7 @@ public final class CollectionUtils
 
     }
 
-    public static boolean isEmpty(final Collection c)
+    public static boolean isEmpty(final Collection<?> c)
     {
         return c == null || c.isEmpty();
     }

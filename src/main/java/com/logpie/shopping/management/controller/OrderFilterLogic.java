@@ -1,5 +1,5 @@
 // Copyright 2015 logpie.com. All rights reserved.
-package com.logpie.shopping.management.auth.controller;
+package com.logpie.shopping.management.controller;
 
 import org.springframework.util.StringUtils;
 

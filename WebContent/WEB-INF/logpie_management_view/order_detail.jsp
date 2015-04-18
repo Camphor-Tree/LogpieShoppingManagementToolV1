@@ -29,6 +29,7 @@
 		   <strong>订单最终利润(人民币): </strong><c:out value="${order.orderFinalProfit}"/><br />
 		   <strong>订单公司已收汇款(人民币)：</strong><c:out value="${order.orderCompanyReceivedMoney}"/><br />
 		   <strong>订单代理利润已结算: </strong><c:out value="${order.orderIsProfitPaid}"/><br />
+		   <strong>订单已向用户发货: </strong><c:out value="${order.orderSentToUser}"/><br />
 		   <strong>订单备注: </strong><c:out value="${order.orderNote}"/><br />
         </div>
         

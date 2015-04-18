@@ -99,8 +99,8 @@
         <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
         <td class="anchor"><a name="a${order.orderId}"><span style="padding-top: 65px; margin-top: -65px;">${order.orderId}</span></a></td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
-        <td>${order.orderBuyerName}</td>
-        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
+        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
+        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#DFF0D8"</c:if>>${order.orderProduct.productName}</td>
         <td>${order.orderProductCount}</td>
         <td>${order.orderActualCost}</td>
         <td>${order.orderWeight}</td>
@@ -160,22 +160,24 @@
           <div id="section-order" class="tab-pane fade in active" style="padding:20px">
               <h3>新建一个订单</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/create" />" method="POST" >
-                <div class="form-group">
-                  <label for="order_buyer">订单购买者</label>
-                  <input class="form-control" id="order_buyer" name="OrderBuyerName" required autofocus>
-                </div>
-                <div class="form-group">
-                  <label for="order_proxy">订单代理人</label>
-                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
-                  		  <c:if test="${adminList!=null}">
-						    <c:forEach items="${adminList}" var="admin">
-						      <option value="${admin.adminId}">${admin.adminName}</option>
-						    </c:forEach>
-						  </c:if>
-						  <c:if test="${adminList==null}">
-						      <option value="${admin.adminId}">${admin.adminName}</option>
-						  </c:if>
-				  </select>
+                <div class="row">
+	                <div class="form-group col-sm-6">
+	                  <label for="order_buyer">订单购买者</label>
+	                  <input class="form-control" id="order_buyer" name="OrderBuyerName" required autofocus>
+	                </div>
+	                <div class="form-group col-sm-6">
+	                  <label for="order_proxy">订单代理人</label>
+	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
+	                  		  <c:if test="${adminList!=null}">
+							    <c:forEach items="${adminList}" var="admin">
+							      <option value="${admin.adminId}">${admin.adminName}</option>
+							    </c:forEach>
+							  </c:if>
+							  <c:if test="${adminList==null}">
+							      <option value="${admin.adminId}">${admin.adminName}</option>
+							  </c:if>
+					  </select>
+	                </div>
                 </div>
                 <div class="dropdown" style="margin-bottom:20px">
                   <label for="order_product">购买商品</label>
@@ -258,14 +260,19 @@
                   <label for="order_note">备注 (客户来源，规格颜色，美国跟踪号，国内运费，转寄地址，定金支付情况)</label>
                   <input class="form-control" type="text" id="order_note" name="OrderNote">
                 </div>
-                <!-- only super admin can modify whether the profit is paid -->
-                <c:if test="${admin.isSuperAdmin==true}">
-	                <div class="checkbox" style="padding-left:20px">
-	                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True"/>利润是否已和代理结算</label>
+                <div class="row">
+	                <!-- only super admin can modify whether the profit is paid -->
+	                <c:if test="${admin.isSuperAdmin==true}">
+		                <div class="col-sm-6">
+		                  <label><input type="checkbox" id="profits_is_paid" name="OrderIsProfitPaid" value="True"/>利润是否已和代理结算</label>
+		                </div>
+	                </c:if>
+	               	<div class="col-sm-6">
+	                  <label><input type="checkbox" id="sent_to_user" name="OrderSentToUser" value="True"/> 已向用户发货</label>
 	                </div>
-                </c:if>
+	            </div>
                 <c:if test="${admin.isSuperAdmin==false}">
-					<input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="False"/>利润是否已和代理结算</label>
+					<label><input type="hidden" id="profits_is_paid" name="OrderIsProfitPaid" value="False"/>  利润是否已和代理结算</label>
                 </c:if>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>

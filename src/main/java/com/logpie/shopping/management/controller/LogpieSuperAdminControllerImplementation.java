@@ -1,7 +1,6 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
-import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.LogpiePackage;
@@ -216,26 +214,12 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
             final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
             List<Order> orderList = orderDAO.getOrdersForProxy(adminId, null);
-            // filter out all the orders already settled down.
-            orderList = super.filterOutOrdersAlreadySettledDown(orderList);
+            // get all the orders need to be settled down.
+            orderList = super.getOrderNeedToSettleDown(orderList);
             orderSettleDownPage.addObject("orderList", orderList);
         }
         injectCurrentUrl(request, orderSettleDownPage);
         return orderSettleDownPage;
-    }
-
-    public List<Order> filterOutOrdersAlreadySettleDown(final List<Order> orderList)
-    {
-        final LogpieSettleDownOrderLogic logpieSettlwDownOrderLogic = new LogpieSettleDownOrderLogic();
-        final List<Order> orderListAfterFilter = new ArrayList<Order>();
-        for (final Order order : orderList)
-        {
-            if (!logpieSettlwDownOrderLogic.isOrderAlreadyCleared(order))
-            {
-                orderListAfterFilter.add(order);
-            }
-        }
-        return orderListAfterFilter;
     }
 
     @Override

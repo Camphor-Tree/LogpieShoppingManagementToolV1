@@ -28,7 +28,9 @@
 		        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
 		        <th class="col-xs-2 col-md-2 text-center">重量</th>
 		        <th class="col-xs-2 col-md-2 text-center">代理者</th>
-		        <th class="col-xs-2 col-md-2 text-center">实际运费￥</th>
+	            <th class="col-xs-2 col-md-2 text-center">国际邮费￥</th>
+	            <th class="col-xs-2 col-md-2 text-center">国内邮费￥</th>
+	            <th class="col-xs-2 col-md-2 text-center">已付国内邮费￥</th>
 		        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
 		        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
 		        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
@@ -42,7 +44,7 @@
 		        <tr class='clickable-row' data-href='./order?id=${order.orderId}'>
 			        <td>${order.orderId}</td>
 			        <td>${fn:substring(order.orderDate,5,10)}</td>
-			        <td>${order.orderBuyerName}</td>
+                    <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
 			        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
 			        <td>${order.orderProductCount}</td>
 			        <td>${order.orderActualCost}</td>
@@ -51,7 +53,9 @@
 			        <!--<td>${order.orderProxyProfitPercentage}</td>-->
 			        <!--<td>${order.orderCurrencyRate}</td>-->
 			        <!-- <td>${order.orderEstimatedShippingFee}</td>-->
-			        <td>${order.orderActualShippingFee}</td>
+	                <td>${order.orderActualShippingFee}</td>
+	                <td>${order.orderDomesticShippingFee}</td>
+                    <td>${order.orderCustomerPaidDomesticShippingFee}</td>
 			        <td>${order.orderFinalActualCost}</td>
 			        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
 			        <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>

@@ -12,7 +12,7 @@ import com.logpie.shopping.management.model.Order;
  */
 public class LogpieSettleDownOrderLogic
 {
-    public boolean isOrderAlreadyCleared(final Order order)
+    public boolean isOrderAlreadySettleDown(final Order order)
     {
         if (order == null)
         {
@@ -30,14 +30,18 @@ public class LogpieSettleDownOrderLogic
         final float companyReceivedMoney = order.getOrderCompanyReceivedMoney();
         // 利润是否已结算
         final boolean isProfitPaidToProxy = order.getOrderIsProfitPaid();
+        // 已向用户发货
+        final boolean sentToUser = order.getOrderSentToUser();
 
         // A. 如果 用户付款数 等于 卖价+国内用户已付邮费（可能为0， 可能不等于国内运费)
         // B. 如果 公司收款 等于 用户已付钱数
         // C. 如果 利润已结算给代理
         // D. 如果 卖价不为0 那么用户付款数不能为0
+        // E. 如果 已向用户发货为true
         // 那么 改订单已完全清算。
         if (floatEquals(sellingPrice + customerPaidDomesticShippingFee, customerPaidMoney)
-                && floatEquals(customerPaidMoney, companyReceivedMoney) && isProfitPaidToProxy)
+                && floatEquals(customerPaidMoney, companyReceivedMoney) && isProfitPaidToProxy
+                && sentToUser)
         {
             if (!floatEquals(0.0f, sellingPrice) && floatEquals(customerPaidMoney, 0.0f))
             {
@@ -51,7 +55,9 @@ public class LogpieSettleDownOrderLogic
 
     public boolean isOrderNeedSettleDown(final Order order)
     {
-        return !isOrderAlreadyCleared(order);
+        // 已向用户发货
+        final boolean sentToUser = order.getOrderSentToUser();
+        return sentToUser;
     }
 
     private boolean floatEquals(final float numberA, final float numberB)

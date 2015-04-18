@@ -45,6 +45,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     // "OrderFinalProfit";
     public static final String DB_KEY_ORDER_COMPANY_RECEIVED_MONEY = "OrderCompanyReceivedMoney";
     public static final String DB_KEY_ORDER_IS_PROFIT_PAID = "OrderIsProfitPaid";
+    public static final String DB_KEY_ORDER_SENT_TO_USER = "OrderSentToUser";
     public static final String DB_KEY_ORDER_NOTE = "OrderNote";
 
     private String mOrderId;
@@ -68,6 +69,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     private Float mOrderFinalActualCost;
     private Float mOrderCompanyReceivedMoney; // may be null
     private Boolean mOrderIsProfitPaid; // default false
+    private Boolean mOrderSentToUser; // default false
     private String mOrderNote;// may be null
 
     // For RowMapper
@@ -94,6 +96,7 @@ public class Order implements RowMapper<Order>, LogpieModel
      * @param customerPaidMoney
      * @param finalProfit
      * @param isProfitPaid
+     * @param orderSentToUser
      * @param orderNote
      */
     public Order(Product product, Integer productCount, Float orderWeight, String orderBuyerName,
@@ -102,7 +105,7 @@ public class Order implements RowMapper<Order>, LogpieModel
             Float actualShippingFee, Float orderDomesticShippingFee,
             Float orderCustomerPaidDomesticShippingFee, Float sellingPrice,
             Float customerPaidMoney, Float orderCompanyReceivedMoney, Boolean isProfitPaid,
-            String orderNote)
+            Boolean orderSentToUser, String orderNote)
     {
         // OrderData is auto generated
         // mOrderDate = orderDate;
@@ -124,6 +127,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         // mOrderFinalProfit = finalProfit;
         mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
         mOrderIsProfitPaid = isProfitPaid;
+        mOrderSentToUser = orderSentToUser;
         mOrderNote = orderNote;
 
         refreshOrderFinalProfit();
@@ -153,7 +157,7 @@ public class Order implements RowMapper<Order>, LogpieModel
             LogpiePackage package1, Float estimatedShippingFee, Float actualShippingFee,
             Float orderDomesticShippingFee, Float orderCustomerPaidDomesticShippingFee,
             Float sellingPrice, Float customerPaidMoney, Float orderCompanyReceivedMoney,
-            Boolean isProfitPaid, String orderNote)
+            Boolean isProfitPaid, Boolean orderSentToUser, String orderNote)
     {
         mOrderId = orderId;
         mOrderDate = orderDate;
@@ -174,6 +178,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderCustomerPaidMoney = customerPaidMoney;
         mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
         mOrderIsProfitPaid = isProfitPaid;
+        mOrderSentToUser = orderSentToUser;
         mOrderNote = orderNote;
 
         refreshOrderFinalProfit();
@@ -248,13 +253,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         // final Integer finalProfit = rs.getInt(DB_KEY_ORDER_FINAL_PROFIT);
         final Float orderCompanyReceivedMoney = rs.getFloat(DB_KEY_ORDER_COMPANY_RECEIVED_MONEY);
         final Boolean isProfitPaid = rs.getBoolean(DB_KEY_ORDER_IS_PROFIT_PAID);
+        final Boolean orderSentToUser = rs.getBoolean(DB_KEY_ORDER_SENT_TO_USER);
         final String orderNote = rs.getString(DB_KEY_ORDER_NOTE);
 
         return new Order(orderId, orderDateString, product, productCount, orderWeight,
                 orderBuyerName, orderProxy, proxyProfitPercentage, orderActualCost, currencyRate,
                 package1, estimatedShippingFee, actualShippingFee, orderDomesticShippingFee,
                 orderCustomerPaidDomesticShippingFee, sellingPrice, customerPaidMoney,
-                orderCompanyReceivedMoney, isProfitPaid, orderNote);
+                orderCompanyReceivedMoney, isProfitPaid, orderSentToUser, orderNote);
     }
 
     @Override
@@ -291,6 +297,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         // modelMap.put(Order.DB_KEY_ORDER_FINAL_PROFIT, mOrderFinalProfit);
         modelMap.put(Order.DB_KEY_ORDER_COMPANY_RECEIVED_MONEY, mOrderCompanyReceivedMoney);
         modelMap.put(Order.DB_KEY_ORDER_IS_PROFIT_PAID, mOrderIsProfitPaid);
+        modelMap.put(Order.DB_KEY_ORDER_SENT_TO_USER, mOrderSentToUser);
         modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
         return modelMap;
     }
@@ -372,7 +379,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderCompanyReceivedMoney"));
         final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
                 .getParameter("OrderIsProfitPaid"));
-
+        final Boolean orderSentToUser = Boolean.parseBoolean(request
+                .getParameter("OrderSentToUser"));
         // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
 
@@ -380,7 +388,7 @@ public class Order implements RowMapper<Order>, LogpieModel
                 orderProxyProfitPercentage, orderActualCost, orderCurrencyRate, orderPackage,
                 orderEstimatedShippingFee, orderActualShippingFee, orderDomesticShippingFee,
                 orderCustomerPaidDomesticShippingFee, orderSellingPrice, orderCustomerPaidMoney,
-                orderCompanyReceivedMoney, orderIsProfitPaid, orderNote);
+                orderCompanyReceivedMoney, orderIsProfitPaid, orderSentToUser, orderNote);
     }
 
     public static Order readModifiedOrderFromRequest(final HttpServletRequest request)
@@ -439,6 +447,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderCompanyReceivedMoney"));
         final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
                 .getParameter("OrderIsProfitPaid"));
+        final Boolean orderSentToUser = Boolean.parseBoolean(request
+                .getParameter("OrderSentToUser"));
         // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
 
@@ -446,7 +456,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                 orderBuyerName, orderProxy, orderProxyProfitPercentage, orderActualCost,
                 orderCurrencyRate, orderPackage, orderEstimatedShippingFee, orderActualShippingFee,
                 orderDomesticShippingFee, orderCustomerPaidDomesticShippingFee, orderSellingPrice,
-                orderCustomerPaidMoney, orderCompanyReceivedMoney, orderIsProfitPaid, orderNote);
+                orderCustomerPaidMoney, orderCompanyReceivedMoney, orderIsProfitPaid,
+                orderSentToUser, orderNote);
     }
 
     // 订单结算
@@ -543,6 +554,11 @@ public class Order implements RowMapper<Order>, LogpieModel
         {
             changeStringBuilder.append("OrderFinalProfit：" + compareToOrder.mOrderFinalProfit
                     + "->" + mOrderFinalProfit + " ");
+        }
+        if (!compareToOrder.mOrderSentToUser.equals(mOrderSentToUser))
+        {
+            changeStringBuilder.append("OrderSentToUser：" + compareToOrder.mOrderSentToUser + "->"
+                    + mOrderSentToUser + " ");
         }
         if (!compareToOrder.mOrderNote.equals(mOrderNote))
         {
@@ -947,6 +963,23 @@ public class Order implements RowMapper<Order>, LogpieModel
     }
 
     /**
+     * @return the orderSentToUser
+     */
+    public Boolean getOrderSentToUser()
+    {
+        return mOrderSentToUser;
+    }
+
+    /**
+     * @param orderSentToUser
+     *            the orderSentToUser to set
+     */
+    public void setOrderSentToUser(Boolean orderSentToUser)
+    {
+        mOrderSentToUser = orderSentToUser;
+    }
+
+    /**
      * @return the orderCompanyReceivedMoney
      */
     public Float getOrderCompanyReceivedMoney()
@@ -1016,7 +1049,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                     && compareToOrder.mOrderProxyProfitPercentage
                             .equals(mOrderProxyProfitPercentage)
                     && compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice)
-                    && compareToOrder.mOrderWeight.equals(mOrderWeight))
+                    && compareToOrder.mOrderWeight.equals(mOrderWeight)
+                    && compareToOrder.mOrderSentToUser.equals(mOrderSentToUser))
             {
                 return true;
             }
