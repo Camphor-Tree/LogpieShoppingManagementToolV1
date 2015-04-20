@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.HtmlUtils;
 
 import com.logpie.shopping.management.accounting.logic.AccountingLogic;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper;
@@ -481,6 +482,7 @@ public abstract class LogpieControllerImplementation
         }
 
         String redirectUrl = request.getParameter("RedirectUrl");
+        redirectUrl = HtmlUtils.htmlUnescape(redirectUrl);
         final String anchor = request.getParameter("Anchor");
         if (anchor != null)
         {
