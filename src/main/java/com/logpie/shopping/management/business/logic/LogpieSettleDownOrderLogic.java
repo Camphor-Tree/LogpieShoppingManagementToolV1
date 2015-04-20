@@ -55,7 +55,9 @@ public class LogpieSettleDownOrderLogic
 
     public boolean isOrderNeedSettleDown(final Order order)
     {
-        return !isOrderAlreadySettleDown(order);
+        // 已向用户发货
+        final boolean sentToUser = order.getOrderSentToUser();
+        return sentToUser && !isOrderAlreadySettleDown(order);
     }
 
     private boolean floatEquals(final float numberA, final float numberB)
