@@ -30,9 +30,11 @@ import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.backup.LogpieBackupManager;
 import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
 import com.logpie.shopping.management.business.logic.LogpieSettleDownOrderLogic;
+import com.logpie.shopping.management.coupon.CouponCodeGenerator;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.Coupon;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
@@ -40,6 +42,7 @@ import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
+import com.logpie.shopping.management.storage.CouponDAO;
 import com.logpie.shopping.management.storage.ImageDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
@@ -884,12 +887,145 @@ public abstract class LogpieControllerImplementation
     }
 
     /**
-     * Used to show log page
+     * Used to show coupon management page
      * 
      * @return
      */
     public abstract Object showLogPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse);
+
+    public Object showCouponManagementPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        ModelAndView couponManagementPage = new ModelAndView("coupon_management");
+        // inject the current admin into the page
+        couponManagementPage.addObject("admin", mCurrentAdmin);
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            couponManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    message);
+        }
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            couponManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
+        }
+        return couponManagementPage;
+    }
+
+    public Object generateCoupon(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String productPrice,
+            final String couponValue)
+    {
+
+        if (StringUtils.isEmpty(productPrice))
+        {
+            return "redirect:/coupon_management";
+        }
+        ModelAndView couponManagementPage = new ModelAndView("coupon_management");
+        // inject the current admin into the page
+        couponManagementPage.addObject("admin", mCurrentAdmin);
+        try
+        {
+            final String couponCode = CouponCodeGenerator.getCouponCodeByPrice(Integer
+                    .parseInt(productPrice));
+            couponManagementPage.addObject("CouponCode", couponCode);
+        } catch (Exception e)
+        {
+            return "redirect:/coupon_management";
+        }
+
+        return couponManagementPage;
+    }
+
+    public Object validateCoupon(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String couponCode)
+    {
+
+        if (StringUtils.isEmpty(couponCode))
+        {
+            return "redirect:/coupon_management";
+        }
+        ModelAndView couponManagementPage = new ModelAndView("coupon_management");
+        // inject the current admin into the page
+        couponManagementPage.addObject("admin", mCurrentAdmin);
+        try
+        {
+            final String couponValue = CouponCodeGenerator.validateCouponCode(couponCode);
+            if (couponValue != null)
+            {
+                couponManagementPage.addObject("ValidateCouponCode", couponCode);
+                couponManagementPage.addObject("ValidateCouponValue", couponValue);
+            }
+            else
+            {
+                couponManagementPage.addObject("ValidateCouponCode", couponCode);
+                couponManagementPage.addObject("ValidateCouponValue", "无效");
+            }
+        } catch (Exception e)
+        {
+            return "redirect:/coupon_management";
+        }
+
+        return couponManagementPage;
+    }
+
+    public Object useCoupon(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String couponCode,
+            final RedirectAttributes redirectAttrs)
+    {
+
+        if (StringUtils.isEmpty(couponCode))
+        {
+            return "redirect:/coupon_management";
+        }
+        ModelAndView couponManagementPage = new ModelAndView("coupon_management");
+        // inject the current admin into the page
+        couponManagementPage.addObject("admin", mCurrentAdmin);
+        try
+        {
+            final String couponValue = CouponCodeGenerator.validateCouponCode(couponCode);
+            if (couponValue != null)
+            {
+                final CouponDAO couponDAO = new CouponDAO(mCurrentAdmin);
+                boolean isCouponAlreadyUsed = couponDAO.isCouponAlreadyUsed(new Coupon(null,
+                        couponCode));
+
+                if (isCouponAlreadyUsed)
+                {
+                    redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                            "优惠券:" + couponCode + "，已使用过");
+                    return "redirect:/coupon_management";
+                }
+                final boolean useCouponSuccess = couponDAO.addCoupon(new Coupon(null, couponCode));
+
+                if (useCouponSuccess)
+                {
+                    redirectAttrs.addFlashAttribute(
+                            LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS, "使用优惠券:"
+                                    + couponCode + "，成功!");
+                }
+                else
+                {
+                    redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                            "使用优惠券:" + couponCode + "，失败!");
+                }
+            }
+            else
+            {
+                redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                        "优惠券:" + couponCode + "，无效");
+            }
+        } catch (Exception e)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "使用优惠券服务器错误!");
+        }
+        return "redirect:/coupon_management";
+    }
 
     /**
      * @return

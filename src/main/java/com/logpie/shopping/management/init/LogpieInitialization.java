@@ -64,6 +64,8 @@ public class LogpieInitialization
                 .execute("create table if not exists Orders(OrderId serial primary key, OrderDate timestamp not null default current_timestamp, OrderProductId bigint unsigned not null, OrderProductCount int not null, OrderWeight float default 0, OrderBuyerName text not null, OrderProxyId bigint unsigned, OrderProxyProfitPercentage float not null, OrderActualCost float, OrderCurrencyRate float not null, OrderPackageId bigint unsigned, OrderEstimatedShippingFee float not null, OrderActualShippingFee float, OrderSellingPrice float not null, OrderCustomerPaidMoney float,OrderDomesticShippingFee float default 0, OrderCustomerPaidDomesticShippingFee float default 0, OrderCompanyReceivedMoney float, OrderIsProfitPaid boolean not null default false, OrderSentToUser boolean default false, OrderNote text, foreign key (OrderPackageId) references Packages(PackageId) on update cascade on delete cascade, foreign key (OrderProxyId) references Admins(AdminId) on update cascade on delete cascade, foreign key (OrderProductId) references Products(ProductId) on update cascade on delete cascade)");
         jdbcTemplate
                 .execute("create table if not exists DbLog(DbLogId serial primary key, DbLogAdminId bigint unsigned, DbLogTime timestamp not null default current_timestamp, DBLogSQL text not null, DBLogComment text,foreign key (DbLogAdminId) references Admins(AdminId))");
+        jdbcTemplate
+                .execute("create table if not exists Coupons(CouponId serial primary key, CouponCode text not null)");
         // jdbcTemplate
         // .execute("create table if not exists ExchangeRate(Date timestamp primary key default current_timestamp, Rate float not null)");
         // jdbcTemplate

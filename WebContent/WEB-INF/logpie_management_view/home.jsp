@@ -4,7 +4,12 @@
 <tag:logpie_common_template>
     <jsp:body>
         <h3>你好, ${AdminName} 欢迎来到Logpie内部管理工具 今日汇率：${CurrencyRate}</h3>
+        
         <h4>更新日志：</h4>
+        <h5>2015-04-22 版本:Beta 1.10</h5>
+        <ol>
+        <li>新增了优惠券管理,可以生成优惠券码,验证优惠券码,使用优惠券码</li>
+        </ol>
         <h5>2015-04-20 版本:Beta 1.9</h5>
         <ol>
         <li>修复了需要清算订单的逻辑判断</li>

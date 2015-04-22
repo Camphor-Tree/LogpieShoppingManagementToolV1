@@ -12,8 +12,8 @@
     <link rel="icon" href="http://logpieimage.oss-cn-qingdao.aliyuncs.com/weblogo.png">
     <title>Logpie</title>
     <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="resources/css/offcanvas.css" rel="stylesheet">
-    <link href="resources/css/footer.css" rel="stylesheet">
+    <link href="<c:url value="/resources/css/offcanvas.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/footer.css" />" rel="stylesheet">
     <style type="text/css">
 h2{
     margin: 0;     
@@ -55,6 +55,7 @@ h2{
 			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
 			<li><a href="<c:url value="/calculator" />">定价计算器</a></li>
 			<li><a href="<c:url value="/log" />">系统改动日志</a></li>
+			<li><a href="<c:url value="/coupon_management" />">优惠券管理</a></li>
 			<li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">更多<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
