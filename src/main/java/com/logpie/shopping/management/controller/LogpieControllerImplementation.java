@@ -1363,7 +1363,7 @@ public abstract class LogpieControllerImplementation
         final ModelAndView orderNumberLineChartPage = new ModelAndView("accounting_linechart");
         final OrderDAO orderDAO = new OrderDAO(null);
         final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie 利润 最近12天 走势图",
-                "日期", "订单数量");
+                "日期", "订单利润");
         List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(12);
         if (!mCurrentAdmin.isSuperAdmin())
         {
@@ -1378,7 +1378,7 @@ public abstract class LogpieControllerImplementation
         orderNumberLineChartPage.addObject(LINE_CHART_1, orderInCategoryPieChart1);
 
         final LogpieLineChart orderInCategoryPieChart2 = new LogpieLineChart("Logpie利润 最近12个月 走势图",
-                "日期", "订单数量");
+                "日期", "订单利润");
         List<Order> orderListWithinNmonths = orderDAO.getOrdersWithinNmonths(12);
         if (!mCurrentAdmin.isSuperAdmin())
         {
