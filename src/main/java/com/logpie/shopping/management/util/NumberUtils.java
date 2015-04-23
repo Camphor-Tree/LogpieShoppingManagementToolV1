@@ -12,4 +12,13 @@ public class NumberUtils
         return Float.valueOf(String.format("%.2f", rowNumer));
     }
 
+    public static boolean floatEquals(final float numberA, final float numberB)
+    {
+        if (numberA - numberB <= 0.01f && numberA - numberB >= -0.01f)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

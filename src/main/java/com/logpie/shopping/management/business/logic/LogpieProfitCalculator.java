@@ -166,9 +166,17 @@ public class LogpieProfitCalculator
      */
     private float getEstimatedProfitForOrder(final Order order)
     {
-        float singleProfitInEstimation = order.getOrderSellingPrice() - order.getOrderActualCost()
-                * order.getOrderCurrencyRate() - order.getOrderEstimatedShippingFee();
-        return singleProfitInEstimation;
+        // 如果实际运费不为0 那么就用实际运费来估计
+        if (NumberUtils.floatEquals(order.getOrderActualShippingFee(), 0.0f))
+        {
+            return order.getOrderSellingPrice() - order.getOrderActualCost()
+                    * order.getOrderCurrencyRate() - order.getOrderEstimatedShippingFee();
+        }
+        else
+        {
+            return order.getOrderSellingPrice() - order.getOrderActualCost()
+                    * order.getOrderCurrencyRate() - order.getOrderActualShippingFee();
+        }
     }
 
     /**

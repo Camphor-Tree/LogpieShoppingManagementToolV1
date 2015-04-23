@@ -2,6 +2,7 @@
 package com.logpie.shopping.management.business.logic;
 
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.util.NumberUtils;
 
 /**
  * This class is used to handle our monthly clearing orders with our proxies and
@@ -40,11 +41,13 @@ public class LogpieSettleDownOrderLogic
         // D. 如果 卖价不为0 那么用户付款数不能为0
         // E. 如果 已向用户发货为true
         // 那么 改订单已完全清算。
-        if (floatEquals(sellingPrice + customerPaidDomesticShippingFee, customerPaidMoney)
-                && floatEquals(customerPaidMoney - domesticShippingFee, companyReceivedMoney)
-                && isProfitPaidToProxy && sentToUser)
+        if (NumberUtils.floatEquals(sellingPrice + customerPaidDomesticShippingFee,
+                customerPaidMoney)
+                && NumberUtils.floatEquals(customerPaidMoney - domesticShippingFee,
+                        companyReceivedMoney) && isProfitPaidToProxy && sentToUser)
         {
-            if (!floatEquals(0.0f, sellingPrice) && floatEquals(customerPaidMoney, 0.0f))
+            if (!NumberUtils.floatEquals(0.0f, sellingPrice)
+                    && NumberUtils.floatEquals(customerPaidMoney, 0.0f))
             {
                 // 如果卖价不为0 而买家付款为0 则该订单有问题 不该设成已结算
                 return false;
@@ -61,13 +64,4 @@ public class LogpieSettleDownOrderLogic
         return sentToUser && !isOrderAlreadySettleDown(order);
     }
 
-    private boolean floatEquals(final float numberA, final float numberB)
-    {
-        if (numberA - numberB <= 0.01f && numberA - numberB >= -0.01f)
-        {
-            return true;
-        }
-        return false;
-
-    }
 }
