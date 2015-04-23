@@ -38,9 +38,16 @@
         <c:if test="${ValidateCouponCode != null}">
         <div class="row" style="font-size:13pt;">
             <br>
+            <c:if test="${ValidateCouponValue != '无效'}">
         	<div class="alert alert-success col-md-4">
          	优惠券码: ${ValidateCouponCode} 优惠券价值: ${ValidateCouponValue}
          	</div>
+         	</c:if>
+            <c:if test="${ValidateCouponValue =='无效'}">
+        	<div class="alert alert-danger col-md-4">
+         	优惠券码: ${ValidateCouponCode} 优惠券价值: ${ValidateCouponValue}
+         	</div>
+         	</c:if>
         </div>
 		</c:if>
         <hr></hr>
