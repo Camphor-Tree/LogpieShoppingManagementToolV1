@@ -4,7 +4,6 @@
 <tag:logpie_common_template>
     <jsp:body>
     	<c:if test="${order !=null}">
-    	<br/>
         <div class="row"  style="padding:20px">
             <h3>修改订单  订单Id:${order.orderId} 订单时间:${order.orderDate}</h3>
         </div>

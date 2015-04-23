@@ -80,6 +80,7 @@
 	        <th class="col-xs-4 col-md-4 text-center">购买者</th>
 	        <th class="col-xs-6 col-md-6 text-center">商品名称</th>
 	        <th class="col-xs-1 col-md-1 text-center">数量</th>
+	        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
 	        <th class="col-xs-2 col-md-2 text-center">重量</th>
 	        <th class="col-xs-2 col-md-2 text-center">代理者</th>
@@ -87,7 +88,6 @@
 	        <th class="col-xs-2 col-md-2 text-center">国内邮费￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">已付国内邮费￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
-	        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
 	        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
@@ -102,6 +102,7 @@
         <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
         <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#DFF0D8"</c:if>>${order.orderProduct.productName}</td>
         <td>${order.orderProductCount}</td>
+        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
         <td>${order.orderActualCost}</td>
         <td>${order.orderWeight}</td>
         <td>${order.orderProxy.adminName}</td>
@@ -112,7 +113,6 @@
         <td>${order.orderDomesticShippingFee}</td>
         <td>${order.orderCustomerPaidDomesticShippingFee}</td>
         <td>${order.orderFinalActualCost}</td>
-        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
         <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
         <td>${order.orderFinalProfit}</td>
         <td>${order.orderCompanyReceivedMoney}</td>
