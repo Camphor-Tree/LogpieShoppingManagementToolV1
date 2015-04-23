@@ -181,6 +181,9 @@
 	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
 	                  		  <c:if test="${adminList!=null}">
 							    <c:forEach items="${adminList}" var="admin">
+							       <c:if test="${admin.adminName == '乔梦颖'}">
+							       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
+	        					   </c:if>
 							      <option value="${admin.adminId}">${admin.adminName}</option>
 							    </c:forEach>
 							  </c:if>
