@@ -140,7 +140,18 @@
       	<div class="text-primary">当前订单列表 代理:${admin.adminName} 已寄出包裹准确总利润: ${profitCalculator.proxyActualProfitsForAllOrders}</div>
       	</c:if>
       </div>
+       <div class="row alert-info">
+	      <h4>系统如何判定订单是否已完全结算？ 必须满足以下5个条件</h4>
+	      <ol>
+	        <li> 如果 用户付款数 等于 卖价+国内用户已付邮费（可能为0， 可能不等于国内运费)</li>
+	        <li> 如果 公司收款 等于 用户已付钱数减去国内运费 (一般是代理垫付的) </li>
+	        <li> 如果 利润已结算给代理</li>
+	        <li> 如果 卖价不为0 那么用户付款数不能为0</li>
+	        <li> 如果 已向用户发货为true</li>
+	       </ol>
+       </div>
       <div>${metric}</div>
+
         
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
