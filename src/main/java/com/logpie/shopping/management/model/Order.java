@@ -463,7 +463,9 @@ public class Order implements RowMapper<Order>, LogpieModel
     // 订单结算
     public void settleDown()
     {
-        this.mOrderCompanyReceivedMoney = this.mOrderCustomerPaidMoney;
+        // 公司收款应等于用户付的钱减去代理垫付的钱(国内运费)
+        this.mOrderCompanyReceivedMoney = this.mOrderCustomerPaidMoney
+                - this.mOrderDomesticShippingFee;
         this.mOrderIsProfitPaid = true;
     }
 

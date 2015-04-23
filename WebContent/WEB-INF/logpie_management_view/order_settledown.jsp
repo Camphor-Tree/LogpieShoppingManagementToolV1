@@ -46,7 +46,7 @@
         <tbody>
 	        <c:forEach items="${orderList}" var="order">
 	        <tr>
-	        <td><input type="checkbox" name="SettleDownOrders" value="${order.orderId}" cp="${order.orderCustomerPaidMoney}" cr="${order.orderCompanyReceivedMoney}" fc="${order.orderFinalActualCost}" pp="${order.orderProxyProfitPercentage}"/></td>
+	        <td><input type="checkbox" name="SettleDownOrders" value="${order.orderId}" cp="${order.orderCustomerPaidMoney}" ds="${order.orderDomesticShippingFee}" cr="${order.orderCompanyReceivedMoney}" fc="${order.orderFinalActualCost}" pp="${order.orderProxyProfitPercentage}"/></td>
 	        <td class="anchor"><a name="a${order.orderId}"><div style="padding-top: 65px; margin-top: -65px;">${order.orderId}</div></a></td>
 	        <td>${fn:substring(order.orderDate,5,10)}</td>
 	        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
@@ -78,9 +78,9 @@
       </form>
        <p>点击快捷清算会将选中的订单的公司收入设成 买家付款（实收账款），并将利润已结算设成 “是”</p>
        <div><h4>当前选中订单数: <span id="chosenCount"></span></h4></div>
-       <div><h4>代理应付公司: </b><span id="proxyOweCompany"></span></h4></div>
-       <div><h4>该次清算公司利润: </b><span id="companyProfit"></span></h4></div>
-       <div><h4>该次清算代理利润: </b><span id="proxyProfit"></span></h4></div>
+       <div><h4>代理应付公司: <span id="proxyOweCompany"></span></h4> <div class="alert-info">代理应付公司的钱 = 用户付的总金额 - 国内运费（代理垫付的钱）- 公司已收的钱</div></div>
+       <div><h4>该次清算公司利润: <span id="companyProfit"></span></h4> <div class="alert-info">公司利润等于 = （用户付的总金额 - 总成本（买价*汇率+国际运费+国内运费）） * (1-代理分红百分比)</div></div>
+       <div><h4>该次清算代理利润(公司应付的工资给代理): <span id="proxyProfit"></span></h4> <div class="alert-info">代理利润等于 = （用户付的总金额 - 总成本（买价*汇率+国际运费+国内运费）） * 代理分红百分比</div></div>
       </c:if>
       <c:if test="${admin == null}">
          	</br></br>
@@ -98,9 +98,12 @@
     	        var companyProfit = 0;
     	        var proxyProfit = 0;
     	        $("input[type=checkbox]:checked").each(function() {
-    	        	proxyOweCompany += parseFloat($(this).attr("cp")) - parseFloat($(this).attr("cr"));
+    	        	//代理应付公司的钱 = 用户付的钱（包括付的国内运费）- 国内运费（代理垫付的钱）- 公司已收的钱
+    	        	proxyOweCompany += parseFloat($(this).attr("cp")) - parseFloat($(this).attr("ds")) - parseFloat($(this).attr("cr"));
     	            chosenCount++;
+    	            //公司利润等于 = （用户付的钱 - 总成本（买价*汇率+国际运费+国内运费）） * （1-代理分红百分比）
     	            companyProfit +=  (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*(1-parseFloat($(this).attr("pp")));
+    	            //代理利润等于 = （用户付的钱 - 总成本（买价*汇率+国际运费+国内运费）） * 代理分红百分比
     	            proxyProfit += (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*parseFloat($(this).attr("pp"));
     	        });
     	        $("#chosenCount").html(chosenCount);
