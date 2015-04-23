@@ -487,85 +487,79 @@ public class Order implements RowMapper<Order>, LogpieModel
 
         if (!compareToOrder.mOrderIsProfitPaid.equals(mOrderIsProfitPaid))
         {
-            changeStringBuilder.append("OrderIsProfitPaid：" + compareToOrder.mOrderIsProfitPaid
-                    + "->" + mOrderIsProfitPaid + " ");
+            changeStringBuilder.append("利润已付给代理：" + compareToOrder.mOrderIsProfitPaid + "->"
+                    + mOrderIsProfitPaid + " ");
         }
         if (!compareToOrder.mOrderActualCost.equals(mOrderActualCost))
         {
-            changeStringBuilder.append("OrderActualCost：" + compareToOrder.mOrderActualCost + "->"
+            changeStringBuilder.append("购买成本：" + compareToOrder.mOrderActualCost + "->"
                     + mOrderActualCost + " ");
         }
         if (!compareToOrder.mOrderActualShippingFee.equals(mOrderActualShippingFee))
         {
-            changeStringBuilder
-                    .append("OrderActualShippingFee：" + compareToOrder.mOrderActualShippingFee
-                            + "->" + mOrderActualShippingFee + " ");
+            changeStringBuilder.append("订单国际运费：" + compareToOrder.mOrderActualShippingFee + "->"
+                    + mOrderActualShippingFee + " ");
         }
         if (!compareToOrder.mOrderBuyerName.equals(mOrderBuyerName))
         {
-            changeStringBuilder.append("mOrderBuyerName：" + compareToOrder.mOrderBuyerName + "->"
+            changeStringBuilder.append("订单购买者：" + compareToOrder.mOrderBuyerName + "->"
                     + mOrderBuyerName + " ");
         }
         if (!compareToOrder.mOrderCompanyReceivedMoney.equals(mOrderCompanyReceivedMoney))
         {
-            changeStringBuilder.append("OrderCompanyReceivedMoney："
-                    + compareToOrder.mOrderCompanyReceivedMoney + "->" + mOrderCompanyReceivedMoney
-                    + " ");
+            changeStringBuilder.append("公司已收汇款：" + compareToOrder.mOrderCompanyReceivedMoney + "->"
+                    + mOrderCompanyReceivedMoney + " ");
         }
         if (!compareToOrder.mOrderCurrencyRate.equals(mOrderCurrencyRate))
         {
-            changeStringBuilder.append("OrderCurrencyRate：" + compareToOrder.mOrderCurrencyRate
-                    + "->" + mOrderCurrencyRate + " ");
+            changeStringBuilder.append("汇率：" + compareToOrder.mOrderCurrencyRate + "->"
+                    + mOrderCurrencyRate + " ");
         }
         if (!compareToOrder.mOrderCustomerPaidMoney.equals(mOrderCustomerPaidMoney))
         {
-            changeStringBuilder
-                    .append("OrderCustomerPaidMoney：" + compareToOrder.mOrderCustomerPaidMoney
-                            + "->" + mOrderCustomerPaidMoney + " ");
+            changeStringBuilder.append("客户已付款：" + compareToOrder.mOrderCustomerPaidMoney + "->"
+                    + mOrderCustomerPaidMoney + " ");
         }
         if (!compareToOrder.mOrderDate.equals(mOrderDate))
         {
-            changeStringBuilder.append("OrderDate：" + compareToOrder.mOrderDate + "->" + mOrderDate
+            changeStringBuilder.append("订单日期：" + compareToOrder.mOrderDate + "->" + mOrderDate
                     + " ");
         }
         if (!compareToOrder.mOrderEstimatedShippingFee.equals(mOrderEstimatedShippingFee))
         {
-            changeStringBuilder.append("OrderEstimatedShippingFee："
-                    + compareToOrder.mOrderEstimatedShippingFee + "->" + mOrderEstimatedShippingFee
-                    + " ");
+            changeStringBuilder.append("估计国际运费：" + compareToOrder.mOrderEstimatedShippingFee + "->"
+                    + mOrderEstimatedShippingFee + " ");
         }
         if (!compareToOrder.mOrderDomesticShippingFee.equals(mOrderDomesticShippingFee))
         {
-            changeStringBuilder.append("OrderDomesticShippingFee："
-                    + compareToOrder.mOrderDomesticShippingFee + "->" + mOrderDomesticShippingFee
-                    + " ");
+            changeStringBuilder.append("国内运费：" + compareToOrder.mOrderDomesticShippingFee + "->"
+                    + mOrderDomesticShippingFee + " ");
         }
         if (!compareToOrder.mOrderCustomerPaidDomesticShippingFee
                 .equals(mOrderCustomerPaidDomesticShippingFee))
         {
-            changeStringBuilder.append("OrderCustomerPaidDomesticShippingFee："
+            changeStringBuilder.append("用户已付国内运费："
                     + compareToOrder.mOrderCustomerPaidDomesticShippingFee + "->"
                     + mOrderCustomerPaidDomesticShippingFee + " ");
         }
         if (!compareToOrder.mOrderFinalActualCost.equals(mOrderFinalActualCost))
         {
-            changeStringBuilder.append("OrderFinalActualCost："
-                    + compareToOrder.mOrderFinalActualCost + "->" + mOrderFinalActualCost + " ");
+            changeStringBuilder.append("最终成本：" + compareToOrder.mOrderFinalActualCost + "->"
+                    + mOrderFinalActualCost + " ");
         }
         if (!compareToOrder.mOrderFinalProfit.equals(mOrderFinalProfit))
         {
-            changeStringBuilder.append("OrderFinalProfit：" + compareToOrder.mOrderFinalProfit
-                    + "->" + mOrderFinalProfit + " ");
+            changeStringBuilder.append("最终利润：" + compareToOrder.mOrderFinalProfit + "->"
+                    + mOrderFinalProfit + " ");
         }
         if (!compareToOrder.mOrderSentToUser.equals(mOrderSentToUser))
         {
-            changeStringBuilder.append("OrderSentToUser：" + compareToOrder.mOrderSentToUser + "->"
+            changeStringBuilder.append("订单已向用户发货：" + compareToOrder.mOrderSentToUser + "->"
                     + mOrderSentToUser + " ");
         }
         if (!compareToOrder.mOrderNote.equals(mOrderNote))
         {
-            changeStringBuilder.append("OrderNote：" + compareToOrder.mOrderNote + "->" + mOrderNote
-                    + " ");
+            changeStringBuilder.append("备注：" + compareToOrder.mOrderNote + "->" + mOrderNote + " ");
         }
         if (compareToOrder.mOrderPackage != null && mOrderPackage != null
                 && !compareToOrder.mOrderPackage.compareTo(mOrderPackage))
@@ -911,6 +905,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     public void setOrderCustomerPaidMoney(Float orderCustomerPaidMoney)
     {
         mOrderCustomerPaidMoney = orderCustomerPaidMoney;
+        refreshOrderFinalProfit();
     }
 
     /**

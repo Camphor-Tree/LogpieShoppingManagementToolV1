@@ -6,10 +6,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.storage.DBLogDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
 
 /**
@@ -83,7 +86,13 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     @Override
     public Object showLogPage(HttpServletRequest request, HttpServletResponse httpResponse)
     {
-        return showNoPermissionPage();
+        final ModelAndView logPage = new ModelAndView("log");
+
+        final DBLogDAO dbLogDAO = new DBLogDAO(mCurrentAdmin);
+        final List<DBLog> dbLogList = dbLogDAO.getDBLogByAdmin(mCurrentAdmin);
+        logPage.addObject("dbLogList", dbLogList);
+
+        return logPage;
     }
 
 }

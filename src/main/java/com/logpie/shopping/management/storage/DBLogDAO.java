@@ -46,6 +46,12 @@ public class DBLogDAO extends LogpieBaseDAO<DBLog>
         return super.queryResult(getAllDBLogQuery);
     }
 
+    public List<DBLog> getDBLogByAdmin(final Admin admin)
+    {
+        GetDBLogByAdminQuery getDbLogByAdminQuery = new GetDBLogByAdminQuery(admin);
+        return super.queryResult(getDbLogByAdminQuery);
+    }
+
     private class AddDBLogInsert implements LogpieDataInsert<DBLog>
     {
         private DBLog mDBLog;
@@ -87,6 +93,45 @@ public class DBLogDAO extends LogpieBaseDAO<DBLog>
         {
             return getForeignKeyConnectionTables();
         }
+    }
+
+    private class GetDBLogByAdminQuery extends LogpieBaseQueryAllTemplateQuery<DBLog>
+    {
+        final Admin mAdmin;
+
+        GetDBLogByAdminQuery(final Admin admin)
+        {
+            super(new DBLog(), DBLogDAO.sDBLogTableName);
+            mAdmin = admin;
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            conditions
+                    .add(String.format("%s=%s", DBLog.DB_KEY_DBLOG_ADMIN_ID, mAdmin.getAdminId()));
+            return conditions;
+        }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            return super.getOrderBy();
+        }
+
+        @Override
+        public Map<String, String> getJoinTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return null;
+        };
     }
 
     private static Set<String> getForeignKeyConnectionConditions()
