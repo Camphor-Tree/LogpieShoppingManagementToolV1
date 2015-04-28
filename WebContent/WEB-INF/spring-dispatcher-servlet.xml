@@ -47,5 +47,6 @@
     </bean>
     <task:annotation-driven/>
     <bean id="LogpieBackupManager" class="com.logpie.shopping.management.backup.LogpieBackupManager"></bean>
+    <bean id="LogpieCurrencyRateUtils" class="com.logpie.shopping.management.util.CurrencyRateUtils"></bean>
 		  
 </beans>
