@@ -76,9 +76,10 @@ public abstract class LogpieControllerImplementation
      */
     public Object showOrderManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            final String adminId, final String buyerName, final String packageId,
+            final String adminId, final String buyerNameEscape, final String packageId,
             final Boolean showAll, final String orderBy)
     {
+        final String buyerName = HtmlUtils.htmlUnescape(buyerNameEscape);
         long time1 = System.currentTimeMillis();
         LOG.debug("Authenticate cookie is valid. Going to order manage page.");
         final ModelAndView orderManagementPage = new ModelAndView("order_management");
