@@ -184,7 +184,9 @@
 							       <c:if test="${admin.adminName == '乔梦颖'}">
 							       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
 	        					   </c:if>
-							      <option value="${admin.adminId}">${admin.adminName}</option>
+	        					   <c:if test="${admin.adminName != '乔梦颖'}">
+							       		<option value="${admin.adminId}">${admin.adminName}</option>
+	        					   </c:if>
 							    </c:forEach>
 							  </c:if>
 							  <c:if test="${adminList==null}">
