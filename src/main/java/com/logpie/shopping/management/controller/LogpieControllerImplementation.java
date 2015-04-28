@@ -565,7 +565,7 @@ public abstract class LogpieControllerImplementation
      */
     public Object showPackageManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            final Boolean showAll)
+            final Boolean showAll, final Boolean showAllDelivered)
     {
         LOG.debug("Authenticate cookie is valid. Going to package management page.");
 
@@ -589,7 +589,14 @@ public abstract class LogpieControllerImplementation
 
         if (showAll == null || showAll == false)
         {
-            packageList = filterOutPackageAlreadyReceived(packageList);
+            if (showAllDelivered != null && showAllDelivered == true)
+            {
+                packageList = getPackageAlreadyDeliveredList(packageList);
+            }
+            else
+            {
+                packageList = filterOutPackageAlreadyReceived(packageList);
+            }
             packageManagementPage.addObject("showAll", false);
         }
         else
@@ -1660,6 +1667,20 @@ public abstract class LogpieControllerImplementation
         }
 
         return accountingOrderInAdminPieChartPage;
+    }
+
+    private List<LogpiePackage> getPackageAlreadyDeliveredList(final List<LogpiePackage> packageList)
+    {
+        final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
+        for (final LogpiePackage logpiePackage : packageList)
+        {
+            // If already delivered, then add to the list
+            if (logpiePackage.getPackageIsDelivered())
+            {
+                packagesAfterFilter.add(logpiePackage);
+            }
+        }
+        return packagesAfterFilter;
     }
 
     private List<LogpiePackage> filterOutPackageAlreadyReceived(

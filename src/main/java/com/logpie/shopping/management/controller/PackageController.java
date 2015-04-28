@@ -18,14 +18,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class PackageController
 {
     @RequestMapping(value = "/package_management", method = RequestMethod.GET)
-    public Object showPackageManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
-            @RequestParam(value = "showAll", required = false) final Boolean showAll)
+    public Object showPackageManagementPage(
+            final HttpServletRequest request,
+            final HttpServletResponse httpResponse,
+            final RedirectAttributes redirectAttrs,
+            @RequestParam(value = "showAll", required = false) final Boolean showAll,
+            @RequestParam(value = "showAllDelivered", required = false) final Boolean showAllDelivered)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showPackageManagementPage(request, httpResponse,
-                redirectAttrs, showAll);
+                redirectAttrs, showAll, showAllDelivered);
     }
 
     /**

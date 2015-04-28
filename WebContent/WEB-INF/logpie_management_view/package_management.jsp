@@ -20,12 +20,15 @@
 		
 	    <div class="col-md-2" style="margin-bottom:10px">
 	    	<c:if test="${showAll==false}">
-	        <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/package_management?showAll=true" />">显示所有包裹</a>
+	        <a type="button" class="btn btn-success" style="font-size:16px;" href="<c:url value="/package_management?showAll=true" />">显示所有包裹</a>
 	        </c:if>
 	        <c:if test="${showAll==true}">
 	        <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/package_management" />">显示未到包裹</a>
 	        </c:if>
-
+		</div>
+		
+		<div class="col-md-2" style="margin-bottom:10px">
+	        <a type="button" class="btn btn-danger" style="font-size:16px;" href="<c:url value="/package_management?showAllDelivered=true" />">显示所有已到包裹</a>
 		</div>
    		
       <table class="table table-striped text-center" style="table-layout:fixed; font-size:18px;">
