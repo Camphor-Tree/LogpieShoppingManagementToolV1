@@ -61,6 +61,9 @@
 	            	  	 <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/order_management?${filterLogic.hideSettleDownOrderQueryUrl}" />">显示未结算订单</a>
 	            </c:if>
 			</div>
+			<c:if test="${admin.isSuperAdmin == false}">
+				<a type="button" class="btn btn-danger" style="margin-left:30px;font-size:16px;" href="<c:url value="/order/settledown?adminId=${admin.adminId}" />">快捷结算</a>
+			</c:if>
 			<c:if test="${adminList != null}">
 			<div class="dropdown col-md-1" style="margin-left:30px">
 	  			<button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-expanded="true" style="font-size:16px;">快捷结算<span class="caret"></span></button>

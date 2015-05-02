@@ -6,8 +6,7 @@
     <jsp:body>
          <c:if test="${admin != null}">
         <div class="row" style="margin-bottom:10px">
-        	<br><br>
-        	<h3>欢迎来到 订单快捷结算 当前结算代理为:${admin.adminName}</h3>
+        	<h3>欢迎来到 订单快捷结算 当前结算代理为:${settleDownAdmin.adminName}</h3>
         	<c:if test="${action_message_success !=null}">
   	        <div class="alert alert-success" role="alert">
                     <strong>${action_message_success}</strong>
@@ -42,7 +41,7 @@
 	        <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
         <form role="form" id="order_settledown_form" action="<c:url value="/order/settledown" />" method="POST" >
-        <input type="hidden" name="adminId" value="${admin.adminId}"/>
+        <input type="hidden" name="adminId" value="${settleDownAdmin.adminId}"/>
         <tbody>
 	        <c:forEach items="${orderList}" var="order">
 	        <tr>
@@ -74,13 +73,17 @@
 	        </c:forEach>
         </tbody>
       </table>
+      <c:if test="${admin.isSuperAdmin==true}">
        <button type="submit" class="btn btn-primary btn-block">快捷清算</button>
+      </c:if>
       </form>
+      <c:if test="${admin.isSuperAdmin==true}">
        <p>点击快捷清算会将选中的订单的公司收入设成 买家付款（实收账款），并将利润已结算设成 “是”</p>
+      </c:if>
        <div><h4>当前选中订单数: <span id="chosenCount"></span></h4></div>
-       <div><h4>代理应付公司: <span id="proxyOweCompany"></span></h4> <div class="alert-info">代理应付公司的钱 = 用户付的总金额 - 国内运费（代理垫付的钱）- 公司已收的钱</div></div>
-       <div><h4>该次清算公司利润: <span id="companyProfit"></span></h4> <div class="alert-info">公司利润等于 = （用户付的总金额 - 总成本（买价*汇率+国际运费+国内运费）） * (1-代理分红百分比)</div></div>
-       <div><h4>该次清算代理利润(公司应付的工资给代理): <span id="proxyProfit"></span></h4> <div class="alert-info">代理利润等于 = （用户付的总金额 - 总成本（买价*汇率+国际运费+国内运费）） * 代理分红百分比</div></div>
+       <div><h4>${settleDownAdmin.adminName}应付北美总部: <span id="proxyOweCompany"></span></h4> <div class="alert-info">代理应付公司的钱 = 用户付的总金额 - 国内运费（代理垫付的钱）- 公司已收的钱</div></div>
+       <div><h4>该次清算北美总部利润: <span id="companyProfit"></span></h4> <div class="alert-info">公司利润等于 = （用户付的总金额 - 总成本（买价*汇率+国际运费+国内运费）） * (1-代理分红百分比)</div></div>
+       <div><h4>该次清算${settleDownAdmin.adminName}利润(北美总部应付的工资): <span id="proxyProfit"></span></h4> <div class="alert-info">代理利润等于 = （用户付的总金额 - 总成本（买价*汇率+国际运费+国内运费）） * 代理分红百分比</div></div>
       </c:if>
       <c:if test="${admin == null}">
          	</br></br>

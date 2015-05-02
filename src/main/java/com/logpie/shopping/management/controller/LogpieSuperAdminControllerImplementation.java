@@ -18,7 +18,6 @@ import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
-import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.DBLogDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
@@ -183,43 +182,6 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     {
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         return orderDAO.getAllOrders(orderByAttributes);
-    }
-
-    @Override
-    public Object showOrderSettleDownPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse, final String adminId,
-            final RedirectAttributes redirectAttrs)
-    {
-        final ModelAndView orderSettleDownPage = new ModelAndView("order_settledown");
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
-
-        final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
-        final Admin currentAdminToSettleDown = adminDAO.queryAccountByAdminId(adminId);
-
-        if (currentAdminToSettleDown != null)
-        {
-            // inject the current admin to be settle down
-            orderSettleDownPage.addObject("admin", currentAdminToSettleDown);
-            final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
-            List<Order> orderList = orderDAO.getOrdersForProxy(adminId, null);
-            // get all the orders need to be settled down.
-            orderList = super.getOrderNeedToSettleDown(orderList);
-            orderSettleDownPage.addObject("orderList", orderList);
-        }
-        injectCurrentUrl(request, orderSettleDownPage);
-        return orderSettleDownPage;
     }
 
     @Override
