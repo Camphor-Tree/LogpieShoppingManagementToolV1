@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,6 +41,7 @@ import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
 import com.logpie.shopping.management.model.Product;
+import com.logpie.shopping.management.model.SettleDownRecord;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
@@ -47,6 +50,7 @@ import com.logpie.shopping.management.storage.ImageDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
 import com.logpie.shopping.management.storage.ProductDAO;
+import com.logpie.shopping.management.storage.SettleDownRecordDAO;
 import com.logpie.shopping.management.util.CurrencyRateUtils;
 
 /**
@@ -550,7 +554,9 @@ public abstract class LogpieControllerImplementation
      */
     public abstract Object handleOrderSettleDown(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final String adminId,
-            final List<String> settleDownOrders, final RedirectAttributes redirectAttrs);
+            final List<String> settleDownOrders, final String proxyOweCompanyMoney,
+            final String proxyProfit, final String companyProfit,
+            final RedirectAttributes redirectAttrs);
 
     private List<LogpiePackage> getPackageListFromOrderList(final List<Order> orderList)
     {
@@ -1818,5 +1824,55 @@ public abstract class LogpieControllerImplementation
         }
 
         return "redirect:/system_backup";
+    }
+
+    public Object showSettleDownRecordPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse)
+    {
+        final ModelAndView settleDownHistoryPage = new ModelAndView("settle_down_history");
+
+        List<SettleDownRecord> settleDownRecordList;
+        final SettleDownRecordDAO settleDownRecordDAO = new SettleDownRecordDAO(mCurrentAdmin);
+        if (mCurrentAdmin.isSuperAdmin())
+        {
+            settleDownRecordList = settleDownRecordDAO.getAllSettleDownRecords();
+        }
+        else
+        {
+            settleDownRecordList = settleDownRecordDAO.getSettleDownRecordsByAdmin(mCurrentAdmin);
+        }
+        settleDownHistoryPage.addObject("SettleDownRecords", settleDownRecordList);
+        injectHistoryTotalInformation(settleDownRecordList, settleDownHistoryPage);
+        return settleDownHistoryPage;
+    }
+
+    private void injectHistoryTotalInformation(final List<SettleDownRecord> settleDownRecordList,
+            final ModelAndView view)
+    {
+        float totalProxyPaidCompanyMoney = 0.0f;
+        float totalCompanyProfit = 0.0f;
+        float totalProxyProfit = 0.0f;
+        try
+        {
+            for (final SettleDownRecord record : settleDownRecordList)
+            {
+                final String recordInfo = record.getSettleDownRecordInfo();
+
+                final JSONObject settleDownRecordInfoJSON = new JSONObject(recordInfo);
+                totalProxyPaidCompanyMoney += Float.parseFloat(settleDownRecordInfoJSON
+                        .getString("proxyOweCompanyMoney"));
+                totalCompanyProfit += Float.parseFloat(settleDownRecordInfoJSON
+                        .getString("companyProfit"));
+                totalProxyProfit += Float.parseFloat(settleDownRecordInfoJSON
+                        .getString("proxyProfit"));
+            }
+            view.addObject("totalProxyPaidCompanyMoney", String.valueOf(totalProxyPaidCompanyMoney));
+            view.addObject("totalCompanyProfit", String.valueOf(totalCompanyProfit));
+            view.addObject("totalProxyProfit", String.valueOf(totalProxyProfit));
+
+        } catch (JSONException e)
+        {
+        }
+
     }
 }

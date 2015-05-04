@@ -66,6 +66,8 @@ public class LogpieInitialization
                 .execute("create table if not exists DbLog(DbLogId serial primary key, DbLogAdminId bigint unsigned, DbLogTime timestamp not null default current_timestamp, DBLogSQL text not null, DBLogComment text,foreign key (DbLogAdminId) references Admins(AdminId))");
         jdbcTemplate
                 .execute("create table if not exists Coupons(CouponId serial primary key, CouponCode text not null)");
+        jdbcTemplate
+                .execute("create table if not exists SettleDownRecords(SettleDownRecordId serial primary key, SettleDownRecordAdmin bigint unsigned, SettleDownRecordDate timestamp not null default current_timestamp, SettleDownRecordInfo text, foreign key (SettleDownRecordAdmin) references Admins(AdminId) on update cascade on delete cascade)");
         // jdbcTemplate
         // .execute("create table if not exists ExchangeRate(Date timestamp primary key default current_timestamp, Rate float not null)");
         // jdbcTemplate

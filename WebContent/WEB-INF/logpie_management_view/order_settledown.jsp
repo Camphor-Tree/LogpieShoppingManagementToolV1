@@ -73,6 +73,9 @@
 	        </c:forEach>
         </tbody>
       </table>
+      <input type="hidden" id="ProxyOweCompanyMoney" name="ProxyOweCompanyMoney" value=""/>
+      <input type="hidden" id="ProxyProfit" name="ProxyProfit" value=""/>
+      <input type="hidden" id="CompanyProfit"name="CompanyProfit" value=""/>
       <c:if test="${admin.isSuperAdmin==true}">
        <button type="submit" class="btn btn-primary btn-block">快捷清算</button>
       </c:if>
@@ -113,6 +116,9 @@
     	        $("#proxyOweCompany").html(proxyOweCompany);
     	        $("#companyProfit").html(companyProfit.toFixed(2));
     	        $("#proxyProfit").html(proxyProfit.toFixed(2));
+    	        $("#ProxyOweCompanyMoney").val(proxyOweCompany);
+    	        $("#ProxyProfit").val(proxyProfit.toFixed(2));
+    	        $("#CompanyProfit").val(companyProfit.toFixed(2));
     	    }
     	    $("input[type=checkbox]").change(function() {
     	        recalculate();

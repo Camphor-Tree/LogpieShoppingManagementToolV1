@@ -70,7 +70,9 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     @Override
     public Object handleOrderSettleDown(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final String adminId,
-            final List<String> settleDownOrders, final RedirectAttributes redirectAttrs)
+            final List<String> settleDownOrders, final String proxyOweCompanyMoney,
+            final String proxyProfit, final String companyProfit,
+            final RedirectAttributes redirectAttrs)
     {
         return showNoPermissionPage();
     }

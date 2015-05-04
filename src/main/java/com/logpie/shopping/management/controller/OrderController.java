@@ -102,12 +102,15 @@ public class OrderController
             final HttpServletRequest request,
             final HttpServletResponse httpResponse,
             @RequestParam("adminId") String adminId,
-            @RequestParam(value = "SettleDownOrders", required = false) List<String> settleDownOrders,
+            @RequestParam(value = "SettleDownOrders", required = true) List<String> settleDownOrders,
+            @RequestParam(value = "ProxyOweCompanyMoney", required = true) String proxyOweCompanyMoney,
+            @RequestParam(value = "ProxyProfit", required = true) String proxyProfit,
+            @RequestParam(value = "CompanyProfit", required = true) String companyProfit,
             final RedirectAttributes redirectAttrs)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.handleOrderSettleDown(request, httpResponse, adminId,
-                settleDownOrders, redirectAttrs);
+                settleDownOrders, proxyOweCompanyMoney, proxyProfit, companyProfit, redirectAttrs);
     }
 }

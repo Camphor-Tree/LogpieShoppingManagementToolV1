@@ -31,40 +31,6 @@ public class Coupon implements RowMapper<Coupon>, LogpieModel
         mCouponCode = couponCode;
     }
 
-    /**
-     * @return the couponId
-     */
-    public String getCouponId()
-    {
-        return mCouponId;
-    }
-
-    /**
-     * @param couponId
-     *            the couponId to set
-     */
-    public void setCouponId(String couponId)
-    {
-        mCouponId = couponId;
-    }
-
-    /**
-     * @return the couponCode
-     */
-    public String getCouponCode()
-    {
-        return mCouponCode;
-    }
-
-    /**
-     * @param couponCode
-     *            the couponCode to set
-     */
-    public void setCouponCode(String couponCode)
-    {
-        mCouponCode = couponCode;
-    }
-
     @Override
     public Map<String, Object> getModelMap()
     {
@@ -106,10 +72,43 @@ public class Coupon implements RowMapper<Coupon>, LogpieModel
         {
             return null;
         }
-        final String couponId = rs.getString(DB_KEY_COUPON_ID);
+        final String couponId = String.valueOf(rs.getInt(DB_KEY_COUPON_ID));
         final String couponCode = rs.getString(DB_KEY_COUPON_CODE);
         return new Coupon(couponId, couponCode);
+    }
 
+    /**
+     * @return the couponId
+     */
+    public String getCouponId()
+    {
+        return mCouponId;
+    }
+
+    /**
+     * @param couponId
+     *            the couponId to set
+     */
+    public void setCouponId(String couponId)
+    {
+        mCouponId = couponId;
+    }
+
+    /**
+     * @return the couponCode
+     */
+    public String getCouponCode()
+    {
+        return mCouponCode;
+    }
+
+    /**
+     * @param couponCode
+     *            the couponCode to set
+     */
+    public void setCouponCode(String couponCode)
+    {
+        mCouponCode = couponCode;
     }
 
 }

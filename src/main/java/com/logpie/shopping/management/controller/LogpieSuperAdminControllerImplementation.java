@@ -1,6 +1,7 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -18,9 +22,12 @@ import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.model.SettleDownRecord;
+import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.DBLogDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
+import com.logpie.shopping.management.storage.SettleDownRecordDAO;
 import com.logpie.shopping.management.util.CollectionUtils;
 
 /**
@@ -187,7 +194,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     @Override
     public Object handleOrderSettleDown(HttpServletRequest request,
             HttpServletResponse httpResponse, final String adminId, List<String> settleDownOrders,
-            RedirectAttributes redirectAttrs)
+            final String proxyOweCompanyMoney, final String proxyProfit,
+            final String companyProfit, RedirectAttributes redirectAttrs)
     {
         if (CollectionUtils.isEmpty(settleDownOrders))
         {
@@ -214,6 +222,10 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
                 errorSet.add(orderId);
             }
         }
+
+        buildAndAddSettleDownRecord(adminId, settleDownOrders, proxyOweCompanyMoney, proxyProfit,
+                companyProfit);
+
         int i = 0;
         for (final String orderId : successSet)
         {
@@ -261,6 +273,41 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                 messageBuilder.toString());
         return "redirect:/order/settledown?adminId=" + adminId;
+    }
+
+    /**
+     * @param adminId
+     * @param settleDownOrders
+     * @param proxyOweCompanyMoney
+     * @param proxyProfit
+     * @param companyProfit
+     */
+    protected void buildAndAddSettleDownRecord(final String adminId,
+            final List<String> settleDownOrders, final String proxyOweCompanyMoney,
+            final String proxyProfit, final String companyProfit)
+    {
+        try
+        {
+            final JSONObject settleDownRecordInfoJSON = new JSONObject();
+            settleDownRecordInfoJSON.put("settleDownOrders", settleDownOrders.toString());
+            settleDownRecordInfoJSON.put("proxyOweCompanyMoney", proxyOweCompanyMoney);
+            settleDownRecordInfoJSON.put("companyProfit", companyProfit);
+            settleDownRecordInfoJSON.put("proxyProfit", proxyProfit);
+            final String settleDownRecordInfo = Base64.encodeBase64String(settleDownRecordInfoJSON
+                    .toString().getBytes("UTF-8"));
+            final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
+            final Admin settleDownRecordAdmin = adminDAO.queryAccountByAdminId(adminId);
+            final SettleDownRecord record = new SettleDownRecord(settleDownRecordInfo,
+                    settleDownRecordAdmin);
+            final SettleDownRecordDAO settleDownRecordDAO = new SettleDownRecordDAO(mCurrentAdmin);
+            settleDownRecordDAO.addSettleDownRecord(record);
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException happens when build settle down record", e);
+        } catch (UnsupportedEncodingException e)
+        {
+            LOG.error("UnsupportedEncodingException happens when build settle down record", e);
+        }
     }
 
     @Override
