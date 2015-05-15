@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.logpie.shopping.management.util.CurrencyRateUtils;
+
 /**
  * @author zhoyilei
  *
@@ -24,8 +26,11 @@ public class ToolController
     public Object showCreateCategoryPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse)
     {
-        final ModelAndView createCategoryPage = new ModelAndView("calculator");
-        return createCategoryPage;
+        final ModelAndView calculatorPage = new ModelAndView("calculator");
+        // inject the current currency rate into the page
+        final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
+        calculatorPage.addObject("CurrencyRate", currencyRate);
+        return calculatorPage;
     }
 
 }
