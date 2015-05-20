@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="tag" tagdir="/WEB-INF/tags/" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:logpie_common_template>
     <jsp:body>
     	<c:if test="${order !=null}">
@@ -86,11 +87,15 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-6">
+                  <div class="form-group col-sm-4">
                       <label for="selling_price">最终售价(人民币)</label>
                       <input class="form-control" type="number" step="0.01" id="selling_price" name="OrderSellingPrice" value="${order.orderSellingPrice}" required>
                   </div>
-                  <div class="form-group col-sm-6">
+                  <div class="form-group col-sm-3">
+                      <label for="copy_selling_price"> </label>
+                      <button type="button" class="btn form-control btn-info" id="copy_selling_price" style="margin-top:5px">设置买家付款为售价+国内已付运费</button>
+                  </div>
+                  <div class="form-group col-sm-5">
                     <label for="order_buyer_paid_money">买家付款(人民币)</label>
                     <input class="form-control" type="number" step="0.01" id="order_buyer_paid_money" name="OrderCustomerPaidMoney" value="${order.orderCustomerPaidMoney}" required>
                   </div>
@@ -106,10 +111,10 @@
                         <option value=""> </option>
 						<c:forEach items="${packageList}" var="logpiePackage">
 							  <c:if test="${order.orderPackage.packageId == logpiePackage.packageId}">
-						       		<option value="${logpiePackage.packageId}" selected>id:${logpiePackage.packageId} ${logpiePackage.packageProxyName} date:${logpiePackage.packageDate}</option>
+						       		<option value="${logpiePackage.packageId}" selected>${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber}</option>
         					   </c:if>
 						       <c:if test="${order.orderPackage.packageId != logpiePackage.packageId}">
-						       		 <option value="${logpiePackage.packageId}">id:${logpiePackage.packageId} ${logpiePackage.packageProxyName} date:${logpiePackage.packageDate}</option>
+						       		 <option value="${logpiePackage.packageId}">${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber} </option>
         					   </c:if>
 						    
 						</c:forEach>
@@ -118,9 +123,15 @@
                 </c:if>
                 <!-- only super admin can modify how much money company already received -->
                 <c:if test="${admin.isSuperAdmin==true}">
-                <div class="form-group">
+                <div class="row">
+                <div class="form-group col-sm-9">
                   <label for="order_company_received_money">公司已收汇款(人民币)</label>
                   <input class="form-control" type="number" step="0.01" id="order_company_received_money" name="OrderCompanyReceivedMoney" value="${order.orderCompanyReceivedMoney}" required>
+                </div>
+                <div class="form-group col-sm-3">
+                      <label for="set_company_received_money"> </label>
+                      <button type="button" class="btn form-control btn-info" id="set_company_received_money" style="margin-top:5px">将公司已收汇款设成 买家付款-国内运费</button>
+                </div>
                 </div>
                 </c:if>
                 <c:if test="${admin.isSuperAdmin==false}">
@@ -160,5 +171,17 @@
                     <strong>抱歉!查无此订单 请检查你url中的订单id是否有效</strong>
             </div>
         </c:if>
+
     </jsp:body>
+
 </tag:logpie_common_template>
+<script type="text/javascript">
+    $('#copy_selling_price').on('click', function (e) {
+    	$('#order_buyer_paid_money').val(+$('#selling_price').val()+ +$('#customer_paid_domestic_shipping_fee').val());
+   });
+    $('#set_company_received_money').on('click', function (e) {
+    	$('#order_company_received_money').val($('#order_buyer_paid_money').val()-$('#domestic_shipping_fee').val());
+   });
+    
+    
+</script>
