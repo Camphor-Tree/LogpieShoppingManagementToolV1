@@ -5,7 +5,12 @@
    margin-right: auto;
  }
  
-.table tbody tr.info th {
+.table tbody tr.info th{
+    background-color: #d6ebff;
+    color:#5c5c60;
+}
+
+.table thead tr.info th{
     background-color: #d6ebff;
     color:#5c5c60;
 }

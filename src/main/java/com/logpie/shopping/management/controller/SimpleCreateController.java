@@ -79,4 +79,13 @@ public class SimpleCreateController
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.createProduct(request, httpResponse, redirectAttrs);
     }
+
+    @RequestMapping(value = "/client/create", method = RequestMethod.POST)
+    public Object createClient(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createClient(request, httpResponse, redirectAttrs);
+    }
 }

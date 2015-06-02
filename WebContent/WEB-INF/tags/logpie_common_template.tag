@@ -54,8 +54,9 @@ h2{
 			<li><a href="<c:url value="/package_management" />">包裹管理</a></li>
 			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
 			<li><a href="<c:url value="/calculator" />">定价计算器</a></li>
-			<li><a href="<c:url value="/log" />">系统改动日志</a></li>
+			<li><a href="<c:url value="/client_management" />">客户档案管理</a></li>
 			<li><a href="<c:url value="/coupon_management" />">优惠券管理</a></li>
+			<li><a href="<c:url value="/log" />">系统改动日志</a></li>
 			<li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">更多<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
@@ -82,7 +83,7 @@ h2{
         </div>
     </div>
     <footer class="logpiefooter">
-        <p>&copy; <b>www.logpie.com 2015</b></p>
+        <p>&copy; <b>www.logpie.com 2014-2015</b></p>
     </footer>
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>

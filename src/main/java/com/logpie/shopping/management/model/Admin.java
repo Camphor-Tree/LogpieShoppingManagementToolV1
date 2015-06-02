@@ -125,7 +125,6 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         {
             return null;
         }
-        LOG.debug("Mapping the result set to admin object");
         final String adminId = rs.getString(DB_KEY_ADMIN_ID);
         final String adminName = rs.getString(DB_KEY_ADMIN_NAME);
         final String adminEmail = rs.getString(DB_KEY_ADMIN_EMAIL);
@@ -136,7 +135,6 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         final String adminPassword = rs.getString(DB_KEY_ADMIN_PASSWORD);
         // final String adminPassVersion =
         // rs.getString(DB_KEY_ADMIN_PASS_VERSION);
-        LOG.debug("Find values:" + adminId + ":" + adminName);
         final String adminPassVersion = "1";
         return new Admin(adminId, adminName, adminEmail, adminQQ, adminWechat, adminPhone,
                 adminIdentityNumber, adminPassVersion, adminPassword);

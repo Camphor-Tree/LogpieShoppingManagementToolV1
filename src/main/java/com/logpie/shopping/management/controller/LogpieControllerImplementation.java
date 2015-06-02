@@ -36,6 +36,7 @@ import com.logpie.shopping.management.coupon.CouponCodeGenerator;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.Client;
 import com.logpie.shopping.management.model.Coupon;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpiePackage;
@@ -45,6 +46,7 @@ import com.logpie.shopping.management.model.SettleDownRecord;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.BrandDAO;
 import com.logpie.shopping.management.storage.CategoryDAO;
+import com.logpie.shopping.management.storage.ClientDAO;
 import com.logpie.shopping.management.storage.CouponDAO;
 import com.logpie.shopping.management.storage.ImageDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
@@ -938,6 +940,58 @@ public abstract class LogpieControllerImplementation
     }
 
     /**
+     * For client controller All the logic handle should be same for both super
+     * admin and normal admin
+     */
+    public Object showAllClients(final HttpServletRequest request,
+            final HttpServletResponse httpResponse)
+    {
+        final ModelAndView createclientPage = new ModelAndView("client_management");
+        final ClientDAO ClientDAO = new ClientDAO(mCurrentAdmin);
+        final List<Client> clientList = ClientDAO.getAllClient();
+        createclientPage.addObject("clientList", clientList);
+
+        return createclientPage;
+    }
+
+    public Object showModifyClientPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("id") String clientId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView modifyclientPage = new ModelAndView("client_edit");
+
+        final ClientDAO ClientDAO = new ClientDAO(mCurrentAdmin);
+        final Client client = ClientDAO.getClientById(clientId);
+        modifyclientPage.addObject("client", client);
+
+        return modifyclientPage;
+    }
+
+    public Object modifyClient(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final Client modifiedClient = Client.readModifiedClientFromRequest(request);
+        boolean updatCateogrySuccess = false;
+        if (modifiedClient != null)
+        {
+            final ClientDAO ClientDAO = new ClientDAO(mCurrentAdmin);
+            updatCateogrySuccess = ClientDAO.updateClientProfile(modifiedClient);
+        }
+
+        if (updatCateogrySuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "更新图片:" + modifiedClient.getClientShowName() + " 信息，成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新图片:"
+                    + modifiedClient.getClientShowName() + " 信息，失败!");
+        }
+        return "redirect:/client_management";
+    }
+
+    /**
      * Used to show coupon management page
      * 
      * @return
@@ -1232,6 +1286,32 @@ public abstract class LogpieControllerImplementation
         {
             redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                     "创建新的产品:" + newProduct.getProductName() + " 失败!");
+        }
+
+        return "redirect:/order_management?orderBy=orderId";
+    }
+
+    public Object createClient(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final Client newClient = Client.readNewClientFromRequest(request);
+        boolean createNewClientSuccess = false;
+        if (newClient != null)
+        {
+            final ClientDAO productDAO = new ClientDAO(mCurrentAdmin);
+            createNewClientSuccess = productDAO.addClient(newClient);
+        }
+
+        if (createNewClientSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建新的用户:" + newClient.getClientShowName() + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建新的用户:" + newClient.getClientShowName() + " 失败!");
         }
 
         return "redirect:/order_management?orderBy=orderId";

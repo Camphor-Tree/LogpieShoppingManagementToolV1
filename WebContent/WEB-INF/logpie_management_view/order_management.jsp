@@ -77,6 +77,7 @@
         </div>
         <p>当前显示模式：<b><c:if test="${showAll==true}">显示所有订单</c:if><c:if test="${showAll==false}">只显示未结算订单</c:if></b></p>
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle;" >
+        <thead>
         <tr class="info" style="font-size:15px;">
 	        <th class="col-xs-2 col-md-2 text-center">订单号</th>
 	        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
@@ -97,6 +98,7 @@
 	        <th class="col-xs-2 col-md-2 text-center">利润已结算</th>
 	        <th class="col-xs-2 col-md-2 text-center">修改</th>
         </tr>
+        </thead>
         <tbody>
         <c:forEach items="${orderList}" var="order">
         <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
@@ -164,6 +166,7 @@
             <c:if test="${admin.isSuperAdmin==true}">
           	  <li><a data-toggle="tab" href="#section-package">包裹</a></li>
             </c:if>
+            <li><a data-toggle="tab" href="#section-client">用户档案</a></li>
             <li><a data-toggle="tab" href="#section-product">产品</a></li>
             <li><a data-toggle="tab" href="#section-category">类别</a></li>
             <li><a data-toggle="tab" href="#section-image">图片</a></li>
@@ -349,6 +352,58 @@
               </form>
             </div>
             </c:if>
+            <div id="section-client" class="tab-pane fade" style="padding:20px">
+              <h3>新建一个用户档案</h3>
+              <form role="form" style="padding:20px" action="<c:url value="/client/create" />" method="post">
+                <div class="row">
+	                <div class="form-group col-sm-4">
+	                  <label for="client_real_name">用户名字</label>
+	                  <input class="form-control" id="client_real_name" name="ClientRealName" autofocus>
+	                </div>
+	                <div class="form-group col-sm-4">
+	                  <label for="client_wechat_name">用户微信名</label>
+	                  <input class="form-control" id="client_wechat_name" name="ClientWechatName">
+	                </div>
+	                <div class="form-group col-sm-4">
+	                  <label for="client_wechat_number">用户微信号</label>
+	                  <input class="form-control" id="client_wechat_number" name="ClientWechatNumber">
+	                </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                  <label for="client_weibo_name">用户微博名</label>
+                  <input class="form-control" id="client_weibo_name" name="ClientWeiboName">
+                  </div>
+                  <div class="form-group col-sm-6">
+                  <label for="client_taobao_name">用户淘宝名</label>
+                  <input class="form-control" id="client_taobao_name" name="ClientTaobaoName">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-12">
+                  <label for="client_address">用户地址</label>
+                  <input class="form-control" id="client_address" name="ClientAddress">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                  <label for="client_phone">用户手机号</label>
+                  <input class="form-control" id="client_weibo_name" name="ClientPhone">
+                  </div>
+                  <div class="form-group col-sm-6">
+                  <label for="client_postal_code">用户邮编</label>
+                  <input class="form-control" id="client_postal_code" name="ClientPostalCode">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-12">
+                  <label for="client_note">用户备注</label>
+                  <input class="form-control" id="client_note" name="ClientNote">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+              </form>
+            </div>
             <div id="section-category" class="tab-pane fade" style="padding:20px">
               <h3>新建一个类别</h3>
               <form role="form" style="padding:20px" action="<c:url value="/category/create" />" method="post">
