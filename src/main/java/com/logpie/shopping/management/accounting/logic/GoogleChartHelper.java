@@ -43,7 +43,10 @@ public class GoogleChartHelper
     {
         final MonthDayValueComparator bvc = new MonthDayValueComparator(dataMap);
         final TreeMap<String, Integer> sortedDataMap = new TreeMap<String, Integer>(bvc);
-        sortedDataMap.putAll(dataMap);
+        if (dataMap != null)
+        {
+            sortedDataMap.putAll(dataMap);
+        }
         final ArrayList<KeyValue> pieDataList = new ArrayList<KeyValue>();
         for (final Entry<String, Integer> dataEntry : sortedDataMap.entrySet())
         {
@@ -65,7 +68,10 @@ public class GoogleChartHelper
             comparator = new MonthDayValueComparator(dataMap);
         }
         final TreeMap<String, Double> sortedDataMap = new TreeMap<String, Double>(comparator);
-        sortedDataMap.putAll(dataMap);
+        if (dataMap != null)
+        {
+            sortedDataMap.putAll(dataMap);
+        }
         final ArrayList<KeyValue> pieDataList = new ArrayList<KeyValue>();
         for (final Entry<String, Double> dataEntry : sortedDataMap.entrySet())
         {

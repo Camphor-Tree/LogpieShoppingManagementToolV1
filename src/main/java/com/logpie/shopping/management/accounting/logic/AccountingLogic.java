@@ -34,10 +34,6 @@ public class AccountingLogic
     public static Map<String, Double> getOrderProfits(final boolean isDaily, final int period,
             final List<Order> orderList)
     {
-        if (CollectionUtils.isEmpty(orderList))
-        {
-            return null;
-        }
         final Map<String, Double> orderProfitMap = new HashMap<String, Double>();
         // Add keys. (Date/month)
         for (int i = 0; i < period; i++)
@@ -59,6 +55,11 @@ public class AccountingLogic
                 final String dateKey = dateFormat.format(dateBeforeImonths);
                 orderProfitMap.put(dateKey, 0.0);
             }
+        }
+
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return orderProfitMap;
         }
 
         for (final Order order : orderList)
@@ -119,10 +120,6 @@ public class AccountingLogic
     public static Map<String, Integer> getOrderNumbers(final boolean isDaily, final int period,
             final List<Order> orderList)
     {
-        if (CollectionUtils.isEmpty(orderList))
-        {
-            return null;
-        }
         final Map<String, Integer> orderNumberMap = new HashMap<String, Integer>();
         // Add keys. (Date/month)
         for (int i = 0; i < period; i++)
@@ -144,6 +141,11 @@ public class AccountingLogic
                 final String dateKey = dateFormat.format(dateBeforeImonths);
                 orderNumberMap.put(dateKey, 0);
             }
+        }
+
+        if (CollectionUtils.isEmpty(orderList))
+        {
+            return orderNumberMap;
         }
 
         for (final Order order : orderList)
