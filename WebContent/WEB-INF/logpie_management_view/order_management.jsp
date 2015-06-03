@@ -144,6 +144,7 @@
       	<div class="text-primary">当前订单列表 代理:${admin.adminName} 总估计利润: ${profitCalculator.proxyEstimatedProfitsForAllOrders}</div>
       	<div class="text-primary">当前订单列表 代理:${admin.adminName} 已寄出包裹准确总利润: ${profitCalculator.proxyActualProfitsForAllOrders}</div>
       	</c:if>
+      	<div class="text-info">当前订单列表 总营业额: ${profitCalculator.totalTurnOver}</div>
       </div>
        <div class="row alert-info">
 	      <h4>系统如何判定订单是否已完全结算？ 必须满足以下5个条件</h4>

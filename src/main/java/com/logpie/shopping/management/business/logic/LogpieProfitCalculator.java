@@ -23,6 +23,8 @@ public class LogpieProfitCalculator
     private final Float mProxyEstimatedProfitsForAllOrders;
     private final Float mProxyActualProfitsForAllOrders;
 
+    private final Float mTotalTurnOver;
+
     /**
      * @param orderList
      */
@@ -44,6 +46,7 @@ public class LogpieProfitCalculator
         mProxyActualProfitsForAllOrders = NumberUtils
                 .keepTwoDigitsDecimalForFloat(mActualProfitsForAllOrders
                         - mNetActualProfitsForAllOrders);
+        mTotalTurnOver = calculateTotalTurnOver();
     }
 
     /**
@@ -180,6 +183,27 @@ public class LogpieProfitCalculator
     }
 
     /**
+     * 计算总营业额
+     * 
+     * @return
+     */
+    public Float calculateTotalTurnOver()
+    {
+        if (CollectionUtils.isEmpty(mOrderList))
+        {
+            return 0.0f;
+        }
+
+        float totalTurnOver = 0.0f;
+        for (final Order order : mOrderList)
+        {
+            float singleActualNetCompnayProfit = order.getOrderSellingPrice();
+            totalTurnOver += singleActualNetCompnayProfit;
+        }
+        return Float.valueOf(totalTurnOver);
+    }
+
+    /**
      * @return the estimatedProfitsForAllOrders
      */
     public Float getEstimatedProfitsForAllOrders()
@@ -225,5 +249,13 @@ public class LogpieProfitCalculator
     public Float getProxyActualProfitsForAllOrders()
     {
         return mProxyActualProfitsForAllOrders;
+    }
+
+    /**
+     * @return the total turn over
+     */
+    public Float getTotalTurnOver()
+    {
+        return mTotalTurnOver;
     }
 }
