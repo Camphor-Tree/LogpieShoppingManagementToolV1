@@ -1456,15 +1456,15 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView orderNumberLineChartPage = new ModelAndView("accounting_linechart");
         final OrderDAO orderDAO = new OrderDAO(null);
-        final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie订单量 最近12天 走势图",
+        final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie订单量 最近30天 走势图",
                 "日期", "订单数量");
-        List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(12);
+        List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(30);
         if (!mCurrentAdmin.isSuperAdmin())
         {
             orderListWithinNdays = filterOutOrdersNotBelongToAdmin(orderListWithinNdays,
                     mCurrentAdmin);
         }
-        final Map<String, Integer> orderWithinNdaysMap = AccountingLogic.getOrderNumbers(true, 12,
+        final Map<String, Integer> orderWithinNdaysMap = AccountingLogic.getOrderNumbers(true, 30,
                 orderListWithinNdays);
         final List<KeyValue> lineDataList1 = GoogleChartHelper
                 .getLineChartDataListFromStringIntegerMap(orderWithinNdaysMap);
@@ -1493,15 +1493,15 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView orderNumberLineChartPage = new ModelAndView("accounting_linechart");
         final OrderDAO orderDAO = new OrderDAO(null);
-        final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie 利润 最近12天 走势图",
+        final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie 利润 最近30天 走势图",
                 "日期", "订单利润");
-        List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(12);
+        List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(30);
         if (!mCurrentAdmin.isSuperAdmin())
         {
             orderListWithinNdays = filterOutOrdersNotBelongToAdmin(orderListWithinNdays,
                     mCurrentAdmin);
         }
-        final Map<String, Double> orderWithinNdaysMap = AccountingLogic.getOrderProfits(true, 12,
+        final Map<String, Double> orderWithinNdaysMap = AccountingLogic.getOrderProfits(true, 30,
                 orderListWithinNdays);
         final List<KeyValue> lineDataList1 = GoogleChartHelper
                 .getLineChartDataListFromStringDoubleMap(orderWithinNdaysMap, false);
