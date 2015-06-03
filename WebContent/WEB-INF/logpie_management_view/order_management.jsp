@@ -263,7 +263,7 @@
 	                  <label for="order_package">所属包裹(可空缺)</label>
 	                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
 	                        <option value=""> </option>
-							<c:forEach items="${packageList}" var="logpiePackage">
+							<c:forEach items="${allPackageList}" var="logpiePackage">
 							    <option value="${logpiePackage.packageId}">No.${logpiePackage.packageId} ${fn:substring(logpiePackage.packageProxyName,0,10)} ${logpiePackage.packageDate}</option>
 							</c:forEach>
 					  </select>

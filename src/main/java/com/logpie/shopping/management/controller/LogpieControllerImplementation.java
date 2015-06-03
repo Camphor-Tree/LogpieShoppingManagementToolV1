@@ -249,8 +249,13 @@ public abstract class LogpieControllerImplementation
             orderManagementPage.addObject("adminList", adminList);
         }
         long time10 = System.currentTimeMillis();
+        // Used for filter
         final List<LogpiePackage> packageList = getPackageListFromOrderList(orderList);
         orderManagementPage.addObject("packageList", packageList);
+        // Used for create new order to assign package
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
+        final List<LogpiePackage> allPackageList = packageDAO.getAllPackage();
+        orderManagementPage.addObject("allPackageList", allPackageList);
         long time11 = System.currentTimeMillis();
 
         final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
