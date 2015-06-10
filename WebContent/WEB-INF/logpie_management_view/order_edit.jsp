@@ -19,7 +19,7 @@
 	                </div>
 	                <div class="form-group col-sm-6">
 	                  <label for="order_proxy">订单代理人</label>
-	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
 							   <c:forEach items="${adminList}" var="admin">
 							       <c:if test="${order.orderProxy.adminId == admin.adminId}">
 							       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
@@ -51,31 +51,31 @@
                   </div>
                   <div class="form-group col-sm-4">
                   <label for="order_weight">订单重量（克）</label>
-                  <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="${order.orderWeight}" required <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+                  <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="${order.orderWeight}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                   <div class="form-group col-sm-4">
                     <label for="order_proxy_profit_percentage">代理分红百分比</label>
-                    <input class="form-control" type="number" step="0.01" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="${order.orderProxyProfitPercentage}" required <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+                    <input class="form-control" type="number" step="0.01" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="${order.orderProxyProfitPercentage}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
                       <label for="order_actual_cost">实际购买成本(美元)</label>
-                      <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost" value="${order.orderActualCost}" required <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+                      <input class="form-control" type="number" step="0.01" id="order_actual_cost" name="OrderActualCost" value="${order.orderActualCost}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="order_currency_rate">订单当日汇率</label>
-                    <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="${order.orderCurrencyRate}" required <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+                    <input class="form-control" type="number" step="0.01" id="order_currency_rate" name="OrderCurrencyRate" value="${order.orderCurrencyRate}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-3">
                     <label for="estimated_shipping_fee">预计邮费￥</label>
-                    <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}" required <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+                    <input class="form-control" type="number" step="0.01" id="estimated_shipping_fee" name="OrderEstimatedShippingFee" value="${order.orderEstimatedShippingFee}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                   <div class="form-group col-sm-3">
                     <label for="actural_shipping_fee">国际邮费￥(可空缺)</label>
-                    <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee" value="${order.orderActualShippingFee}" <c:if test="${admin.isSuperAdmin==false}">disabled</c:if>>
+                    <input class="form-control" type="number" step="0.01" id="actural_shipping_fee" name="OrderActualShippingFee" value="${order.orderActualShippingFee}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                   <div class="form-group col-sm-3">
                     <label for="domestic_shipping_fee">国内邮费￥</label>
