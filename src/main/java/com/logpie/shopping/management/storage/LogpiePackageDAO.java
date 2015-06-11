@@ -1,8 +1,10 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -50,6 +52,17 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
     public List<LogpiePackage> getAllPackage()
     {
         GetAllPackageQuery getAllPackageQuery = new GetAllPackageQuery();
+        return super.queryResult(getAllPackageQuery);
+    }
+
+    /**
+     * Query packages
+     * 
+     * @return All existing categories
+     */
+    public List<LogpiePackage> searchPackage(final String searchString)
+    {
+        SearchPackageQuery getAllPackageQuery = new SearchPackageQuery(searchString);
         return super.queryResult(getAllPackageQuery);
     }
 
@@ -118,6 +131,35 @@ public class LogpiePackageDAO extends LogpieBaseDAO<LogpiePackage>
         GetAllPackageQuery()
         {
             super(new LogpiePackage(), LogpiePackageDAO.sPackageTableName);
+        }
+    }
+
+    private class SearchPackageQuery extends LogpieBaseQueryAllTemplateQuery<LogpiePackage>
+    {
+        private String mSearchString;
+
+        SearchPackageQuery(final String searchString)
+        {
+            super(new LogpiePackage(), LogpiePackageDAO.sPackageTableName);
+            mSearchString = searchString;
+        }
+
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            final Set<String> conditions = new HashSet<String>();
+            // add search condition
+            final StringBuilder searchConditionBuilder = new StringBuilder("(");
+            searchConditionBuilder.append(LogpiePackage.DB_KEY_PACKAGE_TRACKING_NUMBER);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(LogpiePackage.DB_KEY_PACKAGE_RECEIVER);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(LogpiePackage.DB_KEY_PACKAGE_DESTINATION);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(LogpiePackage.DB_KEY_PACKAGE_NOTE);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%')");
+            conditions.add(searchConditionBuilder.toString());
+            return conditions;
         }
     }
 

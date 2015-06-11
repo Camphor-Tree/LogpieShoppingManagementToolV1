@@ -1322,6 +1322,52 @@ public abstract class LogpieControllerImplementation
         return "redirect:/order_management?orderBy=orderId";
     }
 
+    public Object searchResult(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
+            final String searchString)
+    {
+        final ModelAndView view = new ModelAndView("search_result");
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
+        final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
+        final ClientDAO clientDAO = new ClientDAO(mCurrentAdmin);
+        String searchStringOriginal = searchString;
+        List<Order> orderList = new ArrayList<Order>();
+        List<LogpiePackage> packageList = new ArrayList<LogpiePackage>();
+        List<Client> clientList = new ArrayList<Client>();
+        try
+        {
+            searchStringOriginal = new String(HtmlUtils.htmlUnescape(searchString).getBytes(
+                    "iso-8859-1"));
+            orderList = orderDAO.searchOrders(searchStringOriginal);
+            view.addObject("orderList", orderList);
+
+            packageList = packageDAO.searchPackage(searchStringOriginal);
+            if (!mCurrentAdmin.isSuperAdmin())
+            {
+                packageList = filterOutPackageNotBelongToCurrentAdmin(packageList);
+            }
+            view.addObject("packageList", packageList);
+
+            clientList = clientDAO.searchClient(searchStringOriginal);
+            view.addObject("clientList", clientList);
+
+        } catch (UnsupportedEncodingException e)
+        {
+            LOG.error("UnsupportedEncodingException when trying to parse search string", e);
+            view.addObject("orderList", null);
+        }
+
+        view.addObject("SearchString", searchStringOriginal);
+        view.addObject("SearchResultsCount",
+                orderList.size() + packageList.size() + clientList.size());
+        view.addObject("OrdersCount", orderList.size());
+        view.addObject("PackagesCount", packageList.size());
+        view.addObject("ClientsCount", clientList.size());
+        view.addObject("admin", mCurrentAdmin);
+
+        return view;
+    }
+
     protected List<Order> filterOutOrdersNotBelongToAdmin(final List<Order> orderList,
             final Admin admin)
     {

@@ -119,6 +119,19 @@ public class OrderDAO extends LogpieBaseDAO<Order>
     }
 
     /**
+     * Get all orders matches OrderNote or OrderBuyerName contains the search
+     * string
+     * 
+     * @param orderString
+     * @return
+     */
+    public List<Order> searchOrders(final String orderString)
+    {
+        final SearchOrdersQuery searchOrdersQuery = new SearchOrdersQuery(orderString, null);
+        return super.queryResult(searchOrdersQuery);
+    }
+
+    /**
      * For getting all orders for specific package
      * 
      * @return orders
@@ -248,6 +261,67 @@ public class OrderDAO extends LogpieBaseDAO<Order>
             final Set<String> conditions = getForeignKeyConnectionConditions();
             // add year month conditions
             conditions.add(String.format("%s=%s", Order.DB_KEY_ORDER_PROXY_ID, mProxyAdminId));
+            return conditions;
+        }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            if (mOrderByAttributes != null)
+            {
+                final Set<String> orderBySet = new HashSet<String>();
+                orderBySet.add(mOrderByAttributes);
+                return orderBySet;
+            }
+            return super.getOrderBy();
+        }
+
+        @Override
+        public Map<String, String> getJoinTables()
+        {
+            return getForeignKeyConnectionTables();
+        }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            return getOrderLeftJoinCondition();
+        };
+    }
+
+    private class SearchOrdersQuery extends LogpieBaseQueryAllTemplateQuery<Order>
+    {
+        final String mSearchString;
+        final String mOrderByAttributes;
+
+        SearchOrdersQuery(final String searchString, final String orderByAttributes)
+        {
+            super(new Order(), OrderDAO.sOrderTableName);
+            mSearchString = searchString;
+            mOrderByAttributes = orderByAttributes;
+        }
+
+        // foreign key connection
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            // get foreign key connection
+            final Set<String> conditions = getForeignKeyConnectionConditions();
+            // add search condition
+            final StringBuilder searchConditionBuilder = new StringBuilder("(");
+            searchConditionBuilder.append(Order.DB_KEY_ORDER_BUYER_NAME);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Order.DB_KEY_ORDER_NOTE);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Product.DB_KEY_PRODUCT_NAME);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%')");
+            conditions.add(searchConditionBuilder.toString());
+            // If just normal admin, should only search the orders belong to her
+            if (!mCurrentAdmin.isSuperAdmin())
+            {
+                conditions.add(String.format("%s=%s", Order.DB_KEY_ORDER_PROXY_ID,
+                        mCurrentAdmin.getAdminId()));
+            }
             return conditions;
         }
 

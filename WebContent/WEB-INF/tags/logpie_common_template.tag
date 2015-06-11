@@ -49,13 +49,11 @@ h2{
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="<c:url value="/home" />">主页</a></li>
 			<li><a href="<c:url value="/order_management?orderBy=orderId" />">订单管理</a></li>
 			<li><a href="<c:url value="/package_management" />">包裹管理</a></li>
 			<li><a href="<c:url value="/accounting" />">财务报表</a></li>
 			<li><a href="<c:url value="/calculator" />">定价计算器</a></li>
 			<li><a href="<c:url value="/client_management" />">客户档案管理</a></li>
-			<li><a href="<c:url value="/coupon_management" />">优惠券管理</a></li>
 			<li><a href="<c:url value="/log" />">系统改动日志</a></li>
 			<li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">更多<span class="caret"></span></a>
@@ -64,6 +62,7 @@ h2{
 	            <li><a href="<c:url value="/brand_management" />">品牌管理</a></li>
 	            <li><a href="<c:url value="/image_management" />">图片管理</a></li>
 	            <li><a href="<c:url value="/product_management" />">商品管理</a></li>
+	            <li><a href="<c:url value="/coupon_management" />">优惠券管理</a></li>
 	            <li class="divider"></li>
 	            <li><a href="<c:url value="/settle_down_history" />">结算历史记录</a></li>
 	            <li><a href="<c:url value="/system_backup" />">系统备份</a></li>
@@ -74,6 +73,14 @@ h2{
 	          </ul>
        	    </li>
           </ul>
+          <form class="navbar-form" role="search" method="get" id="search-form" name="search-form" action="<c:url value="/search" />">
+						        <div class="input-group">
+						            <input type="text" class="form-control" placeholder="搜索订单、包裹、用户档案..." id="query" name="key">
+							            <div class="input-group-btn">
+						            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
+						            </div>
+						        </div>
+		  </form>
         </div>
       </div>
     </nav>

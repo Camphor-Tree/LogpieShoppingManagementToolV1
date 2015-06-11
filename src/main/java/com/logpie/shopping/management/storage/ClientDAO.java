@@ -1,8 +1,10 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -82,6 +84,17 @@ public class ClientDAO extends LogpieBaseDAO<Client>
         return super.queryResult(getAllClientQuery);
     }
 
+    /**
+     * Search client
+     * 
+     * @return clients match the search condition
+     */
+    public List<Client> searchClient(final String searchString)
+    {
+        SearchClientQuery searchClientQuery = new SearchClientQuery(searchString);
+        return super.queryResult(searchClientQuery);
+    }
+
     private class AddClientInsert implements LogpieDataInsert<Client>
     {
         private Client mClient;
@@ -109,6 +122,45 @@ public class ClientDAO extends LogpieBaseDAO<Client>
         GetAllClientQuery()
         {
             super(new Client(), ClientDAO.sClientTableName);
+        }
+    }
+
+    private class SearchClientQuery extends LogpieBaseQueryAllTemplateQuery<Client>
+    {
+        private String mSearchString;
+
+        SearchClientQuery(final String searchString)
+        {
+            super(new Client(), ClientDAO.sClientTableName);
+            mSearchString = searchString;
+        }
+
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            final Set<String> conditions = new HashSet<String>();
+            // add search condition
+            final StringBuilder searchConditionBuilder = new StringBuilder("(");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_ADDRESS);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_NOTE);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_PHONE);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_POSTAL_CODE);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_REAL_NAME);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_TAOBAO_NAME);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_WECHAT_NAME);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_WECHAT_NUMBER);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%' OR ");
+            searchConditionBuilder.append(Client.DB_KEY_CLIENT_WEIBO_NAME);
+            searchConditionBuilder.append(" like '%" + mSearchString + "%')");
+            conditions.add(searchConditionBuilder.toString());
+            return conditions;
         }
     }
 
