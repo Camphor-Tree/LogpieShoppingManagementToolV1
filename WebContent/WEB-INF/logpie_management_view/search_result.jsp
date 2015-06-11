@@ -16,6 +16,7 @@
 		</c:if>
     	<div class="row">
             <h3>站内搜索：<span class="text-danger">${SearchString}</span> 共有${SearchResultsCount}个结果:</h3>
+            <h5>本次搜索共用时：${SearchPerformance}毫秒</h5>
         </div>
         <hr></hr>
         <h4>共 ${OrdersCount} 个 <span class="text-info"><b>订单</b></span> 满足搜索条件</h4>

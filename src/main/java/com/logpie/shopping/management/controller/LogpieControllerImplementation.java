@@ -1326,6 +1326,7 @@ public abstract class LogpieControllerImplementation
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
             final String searchString)
     {
+        long timeBeforeSearch = System.currentTimeMillis();
         final ModelAndView view = new ModelAndView("search_result");
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
@@ -1356,6 +1357,8 @@ public abstract class LogpieControllerImplementation
             LOG.error("UnsupportedEncodingException when trying to parse search string", e);
             view.addObject("orderList", null);
         }
+        long timeAfterSearch = System.currentTimeMillis();
+        view.addObject("SearchPerformance", timeAfterSearch - timeBeforeSearch);
 
         view.addObject("SearchString", searchStringOriginal);
         view.addObject("SearchResultsCount",
