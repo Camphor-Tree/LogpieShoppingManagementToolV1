@@ -10,10 +10,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
 import com.logpie.shopping.management.storage.AdminDAO;
+import com.logpie.shopping.management.storage.ClientDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.ProductDAO;
 import com.logpie.shopping.management.util.NumberUtils;
@@ -46,7 +48,10 @@ public class Order implements RowMapper<Order>, LogpieModel
     public static final String DB_KEY_ORDER_COMPANY_RECEIVED_MONEY = "OrderCompanyReceivedMoney";
     public static final String DB_KEY_ORDER_IS_PROFIT_PAID = "OrderIsProfitPaid";
     public static final String DB_KEY_ORDER_SENT_TO_USER = "OrderSentToUser";
+    public static final String DB_KEY_ORDER_CLIENT_ID = "OrderClientId";
     public static final String DB_KEY_ORDER_NOTE = "OrderNote";
+
+    private static final Logger LOG = Logger.getLogger(Order.class);
 
     private String mOrderId;
     private String mOrderDate;
@@ -70,6 +75,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     private Float mOrderCompanyReceivedMoney; // may be null
     private Boolean mOrderIsProfitPaid; // default false
     private Boolean mOrderSentToUser; // default false
+    private Client mOrderClient;
     private String mOrderNote;// may be null
 
     // For RowMapper
@@ -97,6 +103,7 @@ public class Order implements RowMapper<Order>, LogpieModel
      * @param finalProfit
      * @param isProfitPaid
      * @param orderSentToUser
+     * @param orderClient
      * @param orderNote
      */
     public Order(Product product, Integer productCount, Float orderWeight, String orderBuyerName,
@@ -105,7 +112,7 @@ public class Order implements RowMapper<Order>, LogpieModel
             Float actualShippingFee, Float orderDomesticShippingFee,
             Float orderCustomerPaidDomesticShippingFee, Float sellingPrice,
             Float customerPaidMoney, Float orderCompanyReceivedMoney, Boolean isProfitPaid,
-            Boolean orderSentToUser, String orderNote)
+            Boolean orderSentToUser, Client orderClient, String orderNote)
     {
         // OrderData is auto generated
         // mOrderDate = orderDate;
@@ -128,6 +135,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
         mOrderIsProfitPaid = isProfitPaid;
         mOrderSentToUser = orderSentToUser;
+        mOrderClient = orderClient;
         mOrderNote = orderNote;
 
         refreshOrderFinalProfit();
@@ -157,7 +165,7 @@ public class Order implements RowMapper<Order>, LogpieModel
             LogpiePackage package1, Float estimatedShippingFee, Float actualShippingFee,
             Float orderDomesticShippingFee, Float orderCustomerPaidDomesticShippingFee,
             Float sellingPrice, Float customerPaidMoney, Float orderCompanyReceivedMoney,
-            Boolean isProfitPaid, Boolean orderSentToUser, String orderNote)
+            Boolean isProfitPaid, Boolean orderSentToUser, Client orderClient, String orderNote)
     {
         mOrderId = orderId;
         mOrderDate = orderDate;
@@ -179,6 +187,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         mOrderCompanyReceivedMoney = orderCompanyReceivedMoney;
         mOrderIsProfitPaid = isProfitPaid;
         mOrderSentToUser = orderSentToUser;
+        mOrderClient = orderClient;
         mOrderNote = orderNote;
 
         refreshOrderFinalProfit();
@@ -254,13 +263,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Float orderCompanyReceivedMoney = rs.getFloat(DB_KEY_ORDER_COMPANY_RECEIVED_MONEY);
         final Boolean isProfitPaid = rs.getBoolean(DB_KEY_ORDER_IS_PROFIT_PAID);
         final Boolean orderSentToUser = rs.getBoolean(DB_KEY_ORDER_SENT_TO_USER);
+        final Client orderClient = Client.getClientByResultSet(rs, row);
         final String orderNote = rs.getString(DB_KEY_ORDER_NOTE);
 
         return new Order(orderId, orderDateString, product, productCount, orderWeight,
                 orderBuyerName, orderProxy, proxyProfitPercentage, orderActualCost, currencyRate,
                 package1, estimatedShippingFee, actualShippingFee, orderDomesticShippingFee,
                 orderCustomerPaidDomesticShippingFee, sellingPrice, customerPaidMoney,
-                orderCompanyReceivedMoney, isProfitPaid, orderSentToUser, orderNote);
+                orderCompanyReceivedMoney, isProfitPaid, orderSentToUser, orderClient, orderNote);
     }
 
     @Override
@@ -298,6 +308,14 @@ public class Order implements RowMapper<Order>, LogpieModel
         modelMap.put(Order.DB_KEY_ORDER_COMPANY_RECEIVED_MONEY, mOrderCompanyReceivedMoney);
         modelMap.put(Order.DB_KEY_ORDER_IS_PROFIT_PAID, mOrderIsProfitPaid);
         modelMap.put(Order.DB_KEY_ORDER_SENT_TO_USER, mOrderSentToUser);
+        if (mOrderClient != null)
+        {
+            modelMap.put(Order.DB_KEY_ORDER_CLIENT_ID, mOrderClient.getClientId());
+        }
+        else
+        {
+            modelMap.put(Order.DB_KEY_ORDER_CLIENT_ID, null);
+        }
         modelMap.put(Order.DB_KEY_ORDER_NOTE, mOrderNote);
         return modelMap;
     }
@@ -381,6 +399,15 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderIsProfitPaid"));
         final Boolean orderSentToUser = Boolean.parseBoolean(request
                 .getParameter("OrderSentToUser"));
+
+        // ClientId may be null
+        Client orderClient = null;
+        final String orderClientId = request.getParameter("OrderClientId");
+        if (!StringUtils.isEmpty(orderClientId))
+        {
+            final ClientDAO clientDAO = new ClientDAO(null);
+            orderClient = clientDAO.getClientById(orderClientId);
+        }
         // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
 
@@ -388,7 +415,8 @@ public class Order implements RowMapper<Order>, LogpieModel
                 orderProxyProfitPercentage, orderActualCost, orderCurrencyRate, orderPackage,
                 orderEstimatedShippingFee, orderActualShippingFee, orderDomesticShippingFee,
                 orderCustomerPaidDomesticShippingFee, orderSellingPrice, orderCustomerPaidMoney,
-                orderCompanyReceivedMoney, orderIsProfitPaid, orderSentToUser, orderNote);
+                orderCompanyReceivedMoney, orderIsProfitPaid, orderSentToUser, orderClient,
+                orderNote);
     }
 
     public static Order readModifiedOrderFromRequest(final HttpServletRequest request)
@@ -449,6 +477,11 @@ public class Order implements RowMapper<Order>, LogpieModel
                 .getParameter("OrderIsProfitPaid"));
         final Boolean orderSentToUser = Boolean.parseBoolean(request
                 .getParameter("OrderSentToUser"));
+
+        // orderClient may be null
+        final String orderClientId = request.getParameter("OrderClientId");
+        final ClientDAO clientDAO = new ClientDAO(null);
+        final Client orderClient = clientDAO.getClientById(orderClientId);
         // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
 
@@ -457,7 +490,7 @@ public class Order implements RowMapper<Order>, LogpieModel
                 orderCurrencyRate, orderPackage, orderEstimatedShippingFee, orderActualShippingFee,
                 orderDomesticShippingFee, orderCustomerPaidDomesticShippingFee, orderSellingPrice,
                 orderCustomerPaidMoney, orderCompanyReceivedMoney, orderIsProfitPaid,
-                orderSentToUser, orderNote);
+                orderSentToUser, orderClient, orderNote);
     }
 
     // 订单结算
@@ -577,6 +610,23 @@ public class Order implements RowMapper<Order>, LogpieModel
         {
             changeStringBuilder.append("OrderPackage："
                     + compareToOrder.mOrderPackage.getPackageId() + "-> null");
+        }
+
+        if (compareToOrder.mOrderClient != null && mOrderClient != null
+                && !compareToOrder.mOrderClient.compareTo(mOrderClient))
+        {
+            changeStringBuilder.append("OrderClient：" + compareToOrder.mOrderClient.getClientId()
+                    + "->" + mOrderClient.getClientId() + " ");
+        }
+        if (compareToOrder.mOrderClient == null && mOrderClient != null)
+        {
+            changeStringBuilder
+                    .append("OrderClient：null" + "->" + mOrderClient.getClientId() + " ");
+        }
+        if (compareToOrder.mOrderClient != null && mOrderClient == null)
+        {
+            changeStringBuilder.append("OrderClient：" + compareToOrder.mOrderClient.getClientId()
+                    + "-> null");
         }
 
         if (!compareToOrder.mOrderProduct.compareTo(mOrderProduct))
@@ -943,6 +993,23 @@ public class Order implements RowMapper<Order>, LogpieModel
     }
 
     /**
+     * @return the orderClient
+     */
+    public Client getOrderClient()
+    {
+        return mOrderClient;
+    }
+
+    /**
+     * @param orderClient
+     *            the orderClient to set
+     */
+    public void setOrderClient(Client orderClient)
+    {
+        mOrderClient = orderClient;
+    }
+
+    /**
      * @return the orderNote
      */
     public String getOrderNote()
@@ -1047,7 +1114,9 @@ public class Order implements RowMapper<Order>, LogpieModel
                             .equals(mOrderProxyProfitPercentage)
                     && compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice)
                     && compareToOrder.mOrderWeight.equals(mOrderWeight)
-                    && compareToOrder.mOrderSentToUser.equals(mOrderSentToUser))
+                    && compareToOrder.mOrderSentToUser.equals(mOrderSentToUser)
+                    && ((compareToOrder.mOrderClient == null && mOrderClient == null) || (compareToOrder.mOrderClient != null && compareToOrder.mOrderClient
+                            .compareTo(mOrderClient))))
             {
                 return true;
             }

@@ -214,7 +214,11 @@ public class Client implements RowMapper<Client>, LogpieModel
             return null;
         }
 
-        final String clientId = String.valueOf(rs.getInt(DB_KEY_CLIENT_ID));
+        final String clientId = rs.getString(DB_KEY_CLIENT_ID);
+        if (clientId == null)
+        {
+            return null;
+        }
         final String clientRealName = String.valueOf(rs.getString(DB_KEY_CLIENT_REAL_NAME));
         final String clientWechatName = String.valueOf(rs.getString(DB_KEY_CLIENT_WECHAT_NAME));
         final String clientWechatNumber = String.valueOf(rs.getString(DB_KEY_CLIENT_WECHAT_NUMBER));
@@ -225,8 +229,12 @@ public class Client implements RowMapper<Client>, LogpieModel
         final String clientPhone = String.valueOf(rs.getString(DB_KEY_CLIENT_PHONE));
         final String clientNote = String.valueOf(rs.getString(DB_KEY_CLIENT_NOTE));
         final Date clientJoinTime = rs.getTimestamp(DB_KEY_CLIENT_JOIN_TIME);
-        final String clientJoinTimeString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                .format(clientJoinTime);
+        String clientJoinTimeString = null;
+        if (clientJoinTime != null)
+        {
+            clientJoinTimeString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .format(clientJoinTime);
+        }
 
         return new Client(clientId, clientRealName, clientWechatName, clientWechatNumber,
                 clientWeiboName, clientTaobaoName, clientAddress, clientPostalCode, clientPhone,

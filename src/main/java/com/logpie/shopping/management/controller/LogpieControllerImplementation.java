@@ -247,6 +247,10 @@ public abstract class LogpieControllerImplementation
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         final List<LogpiePackage> allPackageList = packageDAO.getAllPackage();
         orderManagementPage.addObject("allPackageList", allPackageList);
+
+        final ClientDAO clientDAO = new ClientDAO(mCurrentAdmin);
+        final List<Client> allClientList = clientDAO.getAllClients();
+        orderManagementPage.addObject("allClientList", allClientList);
         long time11 = System.currentTimeMillis();
 
         final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
@@ -432,6 +436,10 @@ public abstract class LogpieControllerImplementation
             final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
             final List<LogpiePackage> packageList = packageDAO.getAllPackage();
             modifyOrderPage.addObject("packageList", packageList);
+
+            final ClientDAO clientDAO = new ClientDAO(mCurrentAdmin);
+            final List<Client> clientList = clientDAO.getAllClients();
+            modifyOrderPage.addObject("clientList", clientList);
 
             final ProductDAO productDAO = new ProductDAO(mCurrentAdmin);
             final List<Product> productList = productDAO.getAllProduct();
@@ -919,7 +927,7 @@ public abstract class LogpieControllerImplementation
     {
         final ModelAndView createclientPage = new ModelAndView("client_management");
         final ClientDAO ClientDAO = new ClientDAO(mCurrentAdmin);
-        final List<Client> clientList = ClientDAO.getAllClient();
+        final List<Client> clientList = ClientDAO.getAllClients();
         createclientPage.addObject("clientList", clientList);
 
         return createclientPage;

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Brand;
 import com.logpie.shopping.management.model.Category;
+import com.logpie.shopping.management.model.Client;
 import com.logpie.shopping.management.model.Image;
 import com.logpie.shopping.management.model.LogpieModel;
 import com.logpie.shopping.management.model.LogpiePackage;
@@ -617,6 +618,9 @@ public class OrderDAO extends LogpieBaseDAO<Order>
         leftJoinCondition.add("LEFT JOIN " + LogpiePackageDAO.sPackageTableName + " ON "
                 + OrderDAO.sOrderTableName + "." + Order.DB_KEY_ORDER_PACKAGE_ID + "="
                 + LogpiePackageDAO.sPackageTableName + "." + LogpiePackage.DB_KEY_PACKAGE_ID);
+        leftJoinCondition.add("LEFT JOIN " + ClientDAO.sClientTableName + " ON "
+                + OrderDAO.sOrderTableName + "." + Order.DB_KEY_ORDER_CLIENT_ID + "="
+                + ClientDAO.sClientTableName + "." + Client.DB_KEY_CLIENT_ID);
         return leftJoinCondition;
     }
 }

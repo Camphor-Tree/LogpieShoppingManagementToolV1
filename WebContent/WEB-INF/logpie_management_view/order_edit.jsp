@@ -13,11 +13,25 @@
                 <input name="OrderId" value="${order.orderId}" type="hidden">
                 <input name="OrderDate" value="${order.orderDate}" type="hidden">
                 <div class="row">
-	                <div class="form-group col-sm-6">
+	                <div class="form-group col-sm-4">
 	                  <label for="order_buyer">订单购买者</label>
 	                  <input class="form-control" type="text" id="order_buyer" name="OrderBuyerName" value="${order.orderBuyerName}" required>
 	                </div>
-	                <div class="form-group col-sm-6">
+	                <div class="form-group col-sm-4">
+	                  <label for="order_client">关联用户档案(可空缺)</label>
+	                  <select class="form-control" form="order_creation_form" name="OrderClientId">
+	                        <option value=""> </option>
+							<c:forEach items="${clientList}" var="client">
+								  <c:if test="${order.orderClient.clientId == client.clientId}">
+							       		<option value="${client.clientId}" selected>No.${client.clientId} ${client.clientRealName}/${client.clientWechatName}/${client.clientWeiboName}</option>
+	        					   </c:if>
+							       <c:if test="${order.orderClient.clientId != client.clientId}">
+							       		 <option value="${client.clientId}">No.${client.clientId} ${client.clientRealName}/${client.clientWechatName}/${client.clientWeiboName} </option>
+	        					   </c:if>
+							</c:forEach>
+					  </select>
+	                </div>
+	                <div class="form-group col-sm-4">
 	                  <label for="order_proxy">订单代理人</label>
 	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
 							   <c:forEach items="${adminList}" var="admin">
@@ -116,7 +130,6 @@
 						       <c:if test="${order.orderPackage.packageId != logpiePackage.packageId}">
 						       		 <option value="${logpiePackage.packageId}">${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber} </option>
         					   </c:if>
-						    
 						</c:forEach>
 				  </select>
                 </div>

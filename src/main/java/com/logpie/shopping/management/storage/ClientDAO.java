@@ -78,9 +78,9 @@ public class ClientDAO extends LogpieBaseDAO<Client>
      * 
      * @return All existing categories
      */
-    public List<Client> getAllClient()
+    public List<Client> getAllClients()
     {
-        GetAllClientQuery getAllClientQuery = new GetAllClientQuery();
+        final GetAllClientQuery getAllClientQuery = new GetAllClientQuery();
         return super.queryResult(getAllClientQuery);
     }
 

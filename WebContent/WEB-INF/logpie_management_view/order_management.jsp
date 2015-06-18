@@ -104,7 +104,7 @@
         <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
         <td class="anchor"><a name="a${order.orderId}"><span style="padding-top: 65px; margin-top: -65px;">${order.orderId}</span></a></td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
-        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
+        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="./client_management#a${order.orderClient.clientId}">${order.orderBuyerName}</a></c:if></td>
         <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#DFF0D8"</c:if>>${order.orderProduct.productName}</td>
         <td>${order.orderProductCount}</td>
         <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
@@ -179,11 +179,20 @@
               <h3>新建一个订单</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/order/create" />" method="POST" >
                 <div class="row">
-	                <div class="form-group col-sm-6">
+	                <div class="form-group col-sm-4">
 	                  <label for="order_buyer">订单购买者</label>
 	                  <input class="form-control" id="order_buyer" name="OrderBuyerName" required autofocus>
 	                </div>
-	                <div class="form-group col-sm-6">
+	                <div class="form-group col-sm-4">
+	                  <label for="order_package">关联用户档案(可空缺)</label>
+	                  <select class="form-control" form="order_creation_form" name="OrderClientId">
+	                        <option value=""> </option>
+							<c:forEach items="${allClientList}" var="client">
+							    <option value="${client.clientId}">No.${client.clientId} ${client.clientRealName}/${client.clientWechatName}/${client.clientWeiboName}</option>
+							</c:forEach>
+					  </select>
+	                </div>
+	                <div class="form-group col-sm-4">
 	                  <label for="order_proxy">订单代理人</label>
 	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
 	                  		  <c:if test="${adminList!=null}">
