@@ -44,7 +44,7 @@
 		        <tr class='clickable-row' data-href='./order?id=${order.orderId}'>
 			        <td>${order.orderId}</td>
 			        <td>${fn:substring(order.orderDate,5,10)}</td>
-                    <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
+                    <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
 			        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
 			        <td>${order.orderProductCount}</td>
 			        <td>${order.orderActualCost}</td>

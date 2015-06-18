@@ -48,7 +48,7 @@
 	        <td><input type="checkbox" name="SettleDownOrders" value="${order.orderId}" cp="${order.orderCustomerPaidMoney}" ds="${order.orderDomesticShippingFee}" cr="${order.orderCompanyReceivedMoney}" fc="${order.orderFinalActualCost}" pp="${order.orderProxyProfitPercentage}"/></td>
 	        <td class="anchor"><a name="a${order.orderId}"><div style="padding-top: 65px; margin-top: -65px;">${order.orderId}</div></a></td>
 	        <td>${fn:substring(order.orderDate,5,10)}</td>
-	        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
+	        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
 	        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
 	        <td>${order.orderProductCount}</td>
 	        <td>${order.orderActualCost}</td>
@@ -67,7 +67,7 @@
 	        <td><a type="button" class="btn btn-info" href=<c:url value="/order/edit?id=${order.orderId}&ru=${CurrentUrl}&anchor=a${order.orderId}" />>修改</a></td>
 	        </tr>
 	        <tr>
-	          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="./package?id=${order.orderPackage.packageId}">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+	          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
 	          <td colspan="13" class="text-left">备注: ${order.orderNote}</td>
 	        </tr>
 	        </c:forEach>
