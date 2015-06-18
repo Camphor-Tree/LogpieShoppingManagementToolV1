@@ -86,23 +86,22 @@ public abstract class LogpieControllerImplementation
             final Boolean showAll, final String orderBy)
     {
         final String buyerName = HtmlUtils.htmlUnescape(buyerNameEscape);
+        String decodedBuyerName = null;
+        if (buyerName != null)
+        {
+            try
+            {
+                decodedBuyerName = new String(buyerName.getBytes("iso-8859-1"), "UTF-8");
+            } catch (UnsupportedEncodingException e)
+            {
+                LOG.error("UTF-8 is not supported on the platform, which is barely impossible", e);
+            }
+        }
         long time1 = System.currentTimeMillis();
         LOG.debug("Authenticate cookie is valid. Going to order manage page.");
         final ModelAndView orderManagementPage = new ModelAndView("order_management");
         long time2 = System.currentTimeMillis();
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            orderManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
+        injectAlertMessage(redirectAttrs, orderManagementPage);
         long time3 = System.currentTimeMillis();
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         List<Order> orderList = null;
@@ -150,18 +149,10 @@ public abstract class LogpieControllerImplementation
         }
         else if (buyerName != null)
         {
-            try
+            orderList = orderDAO.getOrdersForBuyerName(decodedBuyerName);
+            if (!mCurrentAdmin.isSuperAdmin())
             {
-                final String decodedBuyerName = new String(buyerName.getBytes("iso-8859-1"),
-                        "UTF-8");
-                orderList = orderDAO.getOrdersForBuyerName(decodedBuyerName);
-                if (!mCurrentAdmin.isSuperAdmin())
-                {
-                    orderList = filterOutOrdersNotBelongToAdmin(orderList, mCurrentAdmin);
-                }
-            } catch (UnsupportedEncodingException e)
-            {
-                orderList = injectOrderManagementOrderList(null);
+                orderList = filterOutOrdersNotBelongToAdmin(orderList, mCurrentAdmin);
             }
         }
         else if (packageId != null)
@@ -316,8 +307,8 @@ public abstract class LogpieControllerImplementation
                 + ((double) (time16 - time15) / totaltime) + "<br/>");
         orderManagementPage.addObject("metric", metricBuilder.toString());
 
-        final OrderFilterLogic filterLogic = new OrderFilterLogic(adminId, buyerName, orderBy,
-                showAll);
+        final OrderFilterLogic filterLogic = new OrderFilterLogic(adminId, decodedBuyerName,
+                orderBy, showAll);
         orderManagementPage.addObject("filterLogic", filterLogic);
         return orderManagementPage;
     }
@@ -1327,7 +1318,7 @@ public abstract class LogpieControllerImplementation
             final String searchString)
     {
         long timeBeforeSearch = System.currentTimeMillis();
-        final ModelAndView view = new ModelAndView("search_result");
+        final ModelAndView searchResultView = new ModelAndView("search_result");
         final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         final ClientDAO clientDAO = new ClientDAO(mCurrentAdmin);
@@ -1340,35 +1331,60 @@ public abstract class LogpieControllerImplementation
             searchStringOriginal = new String(HtmlUtils.htmlUnescape(searchString).getBytes(
                     "iso-8859-1"));
             orderList = orderDAO.searchOrders(searchStringOriginal);
-            view.addObject("orderList", orderList);
+            searchResultView.addObject("orderList", orderList);
 
             packageList = packageDAO.searchPackage(searchStringOriginal);
             if (!mCurrentAdmin.isSuperAdmin())
             {
                 packageList = filterOutPackageNotBelongToCurrentAdmin(packageList);
             }
-            view.addObject("packageList", packageList);
+            searchResultView.addObject("packageList", packageList);
 
             clientList = clientDAO.searchClient(searchStringOriginal);
-            view.addObject("clientList", clientList);
+            searchResultView.addObject("clientList", clientList);
 
         } catch (UnsupportedEncodingException e)
         {
             LOG.error("UnsupportedEncodingException when trying to parse search string", e);
-            view.addObject("orderList", null);
+            searchResultView.addObject("orderList", null);
         }
         long timeAfterSearch = System.currentTimeMillis();
-        view.addObject("SearchPerformance", timeAfterSearch - timeBeforeSearch);
+        searchResultView.addObject("SearchPerformance", timeAfterSearch - timeBeforeSearch);
 
-        view.addObject("SearchString", searchStringOriginal);
-        view.addObject("SearchResultsCount",
-                orderList.size() + packageList.size() + clientList.size());
-        view.addObject("OrdersCount", orderList.size());
-        view.addObject("PackagesCount", packageList.size());
-        view.addObject("ClientsCount", clientList.size());
-        view.addObject("admin", mCurrentAdmin);
+        searchResultView.addObject("SearchString", searchStringOriginal);
+        searchResultView.addObject("SearchResultsCount", orderList.size() + packageList.size()
+                + clientList.size());
+        searchResultView.addObject("OrdersCount", orderList.size());
+        searchResultView.addObject("PackagesCount", packageList.size());
+        searchResultView.addObject("ClientsCount", clientList.size());
+        searchResultView.addObject("admin", mCurrentAdmin);
 
-        return view;
+        injectCurrentUrl(request, searchResultView);
+
+        injectAlertMessage(redirectAttrs, searchResultView);
+
+        return searchResultView;
+    }
+
+    /**
+     * @param redirectAttrs
+     * @param view
+     */
+    protected void injectAlertMessage(final RedirectAttributes redirectAttrs,
+            final ModelAndView view)
+    {
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            view.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS, message);
+        }
+        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
+        {
+            final String message = (String) redirectAttrs.getFlashAttributes().get(
+                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            view.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
+        }
     }
 
     protected List<Order> filterOutOrdersNotBelongToAdmin(final List<Order> orderList,
