@@ -511,19 +511,7 @@ public abstract class LogpieControllerImplementation
             return this.showNoPermissionPage();
         }
         final ModelAndView orderSettleDownPage = new ModelAndView("order_settledown");
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            orderSettleDownPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
+        injectAlertMessage(redirectAttrs, orderSettleDownPage);
 
         final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
         final Admin currentAdminToSettleDown = adminDAO.queryAccountByAdminId(adminId);
@@ -611,20 +599,7 @@ public abstract class LogpieControllerImplementation
         LOG.debug("Authenticate cookie is valid. Going to package management page.");
 
         final ModelAndView packageManagementPage = new ModelAndView("package_management");
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            packageManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            packageManagementPage
-                    .addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
+        injectAlertMessage(redirectAttrs, packageManagementPage);
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
         List<LogpiePackage> packageList = packageDAO.getAllPackage();
 
@@ -1001,19 +976,7 @@ public abstract class LogpieControllerImplementation
         ModelAndView couponManagementPage = new ModelAndView("coupon_management");
         // inject the current admin into the page
         couponManagementPage.addObject("admin", mCurrentAdmin);
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            couponManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            couponManagementPage.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
+        injectAlertMessage(redirectAttrs, couponManagementPage);
         return couponManagementPage;
     }
 
@@ -1932,29 +1895,8 @@ public abstract class LogpieControllerImplementation
         final LogpieBackupManager backupManager = new LogpieBackupManager();
         final List<String> backupHistory = backupManager.getBackupHistory();
         systemBackupPage.addObject("BackupHistory", backupHistory);
-        injectAlertActionMessage(redirectAttrs, systemBackupPage);
+        injectAlertMessage(redirectAttrs, systemBackupPage);
         return systemBackupPage;
-    }
-
-    /**
-     * @param redirectAttrs
-     * @param page
-     */
-    protected void injectAlertActionMessage(final RedirectAttributes redirectAttrs,
-            final ModelAndView page)
-    {
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
-            page.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS, message);
-        }
-        if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
-        {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
-            page.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
-        }
     }
 
     public Object backupDatabase(final HttpServletRequest request,
