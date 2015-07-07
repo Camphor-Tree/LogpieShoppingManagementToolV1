@@ -40,9 +40,11 @@ public class LogpieCloudStorage
     public List<String> getFileKeysInBucket(final String bucketName)
     {
         // 构造 ListObjectsRequest 请求
-        ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
+        final ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName);
         // listObjectsRequest.setPrefix("/");
-        ObjectListing listing = mOssClient.listObjects(listObjectsRequest);
+        // Set the return keys size. The maximum is 1000 (almost 3 years).
+        listObjectsRequest.setMaxKeys(1000);
+        final ObjectListing listing = mOssClient.listObjects(listObjectsRequest);
         final List<String> fileKeys = new ArrayList<String>();
         for (OSSObjectSummary objectSummary : listing.getObjectSummaries())
         {
@@ -57,7 +59,7 @@ public class LogpieCloudStorage
         final File file = new File(filePath);
         try
         {
-            InputStream content = new FileInputStream(file);
+            final InputStream content = new FileInputStream(file);
 
             // 创建上传Object的Metadata
             final ObjectMetadata meta = new ObjectMetadata();
@@ -66,7 +68,7 @@ public class LogpieCloudStorage
             meta.setContentLength(file.length());
 
             // 上传Object.
-            PutObjectResult result = mOssClient.putObject(bucketName, key, content, meta);
+            final PutObjectResult result = mOssClient.putObject(bucketName, key, content, meta);
 
             // 打印ETag
             LOG.debug(result.getETag());
