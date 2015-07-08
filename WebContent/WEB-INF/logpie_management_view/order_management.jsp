@@ -197,10 +197,10 @@
 	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
 	                  		  <c:if test="${adminList!=null}">
 							    <c:forEach items="${adminList}" var="admin">
-							       <c:if test="${admin.adminName == '乔梦颖'}">
+							       <c:if test="${admin.adminName == '许嘉航'}">
 							       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
 	        					   </c:if>
-	        					   <c:if test="${admin.adminName != '乔梦颖'}">
+	        					   <c:if test="${admin.adminName != '许嘉航'}">
 							       		<option value="${admin.adminId}">${admin.adminName}</option>
 	        					   </c:if>
 							    </c:forEach>
@@ -273,7 +273,7 @@
 	                  <select class="form-control" form="order_creation_form" name="OrderPackageId">
 	                        <option value=""> </option>
 							<c:forEach items="${allPackageList}" var="logpiePackage">
-							    <option value="${logpiePackage.packageId}">No.${logpiePackage.packageId} ${fn:substring(logpiePackage.packageProxyName,0,10)} ${logpiePackage.packageDate}</option>
+							    <option value="${logpiePackage.packageId}">${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName}&nbsp; &nbsp; &nbsp;${logpiePackage.packageReceiver} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber}</option>
 							</c:forEach>
 					  </select>
 	                </div>

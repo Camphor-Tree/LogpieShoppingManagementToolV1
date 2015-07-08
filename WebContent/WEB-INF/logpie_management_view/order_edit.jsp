@@ -125,10 +125,10 @@
                         <option value=""> </option>
 						<c:forEach items="${packageList}" var="logpiePackage">
 							  <c:if test="${order.orderPackage.packageId == logpiePackage.packageId}">
-						       		<option value="${logpiePackage.packageId}" selected>${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber}</option>
+						       		<option value="${logpiePackage.packageId}" selected>${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName}&nbsp; &nbsp; &nbsp;${logpiePackage.packageReceiver} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber}</option>
         					   </c:if>
 						       <c:if test="${order.orderPackage.packageId != logpiePackage.packageId}">
-						       		 <option value="${logpiePackage.packageId}">${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber} </option>
+						       		 <option value="${logpiePackage.packageId}">${logpiePackage.packageId}&nbsp; &nbsp; &nbsp;${fn:substring(logpiePackage.packageDate,0,10)}&nbsp; &nbsp; &nbsp;${logpiePackage.packageProxyName} &nbsp; &nbsp; &nbsp;${logpiePackage.packageReceiver} &nbsp; &nbsp; &nbsp;${logpiePackage.packageTrackingNumber} </option>
         					   </c:if>
 						</c:forEach>
 				  </select>
