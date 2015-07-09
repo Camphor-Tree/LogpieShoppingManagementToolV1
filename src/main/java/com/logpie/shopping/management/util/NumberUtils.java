@@ -20,5 +20,14 @@ public class NumberUtils
         }
         return false;
     }
+    
+    public static boolean floatLessThan(final float numberA, final float numberB)
+    {
+    	if (numberA - numberB <= 0.01f)
+    	{
+    		return true;
+    	}
+    	return false;
+    }
 
 }

@@ -493,6 +493,93 @@ public class Order implements RowMapper<Order>, LogpieModel
                 orderSentToUser, orderClient, orderNote);
     }
 
+    // Get the problem reason string
+    public String getOrderProblemReason()
+    {
+    	final StringBuilder problemReasonBuilder = new StringBuilder();
+    	//所有可能的问题
+    	//1. 总成本（买价＋国际运费＋国内运费）小于0
+    	if(NumberUtils.floatLessThan(mOrderFinalActualCost,0.0f))
+    	{
+    		problemReasonBuilder.append("总成本（买价＋国际运费＋国内运费）小于0。");
+    	}
+    	
+    	//2. 重量小于0.
+    	if(NumberUtils.floatLessThan(this.mOrderWeight,0.0f))
+    	{
+    		problemReasonBuilder.append("重量小于0。");
+    	}
+    	
+    	//3. 买价付款 不等于 商品卖价＋用户已付国内邮费
+    	if(!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,this.mOrderSellingPrice+this.mOrderCustomerPaidDomesticShippingFee))
+    	{
+    		problemReasonBuilder.append("买价付款 不等于 商品卖价＋用户已付国内邮费。");
+    	}
+    	
+    	//4. 数量小于1
+    	if(this.mOrderProductCount<1)
+    	{
+    		problemReasonBuilder.append("数量小于1。");
+    	}
+    	
+    	//5. 超级管理员 订单分红百分比不为1
+    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=1)
+    	{
+    		problemReasonBuilder.append("超级管理员 订单分红百分比不为1。");
+    	}
+    	
+    	//6. 普通管理员 订单分红百分比不为0.4
+    	if(!this.mOrderProxy.isSuperAdmin()&&!NumberUtils.floatEquals(this.mOrderProxyProfitPercentage,0.4f))
+    	{
+    		problemReasonBuilder.append("普通管理员 订单分红百分比不为0.4。");
+    	}
+    	
+    	return problemReasonBuilder.toString();
+    }
+    
+    // Triage whether the order has some problem (calculation problem or user input typo)
+    public Boolean getOrderHasProblem()
+    {
+    	//所有可能的问题
+    	//1. 总成本（买价＋国际运费＋国内运费）小于0
+    	if(NumberUtils.floatLessThan(mOrderFinalActualCost,0.0f))
+    	{
+    		return true;
+    	}
+    	
+    	//2. 重量小于0.
+    	if(NumberUtils.floatLessThan(this.mOrderWeight,0.0f))
+    	{
+    		return true;
+    	}
+    	
+    	//3. 买价付款 不等于 商品卖价＋用户已付国内邮费
+    	if(!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,this.mOrderSellingPrice+this.mOrderCustomerPaidDomesticShippingFee))
+    	{
+    		return true;
+    	}
+    	
+    	//4. 数量小于1
+    	if(this.mOrderProductCount<1)
+    	{
+    		return true;
+    	}
+    	
+    	//5. 超级管理员 订单分红百分比不为1
+    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=1)
+    	{
+    		return true;
+    	}
+    	
+    	//6. 普通管理员 订单分红百分比不为0.4
+    	if(!this.mOrderProxy.isSuperAdmin()&&!NumberUtils.floatEquals(this.mOrderProxyProfitPercentage,0.4f))
+    	{
+    		return true;
+    	}
+    	
+    	return false;
+    }
+
     // 订单结算
     public void settleDown()
     {

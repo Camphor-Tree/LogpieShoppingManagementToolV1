@@ -46,7 +46,7 @@
 	        <c:forEach items="${orderList}" var="order">
 	        <tr>
 	        <td><input type="checkbox" name="SettleDownOrders" value="${order.orderId}" cp="${order.orderCustomerPaidMoney}" ds="${order.orderDomesticShippingFee}" cr="${order.orderCompanyReceivedMoney}" fc="${order.orderFinalActualCost}" pp="${order.orderProxyProfitPercentage}"/></td>
-	        <td class="anchor"><a name="a${order.orderId}"><div style="padding-top: 65px; margin-top: -65px;">${order.orderId}</div></a></td>
+	        <td <c:if test="${order.orderHasProblem == true}">style="background-color:#FFFF00"</c:if> class="anchor"><a name="a${order.orderId}"><div style="padding-top: 65px; margin-top: -65px;">${order.orderId}</div></a></td>
 	        <td>${fn:substring(order.orderDate,5,10)}</td>
 	        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
 	        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
@@ -68,7 +68,7 @@
 	        </tr>
 	        <tr>
 	          <td colspan="4" class="text-left"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-	          <td colspan="13" class="text-left">备注: ${order.orderNote}</td>
+	          <td colspan="13" class="text-left">备注: ${order.orderNote} <c:if test="${order.orderHasProblem == true}"><span style="background-color:#FFFF00">⚠原因：${order.orderProblemReason}</span></c:if></td>
 	        </tr>
 	        </c:forEach>
         </tbody>
