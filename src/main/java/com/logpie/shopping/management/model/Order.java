@@ -507,10 +507,10 @@ public class Order implements RowMapper<Order>, LogpieModel
     {
     	final StringBuilder problemReasonBuilder = new StringBuilder();
     	//所有可能的问题
-    	//1. 总成本（买价＋国际运费＋国内运费）小于0
+    	//1. 总成本（购买成本＋国际运费＋国内运费）小于0
     	if(NumberUtils.floatLessThan(mOrderFinalActualCost,0.0f))
     	{
-    		problemReasonBuilder.append("总成本（买价＋国际运费＋国内运费）小于0。");
+    		problemReasonBuilder.append("总成本（购买成本＋国际运费＋国内运费）小于0。");
     	}
     	
     	//2. 重量小于0.
@@ -519,10 +519,10 @@ public class Order implements RowMapper<Order>, LogpieModel
     		problemReasonBuilder.append("重量小于0。");
     	}
     	
-    	//3. 买价付款 不等于 商品卖价＋用户已付国内邮费
+    	//3. 买家付款 不等于 商品卖价＋用户已付国内邮费
     	if(!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,this.mOrderSellingPrice+this.mOrderCustomerPaidDomesticShippingFee))
     	{
-    		problemReasonBuilder.append("买价付款 不等于 商品卖价＋用户已付国内邮费。");
+    		problemReasonBuilder.append("买家付款 不等于 商品卖价＋用户已付国内邮费。");
     	}
     	
     	//4. 数量小于1
@@ -550,7 +550,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     public Boolean getOrderHasProblem()
     {
     	//所有可能的问题
-    	//1. 总成本（买价＋国际运费＋国内运费）小于0
+    	//1. 总成本（购买成本＋国际运费＋国内运费）小于0
     	if(NumberUtils.floatLessThan(mOrderFinalActualCost,0.0f))
     	{
     		return true;
@@ -562,7 +562,7 @@ public class Order implements RowMapper<Order>, LogpieModel
     		return true;
     	}
     	
-    	//3. 买价付款 不等于 商品卖价＋用户已付国内邮费
+    	//3. 买家付款 不等于 商品卖价＋用户已付国内邮费
     	if(!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,this.mOrderSellingPrice+this.mOrderCustomerPaidDomesticShippingFee))
     	{
     		return true;
@@ -574,8 +574,8 @@ public class Order implements RowMapper<Order>, LogpieModel
     		return true;
     	}
     	
-    	//5. 超级管理员 订单分红百分比不为1
-    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=1)
+    	//5. 超级管理员 订单分红百分比不为0
+    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=0)
     	{
     		return true;
     	}
