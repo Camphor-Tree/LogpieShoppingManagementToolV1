@@ -59,17 +59,13 @@
 				  </select>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-4">
+                  <div class="form-group col-sm-6">
                   <label for="order_product_count">购买数量</label>
                   <input class="form-control" type="number" step="1" id="order_product_count" name="OrderProductCount" value="${order.orderProductCount}" required>
                   </div>
-                  <div class="form-group col-sm-4">
+                  <div class="form-group col-sm-6">
                   <label for="order_weight">订单重量（克）</label>
                   <input class="form-control" type="number" step="0.01" min="0" id="order_weight" name="OrderWeight" value="${order.orderWeight}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
-                  </div>
-                  <div class="form-group col-sm-4">
-                    <label for="order_proxy_profit_percentage">代理分红百分比</label>
-                    <input class="form-control" type="number" step="0.01" id="order_proxy_profit_percentage" name="OrderProxyProfitPercentage" value="${order.orderProxyProfitPercentage}" required <c:if test="${admin.isSuperAdmin==false}">readonly</c:if>>
                   </div>
                 </div>
                 <div class="row">

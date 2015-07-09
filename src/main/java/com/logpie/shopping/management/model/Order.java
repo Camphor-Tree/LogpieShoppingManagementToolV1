@@ -338,7 +338,7 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderProxyId = request.getParameter("OrderProxyId");
         final AdminDAO adminDAO = new AdminDAO(null);
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
-        Float orderProxyProfitPercentage;
+        final Float orderProxyProfitPercentage;
         // only super admin's orderProxyProfitPercentage is 0, normal admin will
         // use default 0.4
         if (orderProxy.isSuperAdmin())
@@ -439,8 +439,17 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderProxyId = request.getParameter("OrderProxyId");
         final AdminDAO adminDAO = new AdminDAO(null);
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
-        final Float orderProxyProfitPercentage = Float.parseFloat(request
-                .getParameter("OrderProxyProfitPercentage"));
+        final Float orderProxyProfitPercentage;
+        // only super admin's orderProxyProfitPercentage is 0, normal admin will
+        // use default 0.4
+        if (orderProxy.isSuperAdmin())
+        {
+            orderProxyProfitPercentage = 0.0f;
+        }
+        else
+        {
+            orderProxyProfitPercentage = 0.4f;
+        }
         // OrderActualCost may be null
         Float orderActualCost = null;
         final String orderActualCostString = request.getParameter("OrderActualCost");
@@ -522,10 +531,10 @@ public class Order implements RowMapper<Order>, LogpieModel
     		problemReasonBuilder.append("数量小于1。");
     	}
     	
-    	//5. 超级管理员 订单分红百分比不为1
-    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=1)
+    	//5. 超级管理员 订单分红百分比不为0
+    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=0)
     	{
-    		problemReasonBuilder.append("超级管理员 订单分红百分比不为1。");
+    		problemReasonBuilder.append("超级管理员 订单分红百分比不为0。");
     	}
     	
     	//6. 普通管理员 订单分红百分比不为0.4
