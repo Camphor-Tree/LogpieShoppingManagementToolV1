@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="tag" tagdir="/WEB-INF/tags/" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:logpie_common_template>
     <jsp:body>
     	<c:if test="${order !=null}">
@@ -19,7 +20,7 @@
 		   <strong>订单代理分红百分比: </strong><c:out value="${order.orderProxyProfitPercentage}"/><br />
 		   <strong>订单实际购买成本(美元): </strong><c:out value="${order.orderActualCost}"/><br />
 		   <strong>订单当日汇率: </strong><c:out value="${order.orderCurrencyRate}"/><br />
-		   <strong>订单所属包裹号: </strong><c:out value="${order.orderPackage.packageId}"/><br />
+		   <strong>订单所属包裹号: </strong><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a><br />
 		   <strong>订单估计邮费(人民币): </strong><c:out value="${order.orderEstimatedShippingFee}"/><br />
 		   <strong>订单国际邮费(人民币): </strong><c:out value="${order.orderActualShippingFee}"/><br />
 		   <strong>订单国内邮费(人民币): </strong><c:out value="${order.orderDomesticShippingFee}"/><br />
