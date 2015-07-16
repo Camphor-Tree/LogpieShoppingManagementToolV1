@@ -197,10 +197,10 @@
 	                  <select class="form-control" form="order_creation_form" name="OrderProxyId" required>
 	                  		  <c:if test="${adminList!=null}">
 							    <c:forEach items="${adminList}" var="admin">
-							       <c:if test="${admin.adminName == '许嘉航'}">
+							       <c:if test="${admin.adminId == defaultProxy}">
 							       		<option value="${admin.adminId}" selected>${admin.adminName}</option>
 	        					   </c:if>
-	        					   <c:if test="${admin.adminName != '许嘉航'}">
+	        					   <c:if test="${admin.adminId != defaultProxy}">
 							       		<option value="${admin.adminId}">${admin.adminName}</option>
 	        					   </c:if>
 							    </c:forEach>

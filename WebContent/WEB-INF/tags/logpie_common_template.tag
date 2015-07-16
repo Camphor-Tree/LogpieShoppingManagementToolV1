@@ -66,6 +66,7 @@ h2{
 	            <li class="divider"></li>
 	            <li><a href="<c:url value="/settle_down_history" />">结算历史记录</a></li>
 	            <li><a href="<c:url value="/system_backup" />">系统备份</a></li>
+	            <li><a href="<c:url value="/settings" />">设置</a></li>
 	            <li class="divider"></li>
 	            <li><a href="<c:url value="/admin_profile" />">账号管理</a></li>
 	            <li class="divider"></li>

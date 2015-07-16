@@ -54,6 +54,8 @@ import com.logpie.shopping.management.storage.OrderDAO;
 import com.logpie.shopping.management.storage.ProductDAO;
 import com.logpie.shopping.management.storage.SettleDownRecordDAO;
 import com.logpie.shopping.management.util.CurrencyRateUtils;
+import com.logpie.shopping.settings.SettingManager;
+import com.logpie.shopping.settings.SettingManager.SystemSettingKeys;
 
 /**
  * Define what are the flows controller need to implement. Also the common
@@ -314,6 +316,11 @@ public abstract class LogpieControllerImplementation
         final OrderFilterLogic filterLogic = new OrderFilterLogic(adminId, decodedBuyerName,
                 orderBy, showAll);
         orderManagementPage.addObject("filterLogic", filterLogic);
+
+        final SettingManager settingManager = SettingManager.getInstance();
+        final String defaultProxy = settingManager
+                .getSystemSetting(SystemSettingKeys.SYSTEM_DEFAULT_PROXY);
+        orderManagementPage.addObject("defaultProxy", defaultProxy);
         return orderManagementPage;
     }
 
@@ -474,9 +481,8 @@ public abstract class LogpieControllerImplementation
         {
             // If just normal admin, cannot modify the detail of the order
             // doesn't belong to him/her.
-            if (!mCurrentAdmin.isSuperAdmin()
-                    && !modifiedOrder.getOrderProxy().getAdminId()
-                            .equals(mCurrentAdmin.getAdminId()))
+            if (!mCurrentAdmin.isSuperAdmin() && !modifiedOrder.getOrderProxy().getAdminId()
+                    .equals(mCurrentAdmin.getAdminId()))
             {
                 return showNoPermissionPage();
             }
@@ -748,8 +754,8 @@ public abstract class LogpieControllerImplementation
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新品牌:"
-                    + modifiedBrand.getBrandChineseName() + " 信息，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新品牌:" + modifiedBrand.getBrandChineseName() + " 信息，失败!");
         }
         return "redirect:/brand_management";
     }
@@ -800,8 +806,8 @@ public abstract class LogpieControllerImplementation
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新类别:"
-                    + modifiedCateogry.mCategoryName + " 信息，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新类别:" + modifiedCateogry.mCategoryName + " 信息，失败!");
         }
         return "redirect:/category_management";
     }
@@ -852,8 +858,8 @@ public abstract class LogpieControllerImplementation
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新图片:"
-                    + modifiedImage.getImageDescription() + " 信息，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新图片:" + modifiedImage.getImageDescription() + " 信息，失败!");
         }
         return "redirect:/image_management";
     }
@@ -912,8 +918,8 @@ public abstract class LogpieControllerImplementation
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新商品:"
-                    + modifiedProduct.getProductName() + " 信息，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新商品:" + modifiedProduct.getProductName() + " 信息，失败!");
         }
         return "redirect:/product_management";
     }
@@ -964,8 +970,8 @@ public abstract class LogpieControllerImplementation
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新图片:"
-                    + modifiedClient.getClientShowName() + " 信息，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新图片:" + modifiedClient.getClientShowName() + " 信息，失败!");
         }
         return "redirect:/client_management";
     }
@@ -1002,8 +1008,8 @@ public abstract class LogpieControllerImplementation
         couponManagementPage.addObject("admin", mCurrentAdmin);
         try
         {
-            final String couponCode = CouponCodeGenerator.getCouponCodeByPrice(Integer
-                    .parseInt(productPrice));
+            final String couponCode = CouponCodeGenerator
+                    .getCouponCodeByPrice(Integer.parseInt(productPrice));
             couponManagementPage.addObject("CouponCode", couponCode);
         } catch (Exception e)
         {
@@ -1063,8 +1069,8 @@ public abstract class LogpieControllerImplementation
             if (couponValue != null)
             {
                 final CouponDAO couponDAO = new CouponDAO(mCurrentAdmin);
-                boolean isCouponAlreadyUsed = couponDAO.isCouponAlreadyUsed(new Coupon(null,
-                        couponCode));
+                boolean isCouponAlreadyUsed = couponDAO
+                        .isCouponAlreadyUsed(new Coupon(null, couponCode));
 
                 if (isCouponAlreadyUsed)
                 {
@@ -1077,8 +1083,8 @@ public abstract class LogpieControllerImplementation
                 if (useCouponSuccess)
                 {
                     redirectAttrs.addFlashAttribute(
-                            LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS, "使用优惠券:"
-                                    + couponCode + "，成功!");
+                            LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                            "使用优惠券:" + couponCode + "，成功!");
                 }
                 else
                 {
@@ -1216,15 +1222,13 @@ public abstract class LogpieControllerImplementation
 
         if (createBrandSuccess)
         {
-            redirectAttrs.addFlashAttribute(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
                     "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
                             + newBrand.getBrandChineseName() + " 成功!");
         }
         else
         {
-            redirectAttrs.addFlashAttribute(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                     "创建新的品牌:" + newBrand.getBrandEnglishName() + "/"
                             + newBrand.getBrandChineseName() + " 失败!");
         }
@@ -1299,8 +1303,8 @@ public abstract class LogpieControllerImplementation
         List<Client> clientList = new ArrayList<Client>();
         try
         {
-            searchStringOriginal = new String(HtmlUtils.htmlUnescape(searchString).getBytes(
-                    "iso-8859-1"));
+            searchStringOriginal = new String(
+                    HtmlUtils.htmlUnescape(searchString).getBytes("iso-8859-1"));
             orderList = orderDAO.searchOrders(searchStringOriginal);
             searchResultView.addObject("orderList", orderList);
 
@@ -1323,8 +1327,8 @@ public abstract class LogpieControllerImplementation
         searchResultView.addObject("SearchPerformance", timeAfterSearch - timeBeforeSearch);
 
         searchResultView.addObject("SearchString", searchStringOriginal);
-        searchResultView.addObject("SearchResultsCount", orderList.size() + packageList.size()
-                + clientList.size());
+        searchResultView.addObject("SearchResultsCount",
+                orderList.size() + packageList.size() + clientList.size());
         searchResultView.addObject("OrdersCount", orderList.size());
         searchResultView.addObject("PackagesCount", packageList.size());
         searchResultView.addObject("ClientsCount", clientList.size());
@@ -1346,14 +1350,14 @@ public abstract class LogpieControllerImplementation
     {
         if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS))
         {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
+            final String message = (String) redirectAttrs.getFlashAttributes()
+                    .get(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS);
             view.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS, message);
         }
         if (redirectAttrs.containsAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL))
         {
-            final String message = (String) redirectAttrs.getFlashAttributes().get(
-                    LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
+            final String message = (String) redirectAttrs.getFlashAttributes()
+                    .get(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL);
             view.addObject(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, message);
         }
     }
@@ -1512,8 +1516,8 @@ public abstract class LogpieControllerImplementation
         orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_1, lineDataList1);
         orderNumberLineChartPage.addObject(LINE_CHART_1, orderInCategoryPieChart1);
 
-        final LogpieLineChart orderInCategoryPieChart2 = new LogpieLineChart(
-                "Logpie订单量 最近12个月 走势图", "日期", "订单数量");
+        final LogpieLineChart orderInCategoryPieChart2 = new LogpieLineChart("Logpie订单量 最近12个月 走势图",
+                "日期", "订单数量");
         List<Order> orderListWithinNmonths = orderDAO.getOrdersWithinNmonths(12);
         if (!mCurrentAdmin.isSuperAdmin())
         {
@@ -1557,8 +1561,8 @@ public abstract class LogpieControllerImplementation
             orderListWithinNmonths = filterOutOrdersNotBelongToAdmin(orderListWithinNmonths,
                     mCurrentAdmin);
         }
-        final Map<String, Double> orderWithinNmonthsMap = AccountingLogic.getOrderProfits(false,
-                12, orderListWithinNmonths);
+        final Map<String, Double> orderWithinNmonthsMap = AccountingLogic.getOrderProfits(false, 12,
+                orderListWithinNmonths);
         final List<KeyValue> lineDataList2 = GoogleChartHelper
                 .getLineChartDataListFromStringDoubleMap(orderWithinNmonthsMap, true);
         orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_2, lineDataList2);
@@ -1606,8 +1610,8 @@ public abstract class LogpieControllerImplementation
                         .getOrdersInCategory(orderInMonthList);
                 final List<KeyValue> pieDataList2 = GoogleChartHelper
                         .getPieDataListFromMap(orderInMonthCategoryMap);
-                accountingOrderInCategoryPieChartPage
-                        .addObject(PIE_CHART_DATA_LIST_2, pieDataList2);
+                accountingOrderInCategoryPieChartPage.addObject(PIE_CHART_DATA_LIST_2,
+                        pieDataList2);
                 accountingOrderInCategoryPieChartPage.addObject(PIE_CHART_2,
                         orderInCategoryPieChart2);
             }
@@ -1833,7 +1837,8 @@ public abstract class LogpieControllerImplementation
         return accountingOrderInAdminPieChartPage;
     }
 
-    private List<LogpiePackage> getPackageAlreadyDeliveredList(final List<LogpiePackage> packageList)
+    private List<LogpiePackage> getPackageAlreadyDeliveredList(
+            final List<LogpiePackage> packageList)
     {
         final List<LogpiePackage> packagesAfterFilter = new ArrayList<LogpiePackage>();
         for (final LogpiePackage logpiePackage : packageList)
@@ -1946,6 +1951,54 @@ public abstract class LogpieControllerImplementation
         return settleDownHistoryPage;
     }
 
+    public Object showSettingsPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView settingsPage = new ModelAndView("settings");
+        // inject the current admin into the page
+        settingsPage.addObject("admin", mCurrentAdmin);
+        final SettingManager settingManager = SettingManager.getInstance();
+        final String defaultProxy = settingManager
+                .getSystemSetting(SystemSettingKeys.SYSTEM_DEFAULT_PROXY);
+        final String defaultProxyProfitPercentage = settingManager
+                .getSystemSetting(SystemSettingKeys.SYSTEM_DEFAULT_PROXY_PROFIT_PERCENTAGE);
+        settingsPage.addObject("SystemDefaultProxyProfitPercentage", defaultProxyProfitPercentage);
+        settingsPage.addObject("SystemDefaultProxy", defaultProxy);
+        final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
+        final List<Admin> adminList = adminDAO.getAllAdmins();
+        settingsPage.addObject("adminList", adminList);
+
+        this.injectAlertMessage(redirectAttrs, settingsPage);
+        return settingsPage;
+    }
+
+    public Object setSettings(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final String systemDefaultProxyProfitPercentage = request
+                .getParameter("SystemDefaultProxyProfitPercentage");
+        final String systemDefaultProxy = request.getParameter("SystemDefaultProxy");
+
+        // inject the current admin into the page
+        final SettingManager settingManager = SettingManager.getInstance();
+        final boolean updateDefaultProxySuccess = settingManager
+                .setSystemSetting(SystemSettingKeys.SYSTEM_DEFAULT_PROXY, systemDefaultProxy);
+        final boolean updateDefaultProxyProfitPercentageSuccess = settingManager.setSystemSetting(
+                SystemSettingKeys.SYSTEM_DEFAULT_PROXY_PROFIT_PERCENTAGE,
+                systemDefaultProxyProfitPercentage);
+        if (updateDefaultProxySuccess && updateDefaultProxyProfitPercentageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "更新系统设置成功");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新系统设置失败");
+        }
+        return "redirect:/settings";
+    }
+
     private void injectHistoryTotalInformation(final List<SettleDownRecord> settleDownRecordList,
             final ModelAndView view)
     {
@@ -1959,20 +2012,20 @@ public abstract class LogpieControllerImplementation
                 final String recordInfo = record.getSettleDownRecordInfo();
 
                 final JSONObject settleDownRecordInfoJSON = new JSONObject(recordInfo);
-                totalProxyPaidCompanyMoney += Float.parseFloat(settleDownRecordInfoJSON
-                        .getString("proxyOweCompanyMoney"));
-                totalCompanyProfit += Float.parseFloat(settleDownRecordInfoJSON
-                        .getString("companyProfit"));
-                totalProxyProfit += Float.parseFloat(settleDownRecordInfoJSON
-                        .getString("proxyProfit"));
+                totalProxyPaidCompanyMoney += Float
+                        .parseFloat(settleDownRecordInfoJSON.getString("proxyOweCompanyMoney"));
+                totalCompanyProfit += Float
+                        .parseFloat(settleDownRecordInfoJSON.getString("companyProfit"));
+                totalProxyProfit += Float
+                        .parseFloat(settleDownRecordInfoJSON.getString("proxyProfit"));
             }
-            view.addObject("totalProxyPaidCompanyMoney", String.valueOf(totalProxyPaidCompanyMoney));
+            view.addObject("totalProxyPaidCompanyMoney",
+                    String.valueOf(totalProxyPaidCompanyMoney));
             view.addObject("totalCompanyProfit", String.valueOf(totalCompanyProfit));
             view.addObject("totalProxyProfit", String.valueOf(totalProxyProfit));
 
         } catch (JSONException e)
         {
         }
-
     }
 }

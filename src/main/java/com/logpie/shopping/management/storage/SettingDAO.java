@@ -7,7 +7,6 @@ import java.util.Set;
 
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.LogpieModel;
-import com.logpie.shopping.management.model.Product;
 import com.logpie.shopping.management.model.Setting;
 
 public class SettingDAO extends LogpieBaseDAO<Setting>
@@ -53,9 +52,9 @@ public class SettingDAO extends LogpieBaseDAO<Setting>
      */
     public boolean updateSetting(final Setting setting)
     {
-        final UpdateSettingUpdate updateProductUpdate = new UpdateSettingUpdate(setting,
+        final UpdateSettingUpdate updateSettingUpdate = new UpdateSettingUpdate(setting,
                 sSettingTableName, setting.getSettingId());
-        return super.updateData(updateProductUpdate,
+        return super.updateData(updateSettingUpdate,
                 "更新了系统设置 " + setting.getSettingNameSpace() + ":" + setting.getSettingKey());
     }
 
@@ -117,7 +116,7 @@ public class SettingDAO extends LogpieBaseDAO<Setting>
          */
         public UpdateSettingUpdate(LogpieModel model, String tableName, String settingId)
         {
-            super(model, tableName, Product.DB_KEY_PRODUCT_ID, settingId);
+            super(model, tableName, Setting.DB_KEY_SETTING_ID, settingId);
         }
     }
 
