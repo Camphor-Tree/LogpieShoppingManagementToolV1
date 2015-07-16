@@ -77,6 +77,16 @@ public class Admin implements RowMapper<Admin>, LogpieModel
         mAdminPassword = password;
     }
 
+    public static Admin buildSystemSuperAdmin()
+    {
+        return new Admin("1");
+    }
+
+    private Admin(final String adminId)
+    {
+        mAdminId = adminId;
+    }
+
     @Override
     public Map<String, Object> getModelMap()
     {
