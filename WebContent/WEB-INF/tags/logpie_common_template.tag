@@ -90,7 +90,7 @@ h2{
         </div>
     </div>
     <footer class="logpiefooter">
-        <p>&copy; <b>www.logpie.com 2014-2015</b></p>
+        <p>&copy; <b>logpie.com 2014-<%= new java.text.SimpleDateFormat("yyyy").format(new java.util.Date()) %></b></p>
     </footer>
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
