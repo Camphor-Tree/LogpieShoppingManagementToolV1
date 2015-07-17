@@ -19,6 +19,8 @@ import com.logpie.shopping.management.storage.ClientDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.ProductDAO;
 import com.logpie.shopping.management.util.NumberUtils;
+import com.logpie.shopping.settings.SettingManager;
+import com.logpie.shopping.settings.SettingManager.SystemSettingKeys;
 
 /**
  * @author zhoyilei
@@ -110,9 +112,9 @@ public class Order implements RowMapper<Order>, LogpieModel
             Admin orderProxy, Float proxyProfitPercentage, Float orderActualCost,
             Float currencyRate, LogpiePackage package1, Float estimatedShippingFee,
             Float actualShippingFee, Float orderDomesticShippingFee,
-            Float orderCustomerPaidDomesticShippingFee, Float sellingPrice,
-            Float customerPaidMoney, Float orderCompanyReceivedMoney, Boolean isProfitPaid,
-            Boolean orderSentToUser, Client orderClient, String orderNote)
+            Float orderCustomerPaidDomesticShippingFee, Float sellingPrice, Float customerPaidMoney,
+            Float orderCompanyReceivedMoney, Boolean isProfitPaid, Boolean orderSentToUser,
+            Client orderClient, String orderNote)
     {
         // OrderData is auto generated
         // mOrderDate = orderDate;
@@ -160,12 +162,12 @@ public class Order implements RowMapper<Order>, LogpieModel
      * @param orderNote
      */
     public Order(String orderId, String orderDate, Product product, Integer productCount,
-            Float orderWeight, String orderBuyerName, Admin orderProxy,
-            Float proxyProfitPercentage, Float orderActualCost, Float currencyRate,
-            LogpiePackage package1, Float estimatedShippingFee, Float actualShippingFee,
-            Float orderDomesticShippingFee, Float orderCustomerPaidDomesticShippingFee,
-            Float sellingPrice, Float customerPaidMoney, Float orderCompanyReceivedMoney,
-            Boolean isProfitPaid, Boolean orderSentToUser, Client orderClient, String orderNote)
+            Float orderWeight, String orderBuyerName, Admin orderProxy, Float proxyProfitPercentage,
+            Float orderActualCost, Float currencyRate, LogpiePackage package1,
+            Float estimatedShippingFee, Float actualShippingFee, Float orderDomesticShippingFee,
+            Float orderCustomerPaidDomesticShippingFee, Float sellingPrice, Float customerPaidMoney,
+            Float orderCompanyReceivedMoney, Boolean isProfitPaid, Boolean orderSentToUser,
+            Client orderClient, String orderNote)
     {
         mOrderId = orderId;
         mOrderDate = orderDate;
@@ -207,8 +209,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (mOrderCustomerPaidMoney != null && mOrderCurrencyRate != null
                 && mOrderActualCost != null)
         {
-            mOrderFinalProfit = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCustomerPaidMoney
-                    - mOrderFinalActualCost);
+            mOrderFinalProfit = NumberUtils
+                    .keepTwoDigitsDecimalForFloat(mOrderCustomerPaidMoney - mOrderFinalActualCost);
         }
     }
 
@@ -221,8 +223,9 @@ public class Order implements RowMapper<Order>, LogpieModel
      */
     private void refreshOrderFinalActualCost()
     {
-        mOrderFinalActualCost = NumberUtils.keepTwoDigitsDecimalForFloat(mOrderCurrencyRate
-                * mOrderActualCost + mOrderActualShippingFee + mOrderDomesticShippingFee);
+        mOrderFinalActualCost = NumberUtils
+                .keepTwoDigitsDecimalForFloat(mOrderCurrencyRate * mOrderActualCost
+                        + mOrderActualShippingFee + mOrderDomesticShippingFee);
     }
 
     @Override
@@ -331,8 +334,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderProductId = request.getParameter("OrderProductId");
         final ProductDAO productDAO = new ProductDAO(null);
         final Product orderProduct = productDAO.getProductById(orderProductId);
-        final Integer orderProductCount = Integer.parseInt(request
-                .getParameter("OrderProductCount"));
+        final Integer orderProductCount = Integer
+                .parseInt(request.getParameter("OrderProductCount"));
         final Float orderWeight = Float.parseFloat(request.getParameter("OrderWeight"));
         final String orderBuyerName = request.getParameter("OrderBuyerName");
         final String orderProxyId = request.getParameter("OrderProxyId");
@@ -340,14 +343,16 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
         final Float orderProxyProfitPercentage;
         // only super admin's orderProxyProfitPercentage is 0, normal admin will
-        // use default 0.4
+        // use default system settings' profit percentage
         if (orderProxy.isSuperAdmin())
         {
             orderProxyProfitPercentage = 0.0f;
         }
         else
         {
-            orderProxyProfitPercentage = 0.4f;
+            // 从设置中读出默认的分红百分比。
+            orderProxyProfitPercentage = Float.parseFloat(SettingManager.getInstance()
+                    .getSystemSetting(SystemSettingKeys.SYSTEM_DEFAULT_PROXY_PROFIT_PERCENTAGE));
         }
         // OrderActualCost may be null
         Float orderActualCost = null;
@@ -366,16 +371,16 @@ public class Order implements RowMapper<Order>, LogpieModel
             final LogpiePackageDAO packageDAO = new LogpiePackageDAO(null);
             orderPackage = packageDAO.getPackageById(orderPackageId);
         }
-        final Float orderEstimatedShippingFee = Float.parseFloat(request
-                .getParameter("OrderEstimatedShippingFee"));
+        final Float orderEstimatedShippingFee = Float
+                .parseFloat(request.getParameter("OrderEstimatedShippingFee"));
 
         // ActualShipping Fee may be null
         Float orderActualShippingFee = null;
         final String orderActualShippingFeeString = request.getParameter("OrderActualShippingFee");
         if (!StringUtils.isEmpty(orderActualShippingFeeString))
         {
-            orderActualShippingFee = Float.parseFloat(request
-                    .getParameter("OrderActualShippingFee"));
+            orderActualShippingFee = Float
+                    .parseFloat(request.getParameter("OrderActualShippingFee"));
         }
         else
         {
@@ -383,22 +388,22 @@ public class Order implements RowMapper<Order>, LogpieModel
             orderActualShippingFee = 0.0f;
         }
 
-        final Float orderDomesticShippingFee = Float.parseFloat(request
-                .getParameter("OrderDomesticShippingFee"));
-        final Float orderCustomerPaidDomesticShippingFee = Float.parseFloat(request
-                .getParameter("OrderCustomerPaidDomesticShippingFee"));
+        final Float orderDomesticShippingFee = Float
+                .parseFloat(request.getParameter("OrderDomesticShippingFee"));
+        final Float orderCustomerPaidDomesticShippingFee = Float
+                .parseFloat(request.getParameter("OrderCustomerPaidDomesticShippingFee"));
 
         final Float orderSellingPrice = Float.parseFloat(request.getParameter("OrderSellingPrice"));
-        final Float orderCustomerPaidMoney = Float.parseFloat(request
-                .getParameter("OrderCustomerPaidMoney"));
+        final Float orderCustomerPaidMoney = Float
+                .parseFloat(request.getParameter("OrderCustomerPaidMoney"));
         // final Integer orderFinalProfit =
         // Integer.parseInt(request.getParameter("OrderFinalProfit"));
-        final Float orderCompanyReceivedMoney = Float.parseFloat(request
-                .getParameter("OrderCompanyReceivedMoney"));
-        final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
-                .getParameter("OrderIsProfitPaid"));
-        final Boolean orderSentToUser = Boolean.parseBoolean(request
-                .getParameter("OrderSentToUser"));
+        final Float orderCompanyReceivedMoney = Float
+                .parseFloat(request.getParameter("OrderCompanyReceivedMoney"));
+        final Boolean orderIsProfitPaid = Boolean
+                .parseBoolean(request.getParameter("OrderIsProfitPaid"));
+        final Boolean orderSentToUser = Boolean
+                .parseBoolean(request.getParameter("OrderSentToUser"));
 
         // ClientId may be null
         Client orderClient = null;
@@ -432,8 +437,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderProductId = request.getParameter("OrderProductId");
         final ProductDAO productDAO = new ProductDAO(null);
         final Product orderProduct = productDAO.getProductById(orderProductId);
-        final Integer orderProductCount = Integer.parseInt(request
-                .getParameter("OrderProductCount"));
+        final Integer orderProductCount = Integer
+                .parseInt(request.getParameter("OrderProductCount"));
         final Float orderWeight = Float.parseFloat(request.getParameter("OrderWeight"));
         final String orderBuyerName = request.getParameter("OrderBuyerName");
         final String orderProxyId = request.getParameter("OrderProxyId");
@@ -441,14 +446,16 @@ public class Order implements RowMapper<Order>, LogpieModel
         final Admin orderProxy = adminDAO.queryAccountByAdminId(orderProxyId);
         final Float orderProxyProfitPercentage;
         // only super admin's orderProxyProfitPercentage is 0, normal admin will
-        // use default 0.4
+        // use default system settings profit percentage
         if (orderProxy.isSuperAdmin())
         {
             orderProxyProfitPercentage = 0.0f;
         }
         else
         {
-            orderProxyProfitPercentage = 0.4f;
+            // 从设置中读出默认的分红百分比。
+            orderProxyProfitPercentage = Float.parseFloat(SettingManager.getInstance()
+                    .getSystemSetting(SystemSettingKeys.SYSTEM_DEFAULT_PROXY_PROFIT_PERCENTAGE));
         }
         // OrderActualCost may be null
         Float orderActualCost = null;
@@ -461,31 +468,31 @@ public class Order implements RowMapper<Order>, LogpieModel
         final String orderPackageId = request.getParameter("OrderPackageId");
         final LogpiePackageDAO packageDAO = new LogpiePackageDAO(null);
         final LogpiePackage orderPackage = packageDAO.getPackageById(orderPackageId);
-        final Float orderEstimatedShippingFee = Float.parseFloat(request
-                .getParameter("OrderEstimatedShippingFee"));
+        final Float orderEstimatedShippingFee = Float
+                .parseFloat(request.getParameter("OrderEstimatedShippingFee"));
         // ActualShipping Fee may be null
         Float orderActualShippingFee = null;
         final String orderActualShippingFeeString = request.getParameter("OrderActualShippingFee");
         if (!StringUtils.isEmpty(orderActualShippingFeeString))
         {
-            orderActualShippingFee = Float.parseFloat(request
-                    .getParameter("OrderActualShippingFee"));
+            orderActualShippingFee = Float
+                    .parseFloat(request.getParameter("OrderActualShippingFee"));
         }
-        final Float orderDomesticShippingFee = Float.parseFloat(request
-                .getParameter("OrderDomesticShippingFee"));
-        final Float orderCustomerPaidDomesticShippingFee = Float.parseFloat(request
-                .getParameter("OrderCustomerPaidDomesticShippingFee"));
+        final Float orderDomesticShippingFee = Float
+                .parseFloat(request.getParameter("OrderDomesticShippingFee"));
+        final Float orderCustomerPaidDomesticShippingFee = Float
+                .parseFloat(request.getParameter("OrderCustomerPaidDomesticShippingFee"));
         final Float orderSellingPrice = Float.parseFloat(request.getParameter("OrderSellingPrice"));
-        final Float orderCustomerPaidMoney = Float.parseFloat(request
-                .getParameter("OrderCustomerPaidMoney"));
+        final Float orderCustomerPaidMoney = Float
+                .parseFloat(request.getParameter("OrderCustomerPaidMoney"));
         // final Integer orderFinalProfit =
         // Integer.parseInt(request.getParameter("OrderFinalProfit"));
-        final Float orderCompanyReceivedMoney = Float.parseFloat(request
-                .getParameter("OrderCompanyReceivedMoney"));
-        final Boolean orderIsProfitPaid = Boolean.parseBoolean(request
-                .getParameter("OrderIsProfitPaid"));
-        final Boolean orderSentToUser = Boolean.parseBoolean(request
-                .getParameter("OrderSentToUser"));
+        final Float orderCompanyReceivedMoney = Float
+                .parseFloat(request.getParameter("OrderCompanyReceivedMoney"));
+        final Boolean orderIsProfitPaid = Boolean
+                .parseBoolean(request.getParameter("OrderIsProfitPaid"));
+        final Boolean orderSentToUser = Boolean
+                .parseBoolean(request.getParameter("OrderSentToUser"));
 
         // orderClient may be null
         final String orderClientId = request.getParameter("OrderClientId");
@@ -505,88 +512,93 @@ public class Order implements RowMapper<Order>, LogpieModel
     // Get the problem reason string
     public String getOrderProblemReason()
     {
-    	final StringBuilder problemReasonBuilder = new StringBuilder();
-    	//所有可能的问题
-    	//1. 总成本（购买成本＋国际运费＋国内运费）小于0
-    	if(NumberUtils.floatLessThan(mOrderFinalActualCost,0.0f))
-    	{
-    		problemReasonBuilder.append("总成本（购买成本＋国际运费＋国内运费）小于0。");
-    	}
-    	
-    	//2. 重量小于0.
-    	if(NumberUtils.floatLessThan(this.mOrderWeight,0.0f))
-    	{
-    		problemReasonBuilder.append("重量小于0。");
-    	}
-    	
-    	//3. 买家付款 不等于 商品卖价＋用户已付国内邮费
-    	if(!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,this.mOrderSellingPrice+this.mOrderCustomerPaidDomesticShippingFee))
-    	{
-    		problemReasonBuilder.append("买家付款 不等于 商品卖价＋用户已付国内邮费。");
-    	}
-    	
-    	//4. 数量小于1
-    	if(this.mOrderProductCount<1)
-    	{
-    		problemReasonBuilder.append("数量小于1。");
-    	}
-    	
-    	//5. 超级管理员 订单分红百分比不为0
-    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=0)
-    	{
-    		problemReasonBuilder.append("超级管理员 订单分红百分比不为0。");
-    	}
-    	
-    	//6. 普通管理员 订单分红百分比不为0.4
-    	if(!this.mOrderProxy.isSuperAdmin()&&!NumberUtils.floatEquals(this.mOrderProxyProfitPercentage,0.4f))
-    	{
-    		problemReasonBuilder.append("普通管理员 订单分红百分比不为0.4。");
-    	}
-    	
-    	return problemReasonBuilder.toString();
+        final StringBuilder problemReasonBuilder = new StringBuilder();
+        // 所有可能的问题
+        // 1. 总成本（购买成本＋国际运费＋国内运费）小于0
+        if (NumberUtils.floatLessThan(mOrderFinalActualCost, 0.0f))
+        {
+            problemReasonBuilder.append("总成本（购买成本＋国际运费＋国内运费）小于0。");
+        }
+
+        // 2. 重量小于0.
+        if (NumberUtils.floatLessThan(this.mOrderWeight, 0.0f))
+        {
+            problemReasonBuilder.append("重量小于0。");
+        }
+
+        // 3. 买家付款 不等于 商品卖价＋用户已付国内邮费
+        if (!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,
+                this.mOrderSellingPrice + this.mOrderCustomerPaidDomesticShippingFee))
+        {
+            problemReasonBuilder.append("买家付款 不等于 商品卖价＋用户已付国内邮费。");
+        }
+
+        // 4. 数量小于1
+        if (this.mOrderProductCount < 1)
+        {
+            problemReasonBuilder.append("数量小于1。");
+        }
+
+        // 5. 超级管理员 订单分红百分比不为0
+        if (this.mOrderProxy.isSuperAdmin() && this.mOrderProxyProfitPercentage != 0)
+        {
+            problemReasonBuilder.append("超级管理员 订单分红百分比不为0。");
+        }
+
+        // 6. 普通管理员 订单分红百分比为0
+        if (!this.mOrderProxy.isSuperAdmin()
+                && !NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
+        {
+            problemReasonBuilder.append("普通管理员 订单分红百分比为0。");
+        }
+
+        return problemReasonBuilder.toString();
     }
-    
-    // Triage whether the order has some problem (calculation problem or user input typo)
+
+    // Triage whether the order has some problem (calculation problem or user
+    // input typo)
     public Boolean getOrderHasProblem()
     {
-    	//所有可能的问题
-    	//1. 总成本（购买成本＋国际运费＋国内运费）小于0
-    	if(NumberUtils.floatLessThan(mOrderFinalActualCost,0.0f))
-    	{
-    		return true;
-    	}
-    	
-    	//2. 重量小于0.
-    	if(NumberUtils.floatLessThan(this.mOrderWeight,0.0f))
-    	{
-    		return true;
-    	}
-    	
-    	//3. 买家付款 不等于 商品卖价＋用户已付国内邮费
-    	if(!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,this.mOrderSellingPrice+this.mOrderCustomerPaidDomesticShippingFee))
-    	{
-    		return true;
-    	}
-    	
-    	//4. 数量小于1
-    	if(this.mOrderProductCount<1)
-    	{
-    		return true;
-    	}
-    	
-    	//5. 超级管理员 订单分红百分比不为0
-    	if(this.mOrderProxy.isSuperAdmin()&&this.mOrderProxyProfitPercentage!=0)
-    	{
-    		return true;
-    	}
-    	
-    	//6. 普通管理员 订单分红百分比不为0.4
-    	if(!this.mOrderProxy.isSuperAdmin()&&!NumberUtils.floatEquals(this.mOrderProxyProfitPercentage,0.4f))
-    	{
-    		return true;
-    	}
-    	
-    	return false;
+        // 所有可能的问题
+        // 1. 总成本（购买成本＋国际运费＋国内运费）小于0
+        if (NumberUtils.floatLessThan(mOrderFinalActualCost, 0.0f))
+        {
+            return true;
+        }
+
+        // 2. 重量小于0.
+        if (NumberUtils.floatLessThan(this.mOrderWeight, 0.0f))
+        {
+            return true;
+        }
+
+        // 3. 买家付款 不等于 商品卖价＋用户已付国内邮费
+        if (!NumberUtils.floatEquals(this.mOrderCustomerPaidMoney,
+                this.mOrderSellingPrice + this.mOrderCustomerPaidDomesticShippingFee))
+        {
+            return true;
+        }
+
+        // 4. 数量小于1
+        if (this.mOrderProductCount < 1)
+        {
+            return true;
+        }
+
+        // 5. 超级管理员 订单分红百分比不为0
+        if (this.mOrderProxy.isSuperAdmin() && this.mOrderProxyProfitPercentage != 0)
+        {
+            return true;
+        }
+
+        // 6. 普通管理员 订单分红百分比为0
+        if (!this.mOrderProxy.isSuperAdmin()
+                && !NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     // 订单结算
@@ -621,8 +633,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderActualCost.equals(mOrderActualCost))
         {
-            changeStringBuilder.append("购买成本：" + compareToOrder.mOrderActualCost + "->"
-                    + mOrderActualCost + " ");
+            changeStringBuilder.append(
+                    "购买成本：" + compareToOrder.mOrderActualCost + "->" + mOrderActualCost + " ");
         }
         if (!compareToOrder.mOrderActualShippingFee.equals(mOrderActualShippingFee))
         {
@@ -631,8 +643,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderBuyerName.equals(mOrderBuyerName))
         {
-            changeStringBuilder.append("订单购买者：" + compareToOrder.mOrderBuyerName + "->"
-                    + mOrderBuyerName + " ");
+            changeStringBuilder.append(
+                    "订单购买者：" + compareToOrder.mOrderBuyerName + "->" + mOrderBuyerName + " ");
         }
         if (!compareToOrder.mOrderCompanyReceivedMoney.equals(mOrderCompanyReceivedMoney))
         {
@@ -641,8 +653,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderCurrencyRate.equals(mOrderCurrencyRate))
         {
-            changeStringBuilder.append("汇率：" + compareToOrder.mOrderCurrencyRate + "->"
-                    + mOrderCurrencyRate + " ");
+            changeStringBuilder.append(
+                    "汇率：" + compareToOrder.mOrderCurrencyRate + "->" + mOrderCurrencyRate + " ");
         }
         if (!compareToOrder.mOrderCustomerPaidMoney.equals(mOrderCustomerPaidMoney))
         {
@@ -651,8 +663,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderDate.equals(mOrderDate))
         {
-            changeStringBuilder.append("订单日期：" + compareToOrder.mOrderDate + "->" + mOrderDate
-                    + " ");
+            changeStringBuilder
+                    .append("订单日期：" + compareToOrder.mOrderDate + "->" + mOrderDate + " ");
         }
         if (!compareToOrder.mOrderEstimatedShippingFee.equals(mOrderEstimatedShippingFee))
         {
@@ -667,9 +679,9 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (!compareToOrder.mOrderCustomerPaidDomesticShippingFee
                 .equals(mOrderCustomerPaidDomesticShippingFee))
         {
-            changeStringBuilder.append("用户已付国内运费："
-                    + compareToOrder.mOrderCustomerPaidDomesticShippingFee + "->"
-                    + mOrderCustomerPaidDomesticShippingFee + " ");
+            changeStringBuilder
+                    .append("用户已付国内运费：" + compareToOrder.mOrderCustomerPaidDomesticShippingFee
+                            + "->" + mOrderCustomerPaidDomesticShippingFee + " ");
         }
         if (!compareToOrder.mOrderFinalActualCost.equals(mOrderFinalActualCost))
         {
@@ -678,13 +690,13 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderFinalProfit.equals(mOrderFinalProfit))
         {
-            changeStringBuilder.append("最终利润：" + compareToOrder.mOrderFinalProfit + "->"
-                    + mOrderFinalProfit + " ");
+            changeStringBuilder.append(
+                    "最终利润：" + compareToOrder.mOrderFinalProfit + "->" + mOrderFinalProfit + " ");
         }
         if (!compareToOrder.mOrderSentToUser.equals(mOrderSentToUser))
         {
-            changeStringBuilder.append("订单已向用户发货：" + compareToOrder.mOrderSentToUser + "->"
-                    + mOrderSentToUser + " ");
+            changeStringBuilder.append(
+                    "订单已向用户发货：" + compareToOrder.mOrderSentToUser + "->" + mOrderSentToUser + " ");
         }
         if (!compareToOrder.mOrderNote.equals(mOrderNote))
         {
@@ -693,19 +705,18 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (compareToOrder.mOrderPackage != null && mOrderPackage != null
                 && !compareToOrder.mOrderPackage.compareTo(mOrderPackage))
         {
-            changeStringBuilder.append("OrderPackage："
-                    + compareToOrder.mOrderPackage.getPackageId() + "->"
-                    + mOrderPackage.getPackageId() + " ");
+            changeStringBuilder.append("OrderPackage：" + compareToOrder.mOrderPackage.getPackageId()
+                    + "->" + mOrderPackage.getPackageId() + " ");
         }
         if (compareToOrder.mOrderPackage == null && mOrderPackage != null)
         {
-            changeStringBuilder.append("OrderPackage：null" + "->" + mOrderPackage.getPackageId()
-                    + " ");
+            changeStringBuilder
+                    .append("OrderPackage：null" + "->" + mOrderPackage.getPackageId() + " ");
         }
         if (compareToOrder.mOrderPackage != null && mOrderPackage == null)
         {
-            changeStringBuilder.append("OrderPackage："
-                    + compareToOrder.mOrderPackage.getPackageId() + "-> null");
+            changeStringBuilder.append(
+                    "OrderPackage：" + compareToOrder.mOrderPackage.getPackageId() + "-> null");
         }
 
         if (compareToOrder.mOrderClient != null && mOrderClient != null
@@ -721,15 +732,15 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (compareToOrder.mOrderClient != null && mOrderClient == null)
         {
-            changeStringBuilder.append("OrderClient：" + compareToOrder.mOrderClient.getClientId()
-                    + "-> null");
+            changeStringBuilder
+                    .append("OrderClient：" + compareToOrder.mOrderClient.getClientId() + "-> null");
         }
 
         if (!compareToOrder.mOrderProduct.compareTo(mOrderProduct))
         {
-            changeStringBuilder.append("OrderProduct："
-                    + compareToOrder.mOrderProduct.getProductName() + "->"
-                    + mOrderProduct.getProductName() + " ");
+            changeStringBuilder
+                    .append("OrderProduct：" + compareToOrder.mOrderProduct.getProductName() + "->"
+                            + mOrderProduct.getProductName() + " ");
         }
         if (!compareToOrder.mOrderProductCount.equals(mOrderProductCount))
         {
@@ -743,9 +754,9 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderProxyProfitPercentage.equals(mOrderProxyProfitPercentage))
         {
-            changeStringBuilder.append("OrderProxyProfitPercentage："
-                    + compareToOrder.mOrderProxyProfitPercentage + "->"
-                    + mOrderProxyProfitPercentage + " ");
+            changeStringBuilder.append(
+                    "OrderProxyProfitPercentage：" + compareToOrder.mOrderProxyProfitPercentage
+                            + "->" + mOrderProxyProfitPercentage + " ");
         }
         if (!compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice))
         {
@@ -754,8 +765,8 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
         if (!compareToOrder.mOrderWeight.equals(mOrderWeight))
         {
-            changeStringBuilder.append("OrderWeight：" + compareToOrder.mOrderWeight + "->"
-                    + mOrderWeight + " ");
+            changeStringBuilder.append(
+                    "OrderWeight：" + compareToOrder.mOrderWeight + "->" + mOrderWeight + " ");
         }
         return changeStringBuilder.toString();
     }
@@ -1201,8 +1212,9 @@ public class Order implements RowMapper<Order>, LogpieModel
                     && compareToOrder.mOrderFinalActualCost.equals(mOrderFinalActualCost)
                     && compareToOrder.mOrderFinalProfit.equals(mOrderFinalProfit)
                     && compareToOrder.mOrderNote.equals(mOrderNote)
-                    && ((compareToOrder.mOrderPackage == null && mOrderPackage == null) || (compareToOrder.mOrderPackage != null && compareToOrder.mOrderPackage
-                            .compareTo(mOrderPackage)))
+                    && ((compareToOrder.mOrderPackage == null && mOrderPackage == null)
+                            || (compareToOrder.mOrderPackage != null
+                                    && compareToOrder.mOrderPackage.compareTo(mOrderPackage)))
                     && compareToOrder.mOrderProduct.compareTo(mOrderProduct)
                     && compareToOrder.mOrderProductCount.equals(mOrderProductCount)
                     && compareToOrder.mOrderProxy.compareTo(mOrderProxy)
@@ -1211,8 +1223,9 @@ public class Order implements RowMapper<Order>, LogpieModel
                     && compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice)
                     && compareToOrder.mOrderWeight.equals(mOrderWeight)
                     && compareToOrder.mOrderSentToUser.equals(mOrderSentToUser)
-                    && ((compareToOrder.mOrderClient == null && mOrderClient == null) || (compareToOrder.mOrderClient != null && compareToOrder.mOrderClient
-                            .compareTo(mOrderClient))))
+                    && ((compareToOrder.mOrderClient == null && mOrderClient == null)
+                            || (compareToOrder.mOrderClient != null
+                                    && compareToOrder.mOrderClient.compareTo(mOrderClient))))
             {
                 return true;
             }
