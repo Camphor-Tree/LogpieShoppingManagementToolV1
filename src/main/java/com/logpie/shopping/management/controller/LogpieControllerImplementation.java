@@ -24,8 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.HtmlUtils;
 
 import com.logpie.shopping.management.accounting.logic.AccountingLogic;
+import com.logpie.shopping.management.accounting.logic.AccountingLogic.ProfitType;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper;
 import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValue;
+import com.logpie.shopping.management.accounting.logic.GoogleChartHelper.KeyValues;
 import com.logpie.shopping.management.accounting.logic.LogpieLineChart;
 import com.logpie.shopping.management.accounting.logic.LogpiePieChart;
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
@@ -1530,45 +1532,90 @@ public abstract class LogpieControllerImplementation
                 .getLineChartDataListFromStringIntegerMap(orderWithinNmonthsMap);
         orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_2, lineDataList2);
         orderNumberLineChartPage.addObject(LINE_CHART_2, orderInCategoryPieChart2);
-
+        orderNumberLineChartPage.addObject("admin", mCurrentAdmin);
+        orderNumberLineChartPage.addObject("chartType", "OrderNumbers");
         return orderNumberLineChartPage;
     }
 
+    @SuppressWarnings("unchecked")
     private Object handleOrderProfits()
     {
-        final ModelAndView orderNumberLineChartPage = new ModelAndView("accounting_linechart");
+        final ModelAndView orderLineChartPage = new ModelAndView("accounting_linechart");
         final OrderDAO orderDAO = new OrderDAO(null);
-        final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart("Logpie 利润 最近30天 走势图",
-                "日期", "订单利润");
-        List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(30);
+
+        // If normal admin, can only view his profit
         if (!mCurrentAdmin.isSuperAdmin())
         {
+            final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart(
+                    "Logpie 利润 最近30天 走势图", "日期", mCurrentAdmin.getAdminName() + "利润");
+            List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(30);
             orderListWithinNdays = filterOutOrdersNotBelongToAdmin(orderListWithinNdays,
                     mCurrentAdmin);
-        }
-        final Map<String, Double> orderWithinNdaysMap = AccountingLogic.getOrderProfits(true, 30,
-                orderListWithinNdays);
-        final List<KeyValue> lineDataList1 = GoogleChartHelper
-                .getLineChartDataListFromStringDoubleMap(orderWithinNdaysMap, false);
-        orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_1, lineDataList1);
-        orderNumberLineChartPage.addObject(LINE_CHART_1, orderInCategoryPieChart1);
+            final Map<String, Double> orderWithinNdaysMap = AccountingLogic.getOrderProfits(true,
+                    30, orderListWithinNdays, ProfitType.ProxyProfit);
+            final List<KeyValue> lineDataList1 = GoogleChartHelper
+                    .getLineChartDataListFromStringDoubleMap(orderWithinNdaysMap, false);
+            orderLineChartPage.addObject(LINE_CHART_DATA_LIST_1, lineDataList1);
+            orderLineChartPage.addObject(LINE_CHART_1, orderInCategoryPieChart1);
 
-        final LogpieLineChart orderInCategoryPieChart2 = new LogpieLineChart("Logpie利润 最近12个月 走势图",
-                "日期", "订单利润");
-        List<Order> orderListWithinNmonths = orderDAO.getOrdersWithinNmonths(12);
-        if (!mCurrentAdmin.isSuperAdmin())
-        {
+            final LogpieLineChart orderInCategoryPieChart2 = new LogpieLineChart(
+                    "Logpie利润 最近12个月 走势图", "日期", mCurrentAdmin.getAdminName() + "利润");
+            List<Order> orderListWithinNmonths = orderDAO.getOrdersWithinNmonths(12);
             orderListWithinNmonths = filterOutOrdersNotBelongToAdmin(orderListWithinNmonths,
                     mCurrentAdmin);
+            final Map<String, Double> orderWithinNmonthsMap = AccountingLogic.getOrderProfits(false,
+                    12, orderListWithinNmonths, ProfitType.ProxyProfit);
+            final List<KeyValue> lineDataList2 = GoogleChartHelper
+                    .getLineChartDataListFromStringDoubleMap(orderWithinNmonthsMap, true);
+            orderLineChartPage.addObject(LINE_CHART_DATA_LIST_2, lineDataList2);
+            orderLineChartPage.addObject(LINE_CHART_2, orderInCategoryPieChart2);
         }
-        final Map<String, Double> orderWithinNmonthsMap = AccountingLogic.getOrderProfits(false, 12,
-                orderListWithinNmonths);
-        final List<KeyValue> lineDataList2 = GoogleChartHelper
-                .getLineChartDataListFromStringDoubleMap(orderWithinNmonthsMap, true);
-        orderNumberLineChartPage.addObject(LINE_CHART_DATA_LIST_2, lineDataList2);
-        orderNumberLineChartPage.addObject(LINE_CHART_2, orderInCategoryPieChart2);
+        else
+        {
+            // Super amdin can view whole company profit, proxy profit and super
+            // admin's profit
+            final LogpieLineChart orderInCategoryPieChart1 = new LogpieLineChart(
+                    "Logpie 利润 最近30天 走势图", "日期", "公司总利润", "北美利润", "代理利润");
+            List<Order> orderListWithinNdays = orderDAO.getOrdersWithinNdays(30);
+            final Map<String, Double> orderWithinNdaysCompanyProfitMap = AccountingLogic
+                    .getOrderProfits(true, 30, orderListWithinNdays, ProfitType.CompanyProfit);
+            final Map<String, Double> orderWithinNdaysSuperAdminProfitMap = AccountingLogic
+                    .getOrderProfits(true, 30, orderListWithinNdays, ProfitType.SuperAdminProfit);
+            final Map<String, Double> orderWithinNdaysProxyProfitMap = AccountingLogic
+                    .getOrderProfits(true, 30, orderListWithinNdays, ProfitType.ProxyProfit);
 
-        return orderNumberLineChartPage;
+            final List<KeyValues> lineDataList1 = GoogleChartHelper
+                    .getLineChartDataListFromStringDoubleMaps(false,
+                            orderWithinNdaysCompanyProfitMap, orderWithinNdaysSuperAdminProfitMap,
+                            orderWithinNdaysProxyProfitMap);
+            orderLineChartPage.addObject(LINE_CHART_DATA_LIST_1, lineDataList1);
+            orderLineChartPage.addObject(LINE_CHART_1, orderInCategoryPieChart1);
+
+            final LogpieLineChart orderInCategoryPieChart2 = new LogpieLineChart(
+                    "Logpie利润 最近12个月 走势图", "日期", "公司总利润", "北美利润", "代理利润");
+            final List<Order> orderListWithinNmonths = orderDAO.getOrdersWithinNmonths(12);
+
+            final Map<String, Double> orderWithinNmonthsCompanyProfitMap = AccountingLogic
+                    .getOrderProfits(false, 12, orderListWithinNmonths, ProfitType.CompanyProfit);
+            final Map<String, Double> orderWithinNmonthsSuperAdminProfitMap = AccountingLogic
+                    .getOrderProfits(false, 12, orderListWithinNmonths,
+                            ProfitType.SuperAdminProfit);
+            final Map<String, Double> orderWithinNmonthsProxyProfitMap = AccountingLogic
+                    .getOrderProfits(false, 12, orderListWithinNmonths, ProfitType.ProxyProfit);
+
+            final List<KeyValues> lineDataList2 = GoogleChartHelper
+                    .getLineChartDataListFromStringDoubleMaps(true,
+                            orderWithinNmonthsCompanyProfitMap,
+                            orderWithinNmonthsSuperAdminProfitMap,
+                            orderWithinNmonthsProxyProfitMap);
+            orderLineChartPage.addObject(LINE_CHART_DATA_LIST_2, lineDataList2);
+            orderLineChartPage.addObject(LINE_CHART_2, orderInCategoryPieChart2);
+        }
+
+        orderLineChartPage.addObject("admin", mCurrentAdmin);
+        orderLineChartPage.addObject("chartType", "OrderProfits");
+
+        return orderLineChartPage;
     }
 
     private Object handleOrderInCategory(final String yearMonth)

@@ -40,12 +40,10 @@ public class LogpieProfitCalculator
                 .keepTwoDigitsDecimalForFloat(getEstimatedNetCompanyProfitForAllOrders());
         mNetActualProfitsForAllOrders = NumberUtils
                 .keepTwoDigitsDecimalForFloat(getActualNetCompanyProfitForShippedOrders());
-        mProxyEstimatedProfitsForAllOrders = NumberUtils
-                .keepTwoDigitsDecimalForFloat(mEstimatedProfitsForAllOrders
-                        - mNetEstimatedProfitsForAllOrders);
-        mProxyActualProfitsForAllOrders = NumberUtils
-                .keepTwoDigitsDecimalForFloat(mActualProfitsForAllOrders
-                        - mNetActualProfitsForAllOrders);
+        mProxyEstimatedProfitsForAllOrders = NumberUtils.keepTwoDigitsDecimalForFloat(
+                mEstimatedProfitsForAllOrders - mNetEstimatedProfitsForAllOrders);
+        mProxyActualProfitsForAllOrders = NumberUtils.keepTwoDigitsDecimalForFloat(
+                mActualProfitsForAllOrders - mNetActualProfitsForAllOrders);
         mTotalTurnOver = calculateTotalTurnOver();
     }
 
@@ -55,7 +53,7 @@ public class LogpieProfitCalculator
      * 
      * ProfitInTheory = SellingPrice - ActualBuyingCost - EstimatedShippingFee
      */
-    public Float getProfitInEstimationForAllOrders()
+    private Float getProfitInEstimationForAllOrders()
     {
         if (CollectionUtils.isEmpty(mOrderList))
         {
@@ -105,7 +103,7 @@ public class LogpieProfitCalculator
      * 
      * @return
      */
-    public Float getEstimatedNetCompanyProfitForAllOrders()
+    private Float getEstimatedNetCompanyProfitForAllOrders()
     {
         if (CollectionUtils.isEmpty(mOrderList))
         {
@@ -172,13 +170,15 @@ public class LogpieProfitCalculator
         // 如果实际运费不为0 那么就用实际运费来估计
         if (NumberUtils.floatEquals(order.getOrderActualShippingFee(), 0.0f))
         {
-            return order.getOrderSellingPrice() - order.getOrderActualCost()
-                    * order.getOrderCurrencyRate() - order.getOrderEstimatedShippingFee();
+            return order.getOrderSellingPrice()
+                    - order.getOrderActualCost() * order.getOrderCurrencyRate()
+                    - order.getOrderEstimatedShippingFee();
         }
         else
         {
-            return order.getOrderSellingPrice() - order.getOrderActualCost()
-                    * order.getOrderCurrencyRate() - order.getOrderActualShippingFee();
+            return order.getOrderSellingPrice()
+                    - order.getOrderActualCost() * order.getOrderCurrencyRate()
+                    - order.getOrderActualShippingFee();
         }
     }
 

@@ -18,10 +18,26 @@
        google.setOnLoadCallback(drawChart);
        function drawChart() {
          var data1 = google.visualization.arrayToDataTable([
-             ['${LineChart1.chartKeyLabel}','${LineChart1.chartValueLabel}'],
-             <c:forEach items="${LineChartDataList1}" var="entry">
-              [ '${entry.key}', ${entry.value} ],
-             </c:forEach>
+             <c:if test="${chartType == 'OrderNumbers'}">
+                   ['${LineChart2.chartKeyLabel}', '${LineChart2.chartValueLabel}'],
+                   <c:forEach items="${LineChartDataList2}" var="entry">
+                       [ '${entry.key}', ${entry.value} ],
+                   </c:forEach>
+             </c:if>
+             <c:if test="${chartType == 'OrderProfits'}">    
+	             <c:if test="${admin.isSuperAdmin == false}">
+	                 ['${LineChart1.chartKeyLabel}','${LineChart1.chartValueLabel}'],
+		             <c:forEach items="${LineChartDataList1}" var="entry">
+		              [ '${entry.key}', ${entry.value} ],
+		             </c:forEach>
+	             </c:if>
+	             <c:if test="${admin.isSuperAdmin == true}">
+	                 ['${LineChart1.chartKeyLabel}','${LineChart1.chartValueLabel}','${LineChart1.chartValueLabel2}','${LineChart1.chartValueLabel3}'],
+		             <c:forEach items="${LineChartDataList1}" var="entry">
+		              [ '${entry.key}', ${entry.value1},${entry.value2},${entry.value3} ],
+	                 </c:forEach>
+	             </c:if>
+             </c:if>
          ]);
          data1.addColumn({type: 'number', role: 'annotation'});
          var options1 = {
@@ -36,10 +52,26 @@
          chart.draw(data1, options1);
          <c:if test="${LineChart2 != null}">
          var data2 = google.visualization.arrayToDataTable([
-              ['${LineChart2.chartKeyLabel}', '${LineChart2.chartValueLabel}'],
-              <c:forEach items="${LineChartDataList2}" var="entry">
-               [ '${entry.key}', ${entry.value} ],
-              </c:forEach>
+			<c:if test="${chartType == 'OrderNumbers'}">
+			      ['${LineChart2.chartKeyLabel}', '${LineChart2.chartValueLabel}'],
+			      <c:forEach items="${LineChartDataList2}" var="entry">
+			       [ '${entry.key}', ${entry.value} ],
+			      </c:forEach>
+		   </c:if>
+		   <c:if test="${chartType == 'OrderProfits'}">                 
+	           <c:if test="${admin.isSuperAdmin == false}">
+	                 ['${LineChart2.chartKeyLabel}', '${LineChart2.chartValueLabel}'],
+		             <c:forEach items="${LineChartDataList2}" var="entry">
+		              [ '${entry.key}', ${entry.value} ],
+		             </c:forEach>
+	           </c:if>
+	           <c:if test="${admin.isSuperAdmin == true}">
+	                  ['${LineChart2.chartKeyLabel}', '${LineChart2.chartValueLabel}','${LineChart2.chartValueLabel2}','${LineChart2.chartValueLabel3}'],
+		             <c:forEach items="${LineChartDataList2}" var="entry">
+		              [ '${entry.key}', ${entry.value1},${entry.value2},${entry.value3}],
+	                 </c:forEach>
+		        </c:if>
+	        </c:if>
          ]);
          var options2 = {
                  title: '${LineChart2.chartLabel}',

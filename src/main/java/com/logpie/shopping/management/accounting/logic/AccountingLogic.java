@@ -4,12 +4,15 @@ package com.logpie.shopping.management.accounting.logic;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import com.logpie.shopping.management.business.logic.LogpieProfitCalculator;
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Category;
 import com.logpie.shopping.management.model.Order;
@@ -22,6 +25,11 @@ import com.logpie.shopping.management.util.CollectionUtils;
  */
 public class AccountingLogic
 {
+    public enum ProfitType
+    {
+        CompanyProfit, ProxyProfit, SuperAdminProfit;
+    }
+
     /**
      * 
      * @param isDaily
@@ -32,29 +40,32 @@ public class AccountingLogic
      * @return
      */
     public static Map<String, Double> getOrderProfits(final boolean isDaily, final int period,
-            final List<Order> orderList)
+            final List<Order> orderList, final ProfitType profitType)
     {
         final Map<String, Double> orderProfitMap = new HashMap<String, Double>();
+        final Map<String, List<Order>> ordersInPeriodMap = new HashMap<String, List<Order>>();
         // Add keys. (Date/month)
         for (int i = 0; i < period; i++)
         {
             final Calendar cal = Calendar.getInstance();
+            final String dateKey;
             if (isDaily)
             {
                 cal.add(Calendar.DATE, -1 * i);
                 final Date dateBeforeIdays = cal.getTime();
                 final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
-                final String dateKey = dateFormat.format(dateBeforeIdays);
-                orderProfitMap.put(dateKey, 0.0);
+                dateKey = dateFormat.format(dateBeforeIdays);
+
             }
             else
             {
                 cal.add(Calendar.MONTH, -1 * i);
                 final Date dateBeforeImonths = cal.getTime();
                 final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-                final String dateKey = dateFormat.format(dateBeforeImonths);
-                orderProfitMap.put(dateKey, 0.0);
+                dateKey = dateFormat.format(dateBeforeImonths);
             }
+            orderProfitMap.put(dateKey, 0.0);
+            ordersInPeriodMap.put(dateKey, new ArrayList<Order>());
         }
 
         if (CollectionUtils.isEmpty(orderList))
@@ -62,18 +73,10 @@ public class AccountingLogic
             return orderProfitMap;
         }
 
+        // Insert orders into all periods
         for (final Order order : orderList)
         {
             final String orderDate = order.getOrderDate();
-            final Float orderCustomerPaidMoney = order.getOrderCustomerPaidMoney();
-            // if customer hasn't paid the money, we won't include it into the
-            // calculate. We do this to prevent it being a negative number,
-            // since Pie chart doesn't accept negative number.
-            if (orderCustomerPaidMoney < 0.001)
-            {
-                continue;
-            }
-            final Float orderProfit = order.getOrderFinalProfit();
             if (orderDate != null)
             {
                 final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -85,25 +88,46 @@ public class AccountingLogic
                 {
                     continue;
                 }
-                SimpleDateFormat dateFormat;
-                String dateKey;
+                final SimpleDateFormat dateFormat;
+                final String dateKey;
                 if (isDaily)
                 {
                     dateFormat = new SimpleDateFormat("MM-dd");
-                    dateKey = dateFormat.format(date);
                 }
                 else
                 {
                     dateFormat = new SimpleDateFormat("yyyy-MM");
-                    dateKey = dateFormat.format(date);
                 }
+                dateKey = dateFormat.format(date);
 
-                if (orderProfitMap.containsKey(dateKey))
+                if (ordersInPeriodMap.containsKey(dateKey))
                 {
-                    double profit = orderProfitMap.get(dateKey);
-                    orderProfitMap.put(dateKey, orderProfit + profit);
+                    final List<Order> ordersListInPeriod = ordersInPeriodMap.get(dateKey);
+                    ordersListInPeriod.add(order);
                 }
             }
+        }
+
+        // Use LogpieProfitCalculator to calculate each period's orders' profit
+        for (final Entry<String, Double> profitEntry : orderProfitMap.entrySet())
+        {
+            final List<Order> ordersListInPeriod = ordersInPeriodMap.get(profitEntry.getKey());
+            final LogpieProfitCalculator profitCalculator = new LogpieProfitCalculator(
+                    ordersListInPeriod);
+            Float periodProfit = null;
+            if (profitType.equals(ProfitType.ProxyProfit))
+            {
+                periodProfit = profitCalculator.getProxyEstimatedProfitsForAllOrders();
+            }
+            else if (profitType.equals(ProfitType.CompanyProfit))
+            {
+                periodProfit = profitCalculator.getEstimatedProfitsForAllOrders();
+            }
+            else if (profitType.equals(ProfitType.SuperAdminProfit))
+            {
+                periodProfit = profitCalculator.getNetEstimatedProfitsForAllOrders();
+            }
+            orderProfitMap.put(profitEntry.getKey(), Double.valueOf(Float.toString(periodProfit)));
         }
         return orderProfitMap;
     }
@@ -328,8 +352,8 @@ public class AccountingLogic
             {
                 if (!orderProfitInBrandMap.containsKey(brandName))
                 {
-                    orderProfitInBrandMap
-                            .put(brandName, Double.parseDouble(orderProfit.toString()));
+                    orderProfitInBrandMap.put(brandName,
+                            Double.parseDouble(orderProfit.toString()));
                 }
                 else
                 {
@@ -351,8 +375,8 @@ public class AccountingLogic
         final Map<String, Double> orderProfitInCategoryMap = new HashMap<String, Double>();
         for (final Order order : orderList)
         {
-            final String categoryName = order.getOrderProduct().getProductBrand()
-                    .getBrandCategory().getCategoryName();
+            final String categoryName = order.getOrderProduct().getProductBrand().getBrandCategory()
+                    .getCategoryName();
             final Float orderProfit = order.getOrderFinalProfit();
             // We do this to prevent it being a negative number,
             // since Pie chart doesn't accept negative number.

@@ -26,13 +26,13 @@ public class GoogleChartHelper
             if (dataEntry.getValue() instanceof Double)
             {
                 // Format the double to show two digit decimal
-                pieDataList.add(new KeyValue(dataEntry.getKey(), String.format("%.2f",
-                        dataEntry.getValue())));
+                pieDataList.add(new KeyValue(dataEntry.getKey(),
+                        String.format("%.2f", dataEntry.getValue())));
             }
             else
             {
-                pieDataList.add(new KeyValue(dataEntry.getKey(), String.valueOf(dataEntry
-                        .getValue())));
+                pieDataList.add(
+                        new KeyValue(dataEntry.getKey(), String.valueOf(dataEntry.getValue())));
             }
         }
         return pieDataList;
@@ -75,10 +75,45 @@ public class GoogleChartHelper
         final ArrayList<KeyValue> pieDataList = new ArrayList<KeyValue>();
         for (final Entry<String, Double> dataEntry : sortedDataMap.entrySet())
         {
-            pieDataList.add(new KeyValue(dataEntry.getKey(), String.format("%.2f",
-                    dataEntry.getValue())));
+            pieDataList.add(
+                    new KeyValue(dataEntry.getKey(), String.format("%.2f", dataEntry.getValue())));
         }
         return pieDataList;
+    }
+
+    public static List<KeyValues> getLineChartDataListFromStringDoubleMaps(
+            final boolean isMonthlyFormat, final Map<String, Double>... dataMap)
+    {
+        Comparator<String> comparator;
+        if (isMonthlyFormat)
+        {
+            comparator = new YearMonthValueComparator(dataMap[0]);
+        }
+        else
+        {
+            comparator = new MonthDayValueComparator(dataMap[0]);
+        }
+
+        final ArrayList<KeyValues> lineDataList = new ArrayList<KeyValues>();
+
+        final TreeMap<String, Double> sortedDataMap = new TreeMap<String, Double>(comparator);
+        if (dataMap != null)
+        {
+            sortedDataMap.putAll(dataMap[0]);
+        }
+
+        for (final Entry<String, Double> dataEntry : sortedDataMap.entrySet())
+        {
+            final Double[] values = new Double[dataMap.length];
+            final String key = dataEntry.getKey();
+            for (int i = 0; i < dataMap.length; i++)
+            {
+                values[i] = dataMap[i].get(key);
+            }
+            lineDataList.add(new KeyValues(dataEntry.getKey(), values));
+        }
+
+        return lineDataList;
     }
 
     /**
@@ -99,6 +134,7 @@ public class GoogleChartHelper
 
         // Note: this comparator imposes orderings that are inconsistent with
         // equals.
+        @Override
         public int compare(String a, String b)
         {
             final DateFormat formatter = new SimpleDateFormat("yyyy-MM");
@@ -140,6 +176,7 @@ public class GoogleChartHelper
 
         // Note: this comparator imposes orderings that are inconsistent with
         // equals.
+        @Override
         public int compare(String a, String b)
         {
             final DateFormat formatter = new SimpleDateFormat("MM-dd");
@@ -193,6 +230,72 @@ public class GoogleChartHelper
         public void setValue(String value)
         {
             this.value = value;
+        }
+    }
+
+    public static class KeyValues
+    {
+        String key;
+        String value1;
+        String value2;
+        String value3;
+
+        public KeyValues(String key, String value1, String value2, String value3)
+        {
+            super();
+            this.key = key;
+            this.value1 = value1;
+            this.value2 = value2;
+            this.value3 = value3;
+        }
+
+        public KeyValues(String key, Double[] values)
+        {
+            super();
+            this.key = key;
+            this.value1 = String.valueOf(values[0]);
+            this.value2 = String.valueOf(values[1]);
+            this.value3 = String.valueOf(values[2]);
+        }
+
+        public String getKey()
+        {
+            return key;
+        }
+
+        public void setKey(String key)
+        {
+            this.key = key;
+        }
+
+        public String getValue1()
+        {
+            return this.value1;
+        }
+
+        public void setValue1(String value)
+        {
+            this.value1 = value;
+        }
+
+        public String getValue2()
+        {
+            return this.value2;
+        }
+
+        public void setValue2(String value)
+        {
+            this.value2 = value;
+        }
+
+        public String getValue3()
+        {
+            return this.value3;
+        }
+
+        public void setValue3(String value)
+        {
+            this.value3 = value;
         }
     }
 
