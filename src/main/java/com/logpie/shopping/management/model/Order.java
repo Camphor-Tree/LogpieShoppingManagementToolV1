@@ -540,14 +540,15 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
 
         // 5. 超级管理员 订单分红百分比不为0
-        if (this.mOrderProxy.isSuperAdmin() && this.mOrderProxyProfitPercentage != 0)
+        if (this.mOrderProxy.isSuperAdmin()
+                && !NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
         {
             problemReasonBuilder.append("超级管理员 订单分红百分比不为0。");
         }
 
         // 6. 普通管理员 订单分红百分比为0
         if (!this.mOrderProxy.isSuperAdmin()
-                && !NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
+                && NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
         {
             problemReasonBuilder.append("普通管理员 订单分红百分比为0。");
         }
@@ -586,14 +587,15 @@ public class Order implements RowMapper<Order>, LogpieModel
         }
 
         // 5. 超级管理员 订单分红百分比不为0
-        if (this.mOrderProxy.isSuperAdmin() && this.mOrderProxyProfitPercentage != 0)
+        if (this.mOrderProxy.isSuperAdmin()
+                && !NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
         {
             return true;
         }
 
         // 6. 普通管理员 订单分红百分比为0
         if (!this.mOrderProxy.isSuperAdmin()
-                && !NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
+                && NumberUtils.floatEquals(this.mOrderProxyProfitPercentage, 0.0f))
         {
             return true;
         }
