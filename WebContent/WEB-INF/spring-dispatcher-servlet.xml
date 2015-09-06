@@ -46,6 +46,7 @@
     <bean id="Initialization" class="com.logpie.shopping.management.init.LogpieInitialization" init-method="init">
     </bean>
     <task:annotation-driven/>
+    <!-- Cron jobs in logpie system. System backup and currency rate update -->
     <bean id="LogpieBackupManager" class="com.logpie.shopping.management.backup.LogpieBackupManager"></bean>
     <bean id="LogpieCurrencyRateUtils" class="com.logpie.shopping.management.util.CurrencyRateUtils"></bean>
 		  
