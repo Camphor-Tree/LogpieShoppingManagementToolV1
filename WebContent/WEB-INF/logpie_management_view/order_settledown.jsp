@@ -20,7 +20,7 @@
         </div>  		
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
         <tr class="info">
-        	<th class="col-xs-1 col-md-1 text-center"></th>
+            <th class="col-xs-1 col-md-1 text-center"><input type="checkbox" onClick="selectAll(this)" /> 全选<br/></th>
 	        <th class="col-xs-1 col-md-1 text-center">No</th>
 	        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
 	        <th class="col-xs-2 col-md-2 text-center">购买者</th>
@@ -98,31 +98,38 @@
 </tag:logpie_common_template>
       <script type="text/javascript">
       $(document).ready(function() {
-    	    function recalculate() {
-    	        var chosenCount = 0;
-    	        var proxyOweCompany = 0;
-    	        var companyProfit = 0;
-    	        var proxyProfit = 0;
-    	        $("input[type=checkbox]:checked").each(function() {
-    	        	//代理应付公司的钱 = 用户付的钱（包括付的国内运费）- 国内运费（代理垫付的钱）- 公司已收的钱
-    	        	proxyOweCompany += parseFloat($(this).attr("cp")) - parseFloat($(this).attr("ds")) - parseFloat($(this).attr("cr"));
-    	            chosenCount++;
-    	            //公司利润等于 = （用户付的钱 - 总成本（买价*汇率+国际运费+国内运费）） * （1-代理分红百分比）
-    	            companyProfit +=  (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*(1-parseFloat($(this).attr("pp")));
-    	            //代理利润等于 = （用户付的钱 - 总成本（买价*汇率+国际运费+国内运费）） * 代理分红百分比
-    	            proxyProfit += (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*parseFloat($(this).attr("pp"));
-    	        });
-    	        $("#chosenCount").html(chosenCount);
-    	        $("#proxyOweCompany").html(proxyOweCompany);
-    	        $("#companyProfit").html(companyProfit.toFixed(2));
-    	        $("#proxyProfit").html(proxyProfit.toFixed(2));
-    	        $("#ProxyOweCompanyMoney").val(proxyOweCompany);
-    	        $("#ProxyProfit").val(proxyProfit.toFixed(2));
-    	        $("#CompanyProfit").val(companyProfit.toFixed(2));
-    	    }
-    	    $("input[type=checkbox]").change(function() {
-    	        recalculate();
-    	    });
+          function recalculate() {
+	        var chosenCount = 0;
+	        var proxyOweCompany = 0;
+	        var companyProfit = 0;
+	        var proxyProfit = 0;
+
+	        $("input[name=SettleDownOrders]:checked").each(function() {
+                //代理应付公司的钱 = 用户付的钱（包括付的国内运费）- 国内运费（代理垫付的钱）- 公司已收的钱
+                proxyOweCompany += parseFloat($(this).attr("cp")) - parseFloat($(this).attr("ds")) - parseFloat($(this).attr("cr"));
+                chosenCount++;
+                //公司利润等于 = （用户付的钱 - 总成本（买价*汇率+国际运费+国内运费）） * （1-代理分红百分比）
+                companyProfit +=  (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*(1-parseFloat($(this).attr("pp")));
+                //代理利润等于 = （用户付的钱 - 总成本（买价*汇率+国际运费+国内运费）） * 代理分红百分比
+                proxyProfit += (parseFloat($(this).attr("cp")) - parseFloat($(this).attr("fc")))*parseFloat($(this).attr("pp"));
+            });
+	        $("#chosenCount").html(chosenCount);
+	        $("#proxyOweCompany").html(proxyOweCompany);
+	        $("#companyProfit").html(companyProfit.toFixed(2));
+	        $("#proxyProfit").html(proxyProfit.toFixed(2));
+	        $("#ProxyOweCompanyMoney").val(proxyOweCompany);
+	        $("#ProxyProfit").val(proxyProfit.toFixed(2));
+	        $("#CompanyProfit").val(companyProfit.toFixed(2));
+        }
+
+	    $("input[type=checkbox]").change(function() {
+	        recalculate();
+	    });
     	});
-      
+	    function selectAll(selectAllCheckBox) {
+              checkboxes = document.getElementsByName('SettleDownOrders');
+              for(var i=0, n=checkboxes.length;i<n;i++) {
+                  checkboxes[i].checked = selectAllCheckBox.checked;
+              }
+        }
       </script>
