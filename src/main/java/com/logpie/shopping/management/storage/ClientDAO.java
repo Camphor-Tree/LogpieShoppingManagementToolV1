@@ -1,12 +1,14 @@
 // Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.storage;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.Client;
@@ -55,6 +57,41 @@ public class ClientDAO extends LogpieBaseDAO<Client>
         if (CollectionUtils.isEmpty(clientList) || clientList.size() > 1)
         {
             LOG.error("The client cannot be found by this id:" + clientId);
+            return null;
+        }
+        return clientList.get(0);
+    }
+
+    /**
+     * For querying specific Client by wechat name
+     * 
+     * @param wechatName
+     * @return Client corresponding to the wechatName
+     */
+    public Client getClientByWechatName(final String wechatName)
+    {
+        return getClientByArbitaryName(Client.DB_KEY_CLIENT_WECHAT_NAME, wechatName);
+    }
+
+    /**
+     * For querying specific Client by weibo name
+     * 
+     * @param weiboName
+     * @return Client corresponding to the weiboName
+     */
+    public Client getClientByWeiboName(final String weiboName)
+    {
+        return getClientByArbitaryName(Client.DB_KEY_CLIENT_WEIBO_NAME, weiboName);
+    }
+
+    private Client getClientByArbitaryName(final String key, final String arbitaryName)
+    {
+        GetClientByArbitaryNameQuery getClientByArbitrayNameQuery = new GetClientByArbitaryNameQuery(
+                key, arbitaryName);
+        List<Client> clientList = super.queryResult(getClientByArbitrayNameQuery);
+        if (CollectionUtils.isEmpty(clientList) || clientList.size() > 1)
+        {
+            LOG.error("The client cannot be found by this key:" + key);
             return null;
         }
         return clientList.get(0);
@@ -169,6 +206,59 @@ public class ClientDAO extends LogpieBaseDAO<Client>
         GetClientByIdQuery(final String clientId)
         {
             super(new Client(), ClientDAO.sClientTableName, Client.DB_KEY_CLIENT_ID, clientId);
+        }
+    }
+
+    private class GetClientByArbitaryNameQuery implements LogpieDataQuery<Client>
+    {
+        private final String mArbitaryName;
+        private final String mKey;
+
+        GetClientByArbitaryNameQuery(final String key, final String arbitaryName)
+        {
+            mKey = key;
+            mArbitaryName = arbitaryName;
+        }
+
+        @Override
+        public RowMapper<Client> getQueryResultMapper()
+        {
+            return new Client();
+        }
+
+        @Override
+        public Set<String> getQueryConditions()
+        {
+            final Set<String> queryConditionsSet = new HashSet<String>();
+            queryConditionsSet.add(mKey + "=\"" + mArbitaryName + "\"");
+            return queryConditionsSet;
+        }
+
+        @Override
+        public String getMainQueryTable()
+        {
+            return ClientDAO.sClientTableName;
+        }
+
+        @Override
+        public Map<String, String> getJoinTables()
+        {
+            final Map<String, String> tableMap = new HashMap<String, String>();
+            return tableMap;
+        }
+
+        @Override
+        public Set<String> getLeftJoinCondition()
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Set<String> getOrderBy()
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

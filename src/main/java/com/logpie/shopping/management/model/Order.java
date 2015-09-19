@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
+import com.logpie.shopping.management.business.logic.ClientMappingLogic;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.ClientDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
@@ -412,6 +413,15 @@ public class Order implements RowMapper<Order>, LogpieModel
         {
             final ClientDAO clientDAO = new ClientDAO(null);
             orderClient = clientDAO.getClientById(orderClientId);
+        }
+        else
+        {
+            // If client id is null, then use smart logic to try to map to the
+            // correct client.
+            // Note: the logic probably goes wrong, then you can manually edit
+            // the mapping, the smart logic won't have effect when edit an
+            // order.
+            orderClient = ClientMappingLogic.tryMapNameToClientProfile(orderBuyerName);
         }
         // orderNote may be null
         final String orderNote = request.getParameter("OrderNote");
