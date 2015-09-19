@@ -36,6 +36,8 @@ public class AuthController
         LOG.debug("receiving post signin request");
         final String email = request.getParameter("email");
         final String password = request.getParameter("password");
+        final Boolean trustDevice = Boolean.parseBoolean(request.getParameter("trustDevice"));
+        LOG.debug("trustDevice:" + trustDevice);
         final AdminDAO adminDAO = new AdminDAO(null);
         final Admin admin = adminDAO.verifyAccount(email, password);
         if (admin == null)
@@ -45,7 +47,7 @@ public class AuthController
         else
         {
             final CookieManager cookieManager = new CookieManager();
-            final Cookie cookie = cookieManager.setupAuthCookie(admin);
+            final Cookie cookie = cookieManager.setupAuthCookie(admin, trustDevice);
             httpResponse.addCookie(cookie);
             return "redirect:/home";
         }

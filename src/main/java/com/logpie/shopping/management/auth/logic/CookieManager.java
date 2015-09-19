@@ -22,7 +22,14 @@ public class CookieManager
     public static final String AUTH_COOKIE_NAME = "logpie.auth_id";
     // auth cookie expires in 1 week
     private static final int AUTH_COOKIE_DURATION = 7 * 24 * 60 * 60;
-    private static final long AUTH_COOKIE_EXPIRATION_MILLIS = AUTH_COOKIE_DURATION * 1000;
+    // for trusted device for super admin, auth cookie never expires (20 years)
+    private static final int MAX_AUTH_COOKIE_DURATION = 20 * 365 * 24 * 60 * 60;
+    // for trusted device for normal admin, auth cookie expires in 30 days
+    private static final int MAX_AUTH_COOKIE_DURATION_NORMAL_ADMIN = 30 * 24 * 60 * 60;
+    private static final long AUTH_COOKIE_EXPIRATION_MILLIS = AUTH_COOKIE_DURATION * 1000L;
+    private static final long MAX_AUTH_COOKIE_EXPIRATION_MILLIS = MAX_AUTH_COOKIE_DURATION * 1000L;
+    private static final long MAX_AUTH_COOKIE_EXPIRATION_MILLIS_NORMAL_ADMIN = MAX_AUTH_COOKIE_DURATION_NORMAL_ADMIN
+            * 1000L;
     private final EncryptionManager mEncryptor;
 
     public class AuthException extends Exception
@@ -53,10 +60,25 @@ public class CookieManager
         mEncryptor = new EncryptionManager();
     }
 
-    public Cookie setupAuthCookie(final Admin admin)
+    public Cookie setupAuthCookie(final Admin admin, final Boolean trustDevice)
     {
-        final Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, buildAuthenticationCookie(admin));
-        authCookie.setMaxAge(AUTH_COOKIE_DURATION);
+        final Cookie authCookie = new Cookie(AUTH_COOKIE_NAME,
+                buildAuthenticationCookie(admin, trustDevice));
+        if (trustDevice)
+        {
+            if (admin.isSuperAdmin())
+            {
+                authCookie.setMaxAge(MAX_AUTH_COOKIE_DURATION);
+            }
+            else
+            {
+                authCookie.setMaxAge(MAX_AUTH_COOKIE_DURATION_NORMAL_ADMIN);
+            }
+        }
+        else
+        {
+            authCookie.setMaxAge(AUTH_COOKIE_DURATION);
+        }
         authCookie.setPath("/");
         // Set domain to .logpie.com so that it can work for both
         // tool.logpie.com and t.logpie.com
@@ -74,7 +96,7 @@ public class CookieManager
         return emptyAuthCookie;
     }
 
-    private String buildAuthenticationCookie(final Admin admin)
+    private String buildAuthenticationCookie(final Admin admin, final Boolean trustDevice)
     {
         final JSONObject cookieJSON = new JSONObject();
         long currentTime = System.currentTimeMillis();
@@ -84,8 +106,24 @@ public class CookieManager
             cookieJSON.put("email", admin.getAdminEmail());
             cookieJSON.put("name", admin.getAdminName());
             // cookieJSON.put("passVersion", admin.getPassVersion());
-            cookieJSON.put("expires_in",
-                    String.valueOf(currentTime + AUTH_COOKIE_EXPIRATION_MILLIS));
+            if (trustDevice)
+            {
+                if (admin.isSuperAdmin())
+                {
+                    cookieJSON.put("expires_in",
+                            String.valueOf(currentTime + MAX_AUTH_COOKIE_EXPIRATION_MILLIS));
+                }
+                else
+                {
+                    cookieJSON.put("expires_in", String
+                            .valueOf(currentTime + MAX_AUTH_COOKIE_EXPIRATION_MILLIS_NORMAL_ADMIN));
+                }
+            }
+            else
+            {
+                cookieJSON.put("expires_in",
+                        String.valueOf(currentTime + AUTH_COOKIE_EXPIRATION_MILLIS));
+            }
         } catch (JSONException e)
         {
             LOG.error("JSONException when building authentication cookie", e);

@@ -22,13 +22,11 @@
         <input type="email" id="inputEmail" name="email" class="form-control" placeholder="管理员 email" required autofocus>
         <label for="inputPassword" class="sr-only">管理员 密码</label>
         <input type="password" id="inputPassword" name="password" class="form-control" placeholder="管理员 密码" required>
-		<!--  Currently we don't support remember me
         <div class="checkbox">
           <label>
-            <input type="checkbox" value="remember-me"> 信任这台设备
+            <input type="checkbox" name="trustDevice" value="True"> 信任这台设备
           </label>
         </div>
-        -->
         <button class="btn btn-lg btn-primary btn-block" type="submit">登 陆</button>
       </form>
     </div> <!-- /container -->
