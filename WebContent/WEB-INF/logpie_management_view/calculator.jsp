@@ -4,16 +4,20 @@
     <jsp:body>
 	<div class="container-fluid col-md-3 col-sm-3">
       <div id="calculate_div">
-        <b>原 价： </b><input id="original_price" type="text">
-        <br/><br/>
-        <b>折 扣： </b><input id="discount" type="text">
-        <br/><br/>
-	    <b>利润率：</b><input id="revenue_rate" type="text" placeholder="指定利润率">
-        <br/><br/>
+        <div class="form-group ">
+        <label for="original_price"><b>原 价:</b></label><input id="original_price" class="form-control" type="text" placeholder="可输入多个价格 用空格分开" required>
+        </div>
+        <div class="form-group">
+        <label for="original_price"><b>折 扣:</b></label>
+        <input id="discount" class="form-control" type="text" placeholder="商品指定折扣 默认没有">
+        </div>
+        <div class="form-group">
+        <label for="original_price"><b>利润率:</b></label>
+        <input id="revenue_rate" class="form-control" type="text" placeholder="指定利润率">
+        </div>
         <input id="has_tax" type="checkbox" checked>含9.6%的税 <button type="button" class="btn-primary btn btn-sm" style="margin-left:20px" onclick="refreshFastTable();">刷新快捷表</button>
-        <br/><br/>
+        <br><br/>
         <button type="button" class="btn-success btn btn-block" onclick="calculate();">计算</button>
-        <br/>
         <div class="alert-info">定价默认规则：原价10刀以下利润率0.25， 原价10到30刀（包括10刀）利润率0.2， 30刀以上（含30刀）利润率0.15</div>
         <br/>
 		  <ul id="calculate_result">
@@ -21,11 +25,6 @@
       <hr/>
       <div id="show_div" style="margin-top:20px;">
         <table class="table table-condensed" id="price_table" cellpadding="1" cellspacing="1">
-		   <tr>
-            <td>商品成本</td>
-            <td>税后售价</td>
-            <td>无税售价</td>
-          </tr>
         </table>
       </div>
     </div>
@@ -107,7 +106,9 @@
 
 
       function calculate(){
-        var original_price = document.getElementById("original_price").value;
+        var original_price_string = document.getElementById("original_price").value;
+        var original_prices = new Array();
+        original_prices = original_price_string.split(' ');
         var discount = document.getElementById("discount").value;
         var has_tax = document.getElementById("has_tax").checked;
         var revenue_rate_string = document.getElementById("revenue_rate").value;
@@ -120,37 +121,42 @@
         {
 		    revenue_rate = parseFloat(revenue_rate_string);
         }
-        var final_price;
-        if(discount!=0)
+        
+        for(index in original_prices)
         {
-          if(has_tax==true)
-          {
-            final_price = (original_price*discount*revenue_rate+original_price*discount*1.096)*${CurrencyRate};
-          }else
-          {
-            final_price = original_price*discount*(1+revenue_rate)*${CurrencyRate};
-          }
-        }else
-        {
-          if(has_tax==true)
-          {
-            final_price = (original_price*revenue_rate+original_price*1.096)*${CurrencyRate};
-          }else
-          {
-            final_price = original_price*(1+revenue_rate)*${CurrencyRate};
-          }
+        	var original_price = parseInt(original_prices[index], 10);
+	        var final_price;
+	        if(discount!=0)
+	        {
+	          if(has_tax==true)
+	          {
+	            final_price = (original_price*discount*revenue_rate+original_price*discount*1.096)*${CurrencyRate};
+	          }else
+	          {
+	            final_price = original_price*discount*(1+revenue_rate)*${CurrencyRate};
+	          }
+	        }else
+	        {
+	          if(has_tax==true)
+	          {
+	            final_price = (original_price*revenue_rate+original_price*1.096)*${CurrencyRate};
+	          }else
+	          {
+	            final_price = original_price*(1+revenue_rate)*${CurrencyRate};
+	          }
+	        }
+	        var element = document.createElement("LI");
+			
+			if(discount!=0)
+			{
+	        element.innerHTML = "$" + original_price + " 利润率"+ revenue_rate+"且折扣" + discount + "的价格：￥" + final_price.toFixed(0);
+			}else
+			{
+			element.innerHTML = "$" + original_price + " 利润率"+ revenue_rate+"的价格：￥" + final_price.toFixed(0);
+			}
+			var list = document.getElementById("calculate_result");
+			list.insertBefore(element, list.childNodes[0]);
         }
-        var element = document.createElement("LI");
-		
-		if(discount!=0)
-		{
-        element.innerHTML = "$" + original_price + " 利润率"+ revenue_rate+"且折扣" + discount + "的价格：￥" + final_price.toFixed(0);
-		}else
-		{
-		element.innerHTML = "$" + original_price + " 利润率"+ revenue_rate+"的价格：￥" + final_price.toFixed(0);
-		}
-		var list = document.getElementById("calculate_result");
-		list.insertBefore(element, list.childNodes[0]);
       }
       refreshFastTable();
     </script>
