@@ -104,9 +104,9 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
      */
     public LogpiePackage(String packageId, String packageProxyName, String packageTrackingNumber,
             String packageReceiver, String packageDestination, String packageDate,
-            Integer packageWeight, Integer packgeShippingFee,
-            Integer packageAdditionalCustomTaxFee, Integer packageAdditionalInsuranceFee,
-            Boolean packageIsShipped, Boolean packageIsDelivered, String packageNote)
+            Integer packageWeight, Integer packgeShippingFee, Integer packageAdditionalCustomTaxFee,
+            Integer packageAdditionalInsuranceFee, Boolean packageIsShipped,
+            Boolean packageIsDelivered, String packageNote)
     {
         mPackageId = packageId;
         mPackageProxyName = packageProxyName;
@@ -200,21 +200,20 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         // PackageDate is automated to current time
         // final String packageDate = request.getParameter("PackageDate");
         final Integer packageWeight = Integer.parseInt(request.getParameter("PackageWeight"));
-        final Integer packgeShippingFee = Integer.parseInt(request
-                .getParameter("PackgeShippingFee"));
-        final Integer packageAdditionalCustomTaxFee = Integer.parseInt(request
-                .getParameter("PackageAdditionalCustomTaxFee"));
-        final Integer packageAdditionalInsuranceFee = Integer.parseInt(request
-                .getParameter("PackageAdditionalInsuranceFee"));
-        final Boolean packageIsShipped = Boolean.parseBoolean(request
-                .getParameter("PackageIsShipped"));
-        final Boolean packageIsDelivered = Boolean.parseBoolean(request
-                .getParameter("PackageIsDelivered"));
+        final Integer packgeShippingFee = Integer
+                .parseInt(request.getParameter("PackgeShippingFee"));
+        final Integer packageAdditionalCustomTaxFee = Integer
+                .parseInt(request.getParameter("PackageAdditionalCustomTaxFee"));
+        final Integer packageAdditionalInsuranceFee = Integer
+                .parseInt(request.getParameter("PackageAdditionalInsuranceFee"));
+        final Boolean packageIsShipped = Boolean
+                .parseBoolean(request.getParameter("PackageIsShipped"));
+        final Boolean packageIsDelivered = Boolean
+                .parseBoolean(request.getParameter("PackageIsDelivered"));
         final String packageNote = request.getParameter("PackageNote");
         return new LogpiePackage(packageProxyName, packageTrackingNumber, packageReceiver,
-                packageDestination, packageWeight, packgeShippingFee,
-                packageAdditionalCustomTaxFee, packageAdditionalInsuranceFee, packageIsShipped,
-                packageIsDelivered, packageNote);
+                packageDestination, packageWeight, packgeShippingFee, packageAdditionalCustomTaxFee,
+                packageAdditionalInsuranceFee, packageIsShipped, packageIsDelivered, packageNote);
     }
 
     public static LogpiePackage readModifiedLogpiePackageFromRequest(
@@ -231,16 +230,16 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
         final String packageDestination = request.getParameter("PackageDestination");
         final String packageDate = request.getParameter("PackageDate");
         final Integer packageWeight = Integer.parseInt(request.getParameter("PackageWeight"));
-        final Integer packgeShippingFee = Integer.parseInt(request
-                .getParameter("PackgeShippingFee"));
-        final Integer packageAdditionalCustomTaxFee = Integer.parseInt(request
-                .getParameter("PackageAdditionalCustomTaxFee"));
-        final Integer packageAdditionalInsuranceFee = Integer.parseInt(request
-                .getParameter("PackageAdditionalInsuranceFee"));
-        final Boolean packageIsShipped = Boolean.parseBoolean(request
-                .getParameter("PackageIsShipped"));
-        final Boolean packageIsDelivered = Boolean.parseBoolean(request
-                .getParameter("PackageIsDelivered"));
+        final Integer packgeShippingFee = Integer
+                .parseInt(request.getParameter("PackgeShippingFee"));
+        final Integer packageAdditionalCustomTaxFee = Integer
+                .parseInt(request.getParameter("PackageAdditionalCustomTaxFee"));
+        final Integer packageAdditionalInsuranceFee = Integer
+                .parseInt(request.getParameter("PackageAdditionalInsuranceFee"));
+        final Boolean packageIsShipped = Boolean
+                .parseBoolean(request.getParameter("PackageIsShipped"));
+        final Boolean packageIsDelivered = Boolean
+                .parseBoolean(request.getParameter("PackageIsDelivered"));
         final String packageNote = request.getParameter("PackageNote");
         return new LogpiePackage(packageId, packageProxyName, packageTrackingNumber,
                 packageReceiver, packageDestination, packageDate, packageWeight, packgeShippingFee,
@@ -267,69 +266,67 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
 
         if (!compareToLogpiePackage.mPackageIsDelivered.equals(mPackageIsDelivered))
         {
-            changeStringBuilder.append("PackageIsDelivered："
-                    + compareToLogpiePackage.mPackageIsDelivered + "->" + mPackageIsDelivered);
+            changeStringBuilder.append("包裹是否已送达：" + compareToLogpiePackage.mPackageIsDelivered
+                    + "->" + mPackageIsDelivered);
         }
         if (!compareToLogpiePackage.mPackageIsShipped.equals(mPackageIsShipped))
         {
-            changeStringBuilder.append("PackageIsShipped："
-                    + compareToLogpiePackage.mPackageIsShipped + "->" + mPackageIsShipped);
+            changeStringBuilder.append("包裹是否基础：" + compareToLogpiePackage.mPackageIsShipped + "->"
+                    + mPackageIsShipped);
         }
         if (!compareToLogpiePackage.mPackageAdditionalCustomTaxFee
                 .equals(mPackageAdditionalCustomTaxFee))
         {
-            changeStringBuilder.append("PackageAdditionalCustomTaxFee："
-                    + compareToLogpiePackage.mPackageAdditionalCustomTaxFee + "->"
-                    + mPackageAdditionalCustomTaxFee);
+            changeStringBuilder
+                    .append("包裹额外的海关费用：" + compareToLogpiePackage.mPackageAdditionalCustomTaxFee
+                            + "->" + mPackageAdditionalCustomTaxFee);
         }
         if (!compareToLogpiePackage.mPackageAdditionalInsuranceFee
                 .equals(mPackageAdditionalInsuranceFee))
         {
-            changeStringBuilder.append("PackageAdditionalInsuranceFee："
-                    + compareToLogpiePackage.mPackageAdditionalInsuranceFee + "->"
-                    + mPackageAdditionalInsuranceFee);
+            changeStringBuilder
+                    .append("包裹额外的保险费：" + compareToLogpiePackage.mPackageAdditionalInsuranceFee
+                            + "->" + mPackageAdditionalInsuranceFee);
         }
         if (!compareToLogpiePackage.mPackageDate.equals(mPackageDate))
         {
-            changeStringBuilder.append("PackageDate：" + compareToLogpiePackage.mPackageDate + "->"
-                    + mPackageDate);
+            changeStringBuilder
+                    .append("包裹日期：" + compareToLogpiePackage.mPackageDate + "->" + mPackageDate);
         }
         if (!compareToLogpiePackage.mPackageDestination.equals(mPackageDestination))
         {
-            changeStringBuilder.append("PackageDestination："
-                    + compareToLogpiePackage.mPackageDestination + "->" + mPackageDestination);
+            changeStringBuilder.append("包裹目的地：" + compareToLogpiePackage.mPackageDestination + "->"
+                    + mPackageDestination);
         }
         if (!compareToLogpiePackage.mPackageNote.equals(mPackageNote))
         {
-            changeStringBuilder.append("PackageNote：" + compareToLogpiePackage.mPackageNote + "->"
-                    + mPackageNote);
+            changeStringBuilder
+                    .append("包裹备注：" + compareToLogpiePackage.mPackageNote + "->" + mPackageNote);
         }
         if (!compareToLogpiePackage.mPackageProxyName.equals(mPackageProxyName))
         {
-            changeStringBuilder.append("PackageProxyName："
-                    + compareToLogpiePackage.mPackageProxyName + "->" + mPackageProxyName);
+            changeStringBuilder.append("包裹物流代理：" + compareToLogpiePackage.mPackageProxyName + "->"
+                    + mPackageProxyName);
         }
         if (!compareToLogpiePackage.mPackageReceiver.equals(mPackageReceiver))
         {
-            changeStringBuilder.append("PackageReceiver：" + compareToLogpiePackage.mPackageReceiver
-                    + "->" + mPackageReceiver);
+            changeStringBuilder.append(
+                    "包裹收件人：" + compareToLogpiePackage.mPackageReceiver + "->" + mPackageReceiver);
         }
         if (!compareToLogpiePackage.mPackageTrackingNumber.equals(mPackageTrackingNumber))
         {
-            changeStringBuilder
-                    .append("PackageTrackingNumber："
-                            + compareToLogpiePackage.mPackageTrackingNumber + "->"
-                            + mPackageTrackingNumber);
+            changeStringBuilder.append("包裹追踪号：" + compareToLogpiePackage.mPackageTrackingNumber
+                    + "->" + mPackageTrackingNumber);
         }
         if (!compareToLogpiePackage.mPackageWeight.equals(mPackageWeight))
         {
-            changeStringBuilder.append("PackageWeight：" + compareToLogpiePackage.mPackageWeight
-                    + "->" + mPackageWeight);
+            changeStringBuilder.append(
+                    "包裹重量：" + compareToLogpiePackage.mPackageWeight + "->" + mPackageWeight);
         }
         if (!compareToLogpiePackage.mPackgeShippingFee.equals(mPackgeShippingFee))
         {
-            changeStringBuilder.append("PackgeShippingFee："
-                    + compareToLogpiePackage.mPackgeShippingFee + "->" + mPackgeShippingFee);
+            changeStringBuilder.append("包裹运费：" + compareToLogpiePackage.mPackgeShippingFee + "->"
+                    + mPackgeShippingFee);
         }
 
         return changeStringBuilder.toString();

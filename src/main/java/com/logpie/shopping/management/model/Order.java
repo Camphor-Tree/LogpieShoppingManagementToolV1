@@ -717,68 +717,64 @@ public class Order implements RowMapper<Order>, LogpieModel
         if (compareToOrder.mOrderPackage != null && mOrderPackage != null
                 && !compareToOrder.mOrderPackage.compareTo(mOrderPackage))
         {
-            changeStringBuilder.append("OrderPackage：" + compareToOrder.mOrderPackage.getPackageId()
+            changeStringBuilder.append("订单所属包裹号：" + compareToOrder.mOrderPackage.getPackageId()
                     + "->" + mOrderPackage.getPackageId() + " ");
         }
         if (compareToOrder.mOrderPackage == null && mOrderPackage != null)
         {
-            changeStringBuilder
-                    .append("OrderPackage：null" + "->" + mOrderPackage.getPackageId() + " ");
+            changeStringBuilder.append("订单所属包裹号：null" + "->" + mOrderPackage.getPackageId() + " ");
         }
         if (compareToOrder.mOrderPackage != null && mOrderPackage == null)
         {
-            changeStringBuilder.append(
-                    "OrderPackage：" + compareToOrder.mOrderPackage.getPackageId() + "-> null");
+            changeStringBuilder
+                    .append("订单所属包裹号：" + compareToOrder.mOrderPackage.getPackageId() + "-> null");
         }
 
         if (compareToOrder.mOrderClient != null && mOrderClient != null
                 && !compareToOrder.mOrderClient.compareTo(mOrderClient))
         {
-            changeStringBuilder.append("OrderClient：" + compareToOrder.mOrderClient.getClientId()
-                    + "->" + mOrderClient.getClientId() + " ");
+            changeStringBuilder.append("订单客户号：" + compareToOrder.mOrderClient.getClientId() + "->"
+                    + mOrderClient.getClientId() + " ");
         }
         if (compareToOrder.mOrderClient == null && mOrderClient != null)
         {
-            changeStringBuilder
-                    .append("OrderClient：null" + "->" + mOrderClient.getClientId() + " ");
+            changeStringBuilder.append("订单客户号：null" + "->" + mOrderClient.getClientId() + " ");
         }
         if (compareToOrder.mOrderClient != null && mOrderClient == null)
         {
             changeStringBuilder
-                    .append("OrderClient：" + compareToOrder.mOrderClient.getClientId() + "-> null");
+                    .append("订单客户号：" + compareToOrder.mOrderClient.getClientId() + "-> null");
         }
 
         if (!compareToOrder.mOrderProduct.compareTo(mOrderProduct))
         {
-            changeStringBuilder
-                    .append("OrderProduct：" + compareToOrder.mOrderProduct.getProductName() + "->"
-                            + mOrderProduct.getProductName() + " ");
+            changeStringBuilder.append("订单商品：" + compareToOrder.mOrderProduct.getProductName()
+                    + "->" + mOrderProduct.getProductName() + " ");
         }
         if (!compareToOrder.mOrderProductCount.equals(mOrderProductCount))
         {
-            changeStringBuilder.append("OrderProductCount：" + compareToOrder.mOrderProductCount
-                    + "->" + mOrderProductCount + " ");
+            changeStringBuilder.append("订单商品数量：" + compareToOrder.mOrderProductCount + "->"
+                    + mOrderProductCount + " ");
         }
         if (!compareToOrder.mOrderProxy.compareTo(mOrderProxy))
         {
-            changeStringBuilder.append("OrderProxy：" + compareToOrder.mOrderProxy.getAdminName()
-                    + "->" + mOrderProxy.getAdminName() + " ");
+            changeStringBuilder.append("订单代理人：" + compareToOrder.mOrderProxy.getAdminName() + "->"
+                    + mOrderProxy.getAdminName() + " ");
         }
         if (!compareToOrder.mOrderProxyProfitPercentage.equals(mOrderProxyProfitPercentage))
         {
-            changeStringBuilder.append(
-                    "OrderProxyProfitPercentage：" + compareToOrder.mOrderProxyProfitPercentage
-                            + "->" + mOrderProxyProfitPercentage + " ");
+            changeStringBuilder.append("订单代理分红百分比：" + compareToOrder.mOrderProxyProfitPercentage
+                    + "->" + mOrderProxyProfitPercentage + " ");
         }
         if (!compareToOrder.mOrderSellingPrice.equals(mOrderSellingPrice))
         {
-            changeStringBuilder.append("OrderSellingPrice：" + compareToOrder.mOrderSellingPrice
-                    + "->" + mOrderSellingPrice + " ");
+            changeStringBuilder.append(
+                    "订单卖价：" + compareToOrder.mOrderSellingPrice + "->" + mOrderSellingPrice + " ");
         }
         if (!compareToOrder.mOrderWeight.equals(mOrderWeight))
         {
-            changeStringBuilder.append(
-                    "OrderWeight：" + compareToOrder.mOrderWeight + "->" + mOrderWeight + " ");
+            changeStringBuilder
+                    .append("订单重量：" + compareToOrder.mOrderWeight + "->" + mOrderWeight + " ");
         }
         return changeStringBuilder.toString();
     }
