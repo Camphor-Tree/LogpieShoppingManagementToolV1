@@ -19,8 +19,8 @@
        function drawChart() {
          var data1 = google.visualization.arrayToDataTable([
              <c:if test="${chartType == 'OrderNumbers'}">
-                   ['${LineChart2.chartKeyLabel}', '${LineChart2.chartValueLabel}'],
-                   <c:forEach items="${LineChartDataList2}" var="entry">
+                   ['${LineChart1.chartKeyLabel}', '${LineChart1.chartValueLabel}'],
+                   <c:forEach items="${LineChartDataList1}" var="entry">
                        [ '${entry.key}', ${entry.value} ],
                    </c:forEach>
              </c:if>

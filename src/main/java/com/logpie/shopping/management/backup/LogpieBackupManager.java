@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -25,6 +26,7 @@ public class LogpieBackupManager
 
     private static final String sAliyunDbBackupBucketName = "logpie-db";
 
+    @Async
     @Scheduled(fixedRate = 1000 * 3600 * 24)
     public void demoServiceMethod()
     {
