@@ -17,7 +17,7 @@ import com.logpie.shopping.management.util.CurrencyRateUtils;
  *
  */
 @Controller
-public class ToolController
+public class ToolController extends LogpieBaseController
 {
     private static final Logger LOG = Logger.getLogger(ToolController.class);
 
@@ -30,6 +30,7 @@ public class ToolController
         // inject the current currency rate into the page
         final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
         calculatorPage.addObject("CurrencyRate", currencyRate);
+        super.injectCurrentActiveTab(calculatorPage, "calculator");
         return calculatorPage;
     }
 

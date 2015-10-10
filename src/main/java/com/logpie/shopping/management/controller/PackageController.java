@@ -15,20 +15,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  *
  */
 @Controller
-public class PackageController
+public class PackageController extends LogpieBaseController
 {
     @RequestMapping(value = "/package_management", method = RequestMethod.GET)
-    public Object showPackageManagementPage(
-            final HttpServletRequest request,
-            final HttpServletResponse httpResponse,
-            final RedirectAttributes redirectAttrs,
+    public Object showPackageManagementPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs,
             @RequestParam(value = "showAll", required = false) final Boolean showAll,
             @RequestParam(value = "showAllDelivered", required = false) final Boolean showAllDelivered)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.showPackageManagementPage(request, httpResponse,
-                redirectAttrs, showAll, showAllDelivered);
+        Object object = logpieControllerImplementation.showPackageManagementPage(request,
+                httpResponse, redirectAttrs, showAll, showAllDelivered);
+        super.injectCurrentActiveTab(object, "package_management");
+        return object;
     }
 
     /**
@@ -100,7 +100,7 @@ public class PackageController
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.markPackageDelivered(request, httpResponse,
-                packageId, redirectAttrs);
+        return logpieControllerImplementation.markPackageDelivered(request, httpResponse, packageId,
+                redirectAttrs);
     }
 }

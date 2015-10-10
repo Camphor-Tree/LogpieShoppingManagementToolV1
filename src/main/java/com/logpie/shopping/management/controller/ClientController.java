@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  *
  */
 @Controller
-public class ClientController
+public class ClientController extends LogpieBaseController
 {
     @RequestMapping(value = "/client_management", method = RequestMethod.GET)
     public Object showAllClients(final HttpServletRequest request,
@@ -23,7 +23,9 @@ public class ClientController
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.showAllClients(request, httpResponse);
+        Object object = logpieControllerImplementation.showAllClients(request, httpResponse);
+        super.injectCurrentActiveTab(object, "client_management");
+        return object;
     }
 
     @RequestMapping(value = "/client/edit", method = RequestMethod.GET)

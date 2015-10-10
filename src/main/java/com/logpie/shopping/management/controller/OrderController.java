@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  *
  */
 @Controller
-public class OrderController
+public class OrderController extends LogpieBaseController
 {
     private static final Logger LOG = Logger.getLogger(OrderController.class);
 
@@ -33,8 +33,11 @@ public class OrderController
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.showOrderManagementPage(request, httpResponse,
-                redirectAttrs, adminId, buyerName, packageId, showAll, orderBy);
+        Object object = logpieControllerImplementation.showOrderManagementPage(request,
+                httpResponse, redirectAttrs, adminId, buyerName, packageId, showAll, orderBy);
+
+        super.injectCurrentActiveTab(object, "order_management");
+        return object;
     }
 
     @RequestMapping(value = "/order/create", method = RequestMethod.POST)
@@ -98,10 +101,8 @@ public class OrderController
 
     // 订单结算处理
     @RequestMapping(value = "/order/settledown", method = RequestMethod.POST)
-    public Object handleOrderSettleDown(
-            final HttpServletRequest request,
-            final HttpServletResponse httpResponse,
-            @RequestParam("adminId") String adminId,
+    public Object handleOrderSettleDown(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("adminId") String adminId,
             @RequestParam(value = "SettleDownOrders", required = true) List<String> settleDownOrders,
             @RequestParam(value = "ProxyOweCompanyMoney", required = true) String proxyOweCompanyMoney,
             @RequestParam(value = "ProxyProfit", required = true) String proxyProfit,

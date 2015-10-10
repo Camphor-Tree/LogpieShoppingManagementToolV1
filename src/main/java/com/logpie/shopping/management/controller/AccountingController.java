@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 // TODO move to LogpieControllerImplementation. Don't forget to inject current
 // admin to DAOs
-public class AccountingController
+public class AccountingController extends LogpieBaseController
 {
     @RequestMapping(value = "/accounting", method = RequestMethod.GET)
     public Object showAccountingPage(final HttpServletRequest request,
@@ -25,8 +25,10 @@ public class AccountingController
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.showAccountingPage(request, httpResponse,
+        Object object = logpieControllerImplementation.showAccountingPage(request, httpResponse,
                 redirectAttrs);
+        super.injectCurrentActiveTab(object, "accounting");
+        return object;
     }
 
     /**

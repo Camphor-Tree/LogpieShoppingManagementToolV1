@@ -13,14 +13,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
  *
  */
 @Controller
-public class DBLogController
+public class DBLogController extends LogpieBaseController
 {
     @RequestMapping(value = "/log", method = RequestMethod.GET)
     public Object showLogPage(HttpServletRequest request, HttpServletResponse httpResponse)
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.showLogPage(request, httpResponse);
+        Object object = logpieControllerImplementation.showLogPage(request, httpResponse);
+        super.injectCurrentActiveTab(object, "log");
+        return object;
     }
 
 }
