@@ -23,7 +23,9 @@ public class LogpieProfitCalculator
     private final Float mProxyEstimatedProfitsForAllOrders;
     private final Float mProxyActualProfitsForAllOrders;
 
+    // 总营业额
     private final Float mTotalTurnOver;
+    private final Float mTotalMoneyInFly;
 
     /**
      * @param orderList
@@ -45,6 +47,7 @@ public class LogpieProfitCalculator
         mProxyActualProfitsForAllOrders = NumberUtils.keepTwoDigitsDecimalForFloat(
                 mActualProfitsForAllOrders - mNetActualProfitsForAllOrders);
         mTotalTurnOver = calculateTotalTurnOver();
+        mTotalMoneyInFly = calculatTotalMoneyInFly();
     }
 
     /**
@@ -187,7 +190,7 @@ public class LogpieProfitCalculator
      * 
      * @return
      */
-    public Float calculateTotalTurnOver()
+    private Float calculateTotalTurnOver()
     {
         if (CollectionUtils.isEmpty(mOrderList))
         {
@@ -201,6 +204,44 @@ public class LogpieProfitCalculator
             totalTurnOver += singleActualNetCompnayProfit;
         }
         return Float.valueOf(totalTurnOver);
+    }
+
+    /**
+     * 计算总共在路上的钱 （用户还未付款 或代理还未付款）
+     * 
+     * @return
+     */
+    private Float calculatTotalMoneyInFly()
+    {
+        if (CollectionUtils.isEmpty(mOrderList))
+        {
+            return 0.0f;
+        }
+
+        float totalMoneyInFly = 0.0f;
+        for (final Order order : mOrderList)
+        {
+            // 购买成本
+            float buyingCost = order.getOrderActualCost();
+            // 国际运费， 若为0 则用估计运费
+            float shippingFee = NumberUtils.floatEquals(order.getOrderActualShippingFee(), 0.0f)
+                    ? order.getOrderEstimatedShippingFee() : order.getOrderActualShippingFee();
+            // 售价
+            float sellingPrice = order.getOrderSellingPrice();
+            // 代理分红百分比
+            float proxyProfitPercentage = order.getOrderProxyProfitPercentage();
+            // 公司已收款
+            float companyReceivedMoney = order.getOrderCompanyReceivedMoney();
+
+            // 公司在路上的钱＝（成本＋公司利润）－公司已收的钱 ＝ （购买成本＋国际运费）＋（售价－购买成本－国际运费）＊（1-代理分红百分比）
+            // － 公司已收的钱
+            // 这里忽略了运费可能没有如实付国内运费的情况。
+            float singleMoneyInFly = (buyingCost + shippingFee)
+                    + (sellingPrice - buyingCost - shippingFee) * (1 - proxyProfitPercentage)
+                    - companyReceivedMoney;
+            totalMoneyInFly += singleMoneyInFly;
+        }
+        return Float.valueOf(totalMoneyInFly);
     }
 
     /**
@@ -257,5 +298,10 @@ public class LogpieProfitCalculator
     public Float getTotalTurnOver()
     {
         return mTotalTurnOver;
+    }
+
+    public Float getTotalMoneyInFly()
+    {
+        return mTotalMoneyInFly;
     }
 }

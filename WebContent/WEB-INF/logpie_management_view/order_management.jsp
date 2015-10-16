@@ -139,6 +139,10 @@
       	<div class="text-success">当前订单列表 Logpie 已寄出包裹准确总利润: ${profitCalculator.actualProfitsForAllOrders}</div>
       	<div class="text-danger">当前订单列表 Logpie北美总部 总估计利润: ${profitCalculator.netEstimatedProfitsForAllOrders}</div>
       	<div class="text-danger">当前订单列表 Logpie北美总部 已寄出包裹准确总利润: ${profitCalculator.netActualProfitsForAllOrders}</div>
+      	<!-- 只有在当前的订单都是未结算订单时 显示在路上的钱才有意义 因为结算的订单 公司已收钱是全部的钱 未除去代理的工资 -->
+      	<c:if test="${showAll==false}">
+      	<div class="text-warning">当前订单列表 Logpie北美总部 总共在路上的钱: ${profitCalculator.totalMoneyInFly}</div>
+      	</c:if>
       	</c:if>
 		<c:if test="${admin.isSuperAdmin==false}">
       	<div class="text-primary">当前订单列表 代理:${admin.adminName} 总估计利润: ${profitCalculator.proxyEstimatedProfitsForAllOrders}</div>
