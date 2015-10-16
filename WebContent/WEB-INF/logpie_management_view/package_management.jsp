@@ -52,7 +52,7 @@
         <tbody>
         <c:forEach items="${packageList}" var="logpiePackage">
         <tr class='clickable-row' data-href='./package?id=${logpiePackage.packageId}'>
-        <td><a href="./package?id=${logpiePackage.packageId}">${logpiePackage.packageId}</a></td>
+        <td class="anchor" style="color:#428bca"><a name="a${logpiePackage.packageId}" ><span style="padding-top: 65px; margin-top: -65px;"></span></a>${logpiePackage.packageId}</td>
         <td>${logpiePackage.packageProxyName}</td>
         <td>${logpiePackage.packageTrackingNumber}</td>
         <td>${logpiePackage.packageReceiver}</td>

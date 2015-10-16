@@ -102,7 +102,7 @@
         <tbody>
         <c:forEach items="${orderList}" var="order">
         <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
-        <td class="anchor"><a name="a${order.orderId}"><span style="padding-top: 65px; margin-top: -65px;">${order.orderId}</span></a></td>
+        <td class="anchor" style="color:#428bca"><a name="a${order.orderId}"><span style="padding-top: 65px; margin-top: -65px;"></span></a>${order.orderId}</td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
         <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
         <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#DFF0D8"</c:if>>${order.orderProduct.productName}</td>

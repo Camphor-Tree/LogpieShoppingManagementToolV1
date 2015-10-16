@@ -66,8 +66,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             {
                 final Float shippingFeeDistribution = order.getOrderWeight() / totalWeight
                         * logpiePackage.getPackgeShippingFee();
-                order.setOrderActualShippingFee(Float.valueOf(String.format("%.2f",
-                        shippingFeeDistribution)));
+                order.setOrderActualShippingFee(
+                        Float.valueOf(String.format("%.2f", shippingFeeDistribution)));
                 orderDAO.updateOrderProfile(order);
             }
         }
@@ -96,8 +96,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "创建寄给:"
-                    + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
         }
 
         return "redirect:/order_management?orderBy=orderId";
@@ -138,15 +138,15 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "更新包裹:"
-                    + modifiedPackage.getPackageId() + " 信息，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "更新包裹:" + modifiedPackage.getPackageId() + " 信息，失败!");
         }
-        return "redirect:/package_management";
+        return "redirect:/package_management#a" + modifiedPackage.getPackageId();
     }
 
     @Override
-    public Object markPackageDelivered(HttpServletRequest request,
-            HttpServletResponse httpResponse, String packageId, RedirectAttributes redirectAttrs)
+    public Object markPackageDelivered(HttpServletRequest request, HttpServletResponse httpResponse,
+            String packageId, RedirectAttributes redirectAttrs)
     {
         LOG.debug("Authenticate cookie is valid. Going to modify the package as delivered.");
 
@@ -178,8 +178,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         }
         else
         {
-            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL, "标记包裹:"
-                    + packageId + " 已签收送达，失败!");
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "标记包裹:" + packageId + " 已签收送达，失败!");
         }
         return "redirect:/package?id=" + packageId;
     }
@@ -194,8 +194,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     @Override
     public Object handleOrderSettleDown(HttpServletRequest request,
             HttpServletResponse httpResponse, final String adminId, List<String> settleDownOrders,
-            final String proxyOweCompanyMoney, final String proxyProfit,
-            final String companyProfit, RedirectAttributes redirectAttrs)
+            final String proxyOweCompanyMoney, final String proxyProfit, final String companyProfit,
+            RedirectAttributes redirectAttrs)
     {
         if (CollectionUtils.isEmpty(settleDownOrders))
         {
@@ -293,8 +293,8 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             settleDownRecordInfoJSON.put("proxyOweCompanyMoney", proxyOweCompanyMoney);
             settleDownRecordInfoJSON.put("companyProfit", companyProfit);
             settleDownRecordInfoJSON.put("proxyProfit", proxyProfit);
-            final String settleDownRecordInfo = Base64.encodeBase64String(settleDownRecordInfoJSON
-                    .toString().getBytes("UTF-8"));
+            final String settleDownRecordInfo = Base64
+                    .encodeBase64String(settleDownRecordInfoJSON.toString().getBytes("UTF-8"));
             final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
             final Admin settleDownRecordAdmin = adminDAO.queryAccountByAdminId(adminId);
             final SettleDownRecord record = new SettleDownRecord(settleDownRecordInfo,
