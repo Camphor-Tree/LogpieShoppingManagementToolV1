@@ -45,7 +45,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
 
             if (requestURI.startsWith(LogpieUrlEnum.LogpieResourcesURL))
             {
-                LOG.info("Requesting resources, let it passthrough");
+                LOG.info("Requesting resources, let it pass through");
                 return true;
             }
 
@@ -53,6 +53,13 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
             if (requestURI.equals(LogpieUrlEnum.LogpieCalculatorURL))
             {
                 LOG.info("Meeting calculator url, rendering the calculator page");
+                return true;
+            }
+
+            // if the request URI is wechat integration, then just let it pass.
+            if (requestURI.equals(LogpieUrlEnum.LogpieWechatIntegrationURL))
+            {
+                LOG.info("Meeting wechat integration url, let it pass through");
                 return true;
             }
 

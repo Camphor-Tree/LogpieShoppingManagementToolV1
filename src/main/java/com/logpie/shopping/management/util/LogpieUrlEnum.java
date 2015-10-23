@@ -29,4 +29,9 @@ public class LogpieUrlEnum
      */
     public static final String LogpieCalculatorURL = LogpieBaseURL + "calculator";
 
+    /**
+     * Wechat integration URL
+     */
+    public static final String LogpieWechatIntegrationURL = LogpieBaseURL + "wechat_integration";
+
 }
