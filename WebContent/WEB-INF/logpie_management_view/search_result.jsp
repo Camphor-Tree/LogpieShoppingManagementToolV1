@@ -66,9 +66,10 @@
 			        <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
 			        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}&ru=${CurrentUrl}" <c:if test="${order.orderProxy.adminId != admin.adminId && admin.isSuperAdmin==false}">disabled</c:if>>修改</a></td>
 		        </tr>
-		        <tr>
-		            <td colspan="16" class="text-left">备注: ${order.orderNote}</td>
-		        </tr>
+		        <tr style="font-size:13px;">
+                    <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+                    <td colspan="14" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
+                </tr>
        	    </c:forEach>
 	        </tbody>
         </table>
