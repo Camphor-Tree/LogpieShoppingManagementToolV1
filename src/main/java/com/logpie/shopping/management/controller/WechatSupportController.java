@@ -86,7 +86,15 @@ public class WechatSupportController
             final StringBuffer hexString = new StringBuffer();
             for (int i = 0; i < signatureBytes.length; i++)
             {
-                hexString.append(Integer.toHexString(0xFF & signatureBytes[i]));
+                // http://stackoverflow.com/questions/332079/in-java-how-do-i-convert-a-byte-array-to-a-string-of-hex-digits-while-keeping-l
+                String hex = Integer.toHexString(0xFF & signatureBytes[i]);
+                if (hex.length() == 1)
+                {
+                    // could use a for loop, but we're only dealing with a
+                    // single byte
+                    hexString.append('0');
+                }
+                hexString.append(hex);
             }
             final String logpieComputeSignature = hexString.toString();
             LOG.debug("Logpie computed signature:" + logpieComputeSignature);
