@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +14,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
-
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * @author zhoyilei
@@ -78,11 +76,11 @@ public class SettleDownRecord implements RowMapper<SettleDownRecord>, LogpieMode
             settleDownRecordInfoJSON = new JSONObject(settleDownRecordInfo);
             final StringBuilder settleDownRecordInfoBuilder = new StringBuilder();
             settleDownRecordInfoBuilder.append("本次结算订单号：");
-            settleDownRecordInfoBuilder.append(settleDownRecordInfoJSON
-                    .getString("settleDownOrders"));
+            settleDownRecordInfoBuilder
+                    .append(settleDownRecordInfoJSON.getString("settleDownOrders"));
             settleDownRecordInfoBuilder.append(". 代理已付公司:");
-            settleDownRecordInfoBuilder.append(settleDownRecordInfoJSON
-                    .getString("proxyOweCompanyMoney"));
+            settleDownRecordInfoBuilder
+                    .append(settleDownRecordInfoJSON.getString("proxyOweCompanyMoney"));
             settleDownRecordInfoBuilder.append(". 公司利润:");
             settleDownRecordInfoBuilder.append(settleDownRecordInfoJSON.getString("companyProfit"));
             settleDownRecordInfoBuilder.append(". 代理利润:");
@@ -135,8 +133,7 @@ public class SettleDownRecord implements RowMapper<SettleDownRecord>, LogpieMode
             if (compareToSettleDownRecord.mSettleDownRecordId.equals(mSettleDownRecordId)
                     && compareToSettleDownRecord.mSettleDownRecordAdmin
                             .compareTo(mSettleDownRecordAdmin)
-                    && compareToSettleDownRecord.mSettleDownRecordDate
-                            .equals(mSettleDownRecordDate)
+                    && compareToSettleDownRecord.mSettleDownRecordDate.equals(mSettleDownRecordDate)
                     && compareToSettleDownRecord.mSettleDownRecordInfo
                             .equals(mSettleDownRecordInfo))
             {
@@ -168,12 +165,11 @@ public class SettleDownRecord implements RowMapper<SettleDownRecord>, LogpieMode
         String settleDownRecordInfoJSONString = null;
         try
         {
-            settleDownRecordInfoJSONString = new String(Base64.decode(settleDownRecordInfo),
-                    "UTF-8");
-        } catch (UnsupportedEncodingException | Base64DecodingException e)
+            settleDownRecordInfoJSONString = new String(
+                    Base64.getDecoder().decode(settleDownRecordInfo), "UTF-8");
+        } catch (UnsupportedEncodingException e)
         {
-            LOG.error(
-                    "Exception happens when trying to build settle down record info json string.",
+            LOG.error("Exception happens when trying to build settle down record info json string.",
                     e);
             settleDownRecordInfoJSONString = "Error when building settle down record info";
         }

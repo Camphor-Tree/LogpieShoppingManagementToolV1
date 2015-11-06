@@ -69,7 +69,6 @@ public class LogpieCloudStorage
 
             // 上传Object.
             final PutObjectResult result = mOssClient.putObject(bucketName, key, content, meta);
-
             // 打印ETag
             LOG.debug(result.getETag());
         } catch (FileNotFoundException e)

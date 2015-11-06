@@ -54,6 +54,7 @@ h2{
 			<li class="<c:if test="${ActiveTab=='accounting'}">active</c:if>"><a href="<c:url value="/accounting" />">财务报表</a></li>
 			<li class="<c:if test="${ActiveTab=='calculator'}">active</c:if>"><a href="<c:url value="/calculator" />">定价计算器</a></li>
 			<li class="<c:if test="${ActiveTab=='client_management'}">active</c:if>"><a href="<c:url value="/client_management" />">客户档案管理</a></li>
+            <li class="<c:if test="${ActiveTab=='wechat_subscription'}">active</c:if>"><a href="<c:url value="/wechat_subscription" />">微信订阅号</a></li>
 			<li class="<c:if test="${ActiveTab=='log'}">active</c:if>"><a href="<c:url value="/log" />">系统改动日志</a></li>
 			<li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">更多<span class="caret"></span></a>
