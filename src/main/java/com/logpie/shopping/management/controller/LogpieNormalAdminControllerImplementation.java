@@ -54,8 +54,8 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     }
 
     @Override
-    public Object markPackageDelivered(HttpServletRequest request,
-            HttpServletResponse httpResponse, String packageId, RedirectAttributes redirectAttrs)
+    public Object markPackageDelivered(HttpServletRequest request, HttpServletResponse httpResponse,
+            String packageId, RedirectAttributes redirectAttrs)
     {
         return showNoPermissionPage();
     }
@@ -87,6 +87,20 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
         logPage.addObject("dbLogList", dbLogList);
 
         return logPage;
+    }
+
+    @Override
+    public Object showWechatSubscriptionManagementPage(HttpServletRequest request,
+            HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
+    Object createTextAutoReply(HttpServletRequest request, HttpServletResponse httpResponse,
+            RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
     }
 
 }

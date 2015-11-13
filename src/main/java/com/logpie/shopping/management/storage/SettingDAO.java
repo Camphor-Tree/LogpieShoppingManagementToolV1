@@ -45,9 +45,9 @@ public class SettingDAO extends LogpieBaseDAO<Setting>
     }
 
     /**
-     * Update the product profile
+     * Update the setting
      * 
-     * @param product
+     * @param setting
      * @return
      */
     public boolean updateSetting(final Setting setting)

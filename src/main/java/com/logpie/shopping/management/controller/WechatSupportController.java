@@ -16,9 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.logpie.shopping.management.wechat.logic.WechatRequestMessageHandler;
+import com.logpie.shopping.management.wechat.logic.LogpieWechatAutoReplyEngine;
 
 /**
  * @author zhoyilei
@@ -29,6 +29,7 @@ public class WechatSupportController extends LogpieBaseController
 {
     private static Logger LOG = Logger.getLogger(WechatSupportController.class);
     private static final String WECHAT_INTEGRATION_TOKEN = "LogpieToken";
+    private static final String UTF_8 = "UTF-8";
 
     // For wechat developer integration
     @RequestMapping(value = "/wechat_integration", method = RequestMethod.GET)
@@ -72,15 +73,16 @@ public class WechatSupportController extends LogpieBaseController
     {
         try
         {
-            request.setCharacterEncoding("UTF-8");
+            request.setCharacterEncoding(UTF_8);
         } catch (UnsupportedEncodingException e)
         {
             e.printStackTrace();
         }
-        httpResponse.setCharacterEncoding("UTF-8");
+        httpResponse.setCharacterEncoding(UTF_8);
 
         // 调用核心业务类接收消息、处理消息
-        String respMessage = new WechatRequestMessageHandler().processCommingMessage(request);
+        final String respMessage = LogpieWechatAutoReplyEngine.getInstance()
+                .processCommingMessage(request);
 
         // 响应消息
         PrintWriter out = null;
@@ -93,19 +95,36 @@ public class WechatSupportController extends LogpieBaseController
             e.printStackTrace();
         } finally
         {
-            out.close();
-            out = null;
+            if (out != null)
+            {
+                out.close();
+                out = null;
+            }
         }
     }
 
-    // 微信订阅号管理
+    // 微信订阅号管理界面
     @RequestMapping(value = "/wechat_subscription", method = RequestMethod.GET)
     public Object showWechatSubscriptionManagementPage(final HttpServletRequest request,
-            final HttpServletResponse httpResponse)
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
     {
-        ModelAndView view = new ModelAndView("wechat_subscription");
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        final Object view = logpieControllerImplementation
+                .showWechatSubscriptionManagementPage(request, httpResponse, redirectAttrs);
         super.injectCurrentActiveTab(view, "wechat_subscription");
         return view;
+    }
+
+    // 微信订阅号管理
+    @RequestMapping(value = "/text_auto_reply/create", method = RequestMethod.POST)
+    public Object createTextAutoReply(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.createTextAutoReply(request, httpResponse,
+                redirectAttrs);
     }
 
     private boolean checkSignature(final String signature, final String timestamp,

@@ -22,13 +22,17 @@ import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
+import com.logpie.shopping.management.model.Setting;
 import com.logpie.shopping.management.model.SettleDownRecord;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.DBLogDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
+import com.logpie.shopping.management.storage.SettingDAO;
 import com.logpie.shopping.management.storage.SettleDownRecordDAO;
 import com.logpie.shopping.management.util.CollectionUtils;
+import com.logpie.shopping.management.wechat.logic.LogpieWechatAutoReplyEngine;
+import com.logpie.shopping.management.wechat.logic.WechatAutoReplyRuleCompiler;
 
 /**
  * @author zhoyilei
@@ -320,5 +324,58 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         logPage.addObject("dbLogList", dbLogList);
 
         return logPage;
+    }
+
+    @Override
+    public Object showWechatSubscriptionManagementPage(HttpServletRequest request,
+            HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView view = new ModelAndView("wechat_subscription");
+        injectAlertMessage(redirectAttrs, view);
+        final SettingDAO settingDAO = new SettingDAO(mCurrentAdmin);
+        final List<Setting> autoReplyRuleList = settingDAO
+                .getAllSettingsByNameSpace(LogpieWechatAutoReplyEngine.sAutoReplyRuleNameSpace);
+        view.addObject("autoReplyRuleList", autoReplyRuleList);
+        return view;
+    }
+
+    @Override
+    Object createTextAutoReply(HttpServletRequest request, HttpServletResponse httpResponse,
+            RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new text auto reply.");
+
+        final String keywordRule = request.getParameter("TextAutoReplyRule");
+        final String replyString = request.getParameter("TextAutoReplyReplyString");
+        final SettingDAO settingDAO = new SettingDAO(mCurrentAdmin);
+        boolean createTextAutoReplySuccess = false;
+        String message = null;
+        LOG.debug("Verifying rule:" + keywordRule + " " + replyString);
+        if (keywordRule == null || replyString == null)
+        {
+            message = "自动回复规则不可以为空";
+        }
+        else if (WechatAutoReplyRuleCompiler.isAutoReplyRuleLegal(keywordRule, replyString))
+        {
+            createTextAutoReplySuccess = settingDAO.addSetting(new Setting(
+                    LogpieWechatAutoReplyEngine.sAutoReplyRuleNameSpace, keywordRule, replyString));
+        }
+        else
+        {
+            message = "自动回复规则不合语法，请检查你的规则以及回复文本 " + keywordRule + " => " + replyString;
+        }
+
+        if (createTextAutoReplySuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建简单文本自动回复规则:" + keywordRule + " 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建简单文本自动回复规则:" + keywordRule + " 失败!" + message);
+        }
+
+        return "redirect:/wechat_subscription";
     }
 }

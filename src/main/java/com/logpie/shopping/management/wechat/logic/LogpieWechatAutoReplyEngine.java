@@ -1,13 +1,19 @@
+// Copyright 2015 logpie.com. All rights reserved.
 package com.logpie.shopping.management.wechat.logic;
 
 import java.io.Writer;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.logpie.shopping.management.model.Admin;
+import com.logpie.shopping.management.model.Setting;
+import com.logpie.shopping.management.storage.SettingDAO;
 import com.logpie.shopping.management.util.XMLParserUtils;
 import com.logpie.shopping.management.wechat.model.WechatTextResponseMessage;
 import com.thoughtworks.xstream.XStream;
@@ -16,11 +22,47 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 
-public class WechatRequestMessageHandler
+public class LogpieWechatAutoReplyEngine
 {
-    public static Logger log = Logger.getLogger(WechatRequestMessageHandler.class);
+    // Auto reply rule stores in setting table with name space
+    public static final String sAutoReplyRuleNameSpace = "com.logpie.shopping.management.wechat.autoreply.rule";
+    private static Logger LOG = Logger.getLogger(LogpieWechatAutoReplyEngine.class);
 
     private static final String MESSAGE_TYPE_TEXT = "text";
+    private static LogpieWechatAutoReplyEngine sInstance;
+    private SettingDAO mSettingDAO;
+
+    private ConcurrentHashMap<String, WechatAutoReplyRule> mEngineCache;
+
+    private LogpieWechatAutoReplyEngine()
+    {
+        LOG.info("Start wechat auto reply engine");
+        mSettingDAO = new SettingDAO(Admin.buildSystemSuperAdmin());
+        final List<Setting> settings = mSettingDAO
+                .getAllSettingsByNameSpace(sAutoReplyRuleNameSpace);
+        for (final Setting setting : settings)
+        {
+            final String rule = setting.getSettingKey();
+            final String replyString = setting.getSettingValue();
+
+            final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule, replyString);
+            mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+        }
+    }
+
+    public boolean addAutoReplyRule(final String rule)
+    {
+        return true;
+    }
+
+    public synchronized static LogpieWechatAutoReplyEngine getInstance()
+    {
+        if (sInstance == null)
+        {
+            sInstance = new LogpieWechatAutoReplyEngine();
+        }
+        return sInstance;
+    }
 
     public String processCommingMessage(HttpServletRequest request)
     {
@@ -28,16 +70,16 @@ public class WechatRequestMessageHandler
         try
         {
             // xml请求解析
-            Map<String, String> requestMap = XMLParserUtils.parseXml(request);
+            final Map<String, String> requestMap = XMLParserUtils.parseXml(request);
 
             // 发送方帐号（open_id）
-            String fromUserName = requestMap.get("FromUserName");
+            final String fromUserName = requestMap.get("FromUserName");
             // 公众帐号
-            String toUserName = requestMap.get("ToUserName");
+            final String toUserName = requestMap.get("ToUserName");
             // 消息类型
-            String msgType = requestMap.get("MsgType");
+            final String msgType = requestMap.get("MsgType");
 
-            WechatTextResponseMessage textMessage = new WechatTextResponseMessage();
+            final WechatTextResponseMessage textMessage = new WechatTextResponseMessage();
             textMessage.setToUserName(fromUserName);
             textMessage.setFromUserName(toUserName);
             textMessage.setCreateTime(new Date().getTime());
@@ -47,20 +89,7 @@ public class WechatRequestMessageHandler
             if (msgType.equals(MESSAGE_TYPE_TEXT))
             {
                 // 接收用户发送的文本消息内容
-                String content = requestMap.get("Content");
-
-                if ("1".equals(content))
-                {
-                    textMessage.setContent("1是很好的");
-                    // 将文本消息对象转换成xml字符串
-                    respMessage = textMessageToXml(textMessage);
-                }
-                else if ("2".equals(content))
-                {
-                    textMessage.setContent("我不是2货");
-                    // 将文本消息对象转换成xml字符串
-                    respMessage = textMessageToXml(textMessage);
-                }
+                final String content = requestMap.get("Content");
             }
 
         } catch (Exception e)
