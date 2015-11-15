@@ -130,6 +130,7 @@ public class LogpieWechatAutoReplyEngine
 
     public String processCommingMessage(HttpServletRequest request)
     {
+        String responseString = null;
         try
         {
             // xml请求解析
@@ -153,14 +154,17 @@ public class LogpieWechatAutoReplyEngine
             {
                 // 接收用户发送的文本消息内容
                 final String content = requestMap.get("Content");
-                return processCommingMessage(content);
+                LOG.info("LogpieWechatSubscription receive text" + content);
+                responseString = processCommingMessage(content);
+                textMessage.setContent(responseString);
+                return textMessageToXml(textMessage);
             }
 
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return getNoSupportString();
+        return responseString;
     }
 
     public String processCommingMessage(final String content)

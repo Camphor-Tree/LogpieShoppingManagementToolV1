@@ -81,9 +81,12 @@ public class WechatSupportController extends LogpieBaseController
         }
         httpResponse.setCharacterEncoding(UTF_8);
 
+        LOG.info("LogpieWechatSubscription receive message!");
         // 调用核心业务类接收消息、处理消息
         final String respMessage = LogpieWechatAutoReplyEngine.getInstance()
                 .processCommingMessage(request);
+
+        LOG.info("LogpieWechatSubscription response message:" + respMessage);
 
         // 响应消息
         PrintWriter out = null;
@@ -120,17 +123,20 @@ public class WechatSupportController extends LogpieBaseController
         final String content = request.getParameter("TestAutoReplyRequest");
 
         // 调用核心业务类接收消息、处理消息
+        long startTime = System.currentTimeMillis();
         final String respMessage = LogpieWechatAutoReplyEngine.getInstance()
                 .processCommingMessage(content);
+        long endTime = System.currentTimeMillis();
+        long latency = endTime - startTime;
         if (respMessage.equals(LogpieWechatAutoReplyEngine.getInstance().getNoSupportString()))
         {
             redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
-                    "回复文本:" + respMessage);
+                    "回复文本:" + respMessage + " 当前延迟:" + latency);
         }
         else
         {
             redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
-                    "回复文本:" + respMessage);
+                    "回复文本:" + respMessage + " 当前延迟:" + latency);
         }
 
         return "redirect:/wechat_subscription";
