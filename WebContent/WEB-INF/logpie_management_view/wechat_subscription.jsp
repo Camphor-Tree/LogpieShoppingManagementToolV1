@@ -55,7 +55,7 @@
           <div class="tab-content">
           <div id="section-simple-text－auto-reply" class="tab-pane fade in active" style="padding:20px">
               <h3>新建一个简单文本回复规则</h3>
-              <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/text_auto_reply/create" />" method="POST" >
+              <form role="form" style="padding:20px" id="simple-text－auto-reply_form" action="<c:url value="/text_auto_reply/create" />" method="POST" >
                 <div class="row">
 	                <div class="form-group col-sm-12">
 	                  <label for="auto_reply_rule">自动回复关键字规则</label>
@@ -73,12 +73,27 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
+              <h4>文档说明</h4>
+              <div class="alert-success">
+              <h5 class="text-info"><b>关键字规则</b></h5>
+              <p>用户向订阅号发送的指令必须以关键字开头。 所以设定回复规则时必须设定关键字。关键字用英文中括号"[]"表示</p>
+              <p>关键字规则可以设置参数。目前支持有2种类型的参数: 1.普通参数: 2. 并列参数 </p>
+              <p>1. 普通参数: 参数用美元符号$$包裹。普通参数可有多个。例如: [注册] $realName$ $phoneNumber$ $weiboName$ 参数数量最多10个
+              <p>2. 并列参数: 在普通参数后加星号 如:[订单查询] $id$＊</p>
+              <p>注意如果您使用并列参数，则有且只能有一个并列参数。  额外的参数，哪怕时普通参数也不合法。使用并列参数后,用户可一次发多个并列参数 用空格分开。例如："订单查询 40 50"。系统会同时回复多个结果。</p>
+              <h5 class="text-info"><b>自动回复文本</b></h5>
+              <p>当满足关键字规则时，你想要发送给用户的文本。 自动回复文本中可以使用在关键字中设定的参数. 参数可以使用多次 如: "你查询的订单号$id$ 详情如下:http://t.logpie.com/order?id=$id$"</p>
+              <h5 class="text-info"><b>例子</b></h5>
+              <p>自动回复关键字规则: [订单查询] $id$*  自动回复文本：你查询的订单号$id$ 详情如下:http://t.logpie.com/order?id=$id$</p>
+              <p>发送本文: 订单查询 20 30</p>
+              <p>收到回复: 你查询的订单号20 详情如下:http://t.logpie.com/order?id=20 你查询的订单号30 详情如下:http://t.logpie.com/order?id=30</p>
+              </div>
             </div>
             <div id="section-simple-text－auto-reply-test" class="tab-pane fade" style="padding:20px">
               <h3>测试简单文本回复规则</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/text_auto_reply/test" />" method="POST" >
                 <div class="row">
-	                <div class="form-group col-sm-10">
+	                <div class="form-group col-sm-12">
 	                  <label for="auto_reply_rule">发送文本</label>
 	                  <input class="form-control" id="auto_reply_rule" name="TestAutoReplyRequest" value="" required autofocus>
 	                </div>
