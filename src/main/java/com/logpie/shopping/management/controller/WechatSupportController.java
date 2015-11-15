@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
 import com.logpie.shopping.management.wechat.logic.LogpieWechatAutoReplyEngine;
 
 /**
@@ -68,7 +69,7 @@ public class WechatSupportController extends LogpieBaseController
 
     // For wechat auto reply
     @RequestMapping(value = "/wechat_integration", method = RequestMethod.POST)
-    public void showOrderManagementPage(final HttpServletRequest request,
+    public void processWechatMessage(final HttpServletRequest request,
             final HttpServletResponse httpResponse)
     {
         try
@@ -101,6 +102,38 @@ public class WechatSupportController extends LogpieBaseController
                 out = null;
             }
         }
+    }
+
+    // 微信订阅号管理
+    @RequestMapping(value = "/text_auto_reply/test", method = RequestMethod.POST)
+    public Object testTextAutoReply(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        try
+        {
+            request.setCharacterEncoding(UTF_8);
+        } catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        httpResponse.setCharacterEncoding(UTF_8);
+        final String content = request.getParameter("TestAutoReplyRequest");
+
+        // 调用核心业务类接收消息、处理消息
+        final String respMessage = LogpieWechatAutoReplyEngine.getInstance()
+                .processCommingMessage(content);
+        if (respMessage.equals(LogpieWechatAutoReplyEngine.getInstance().getNoSupportString()))
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "回复文本:" + respMessage);
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "回复文本:" + respMessage);
+        }
+
+        return "redirect:/wechat_subscription";
     }
 
     // 微信订阅号管理界面

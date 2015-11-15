@@ -22,14 +22,14 @@ import com.logpie.shopping.management.model.Admin;
 import com.logpie.shopping.management.model.DBLog;
 import com.logpie.shopping.management.model.LogpiePackage;
 import com.logpie.shopping.management.model.Order;
-import com.logpie.shopping.management.model.Setting;
 import com.logpie.shopping.management.model.SettleDownRecord;
+import com.logpie.shopping.management.model.TextAutoReplyRule;
 import com.logpie.shopping.management.storage.AdminDAO;
 import com.logpie.shopping.management.storage.DBLogDAO;
 import com.logpie.shopping.management.storage.LogpiePackageDAO;
 import com.logpie.shopping.management.storage.OrderDAO;
-import com.logpie.shopping.management.storage.SettingDAO;
 import com.logpie.shopping.management.storage.SettleDownRecordDAO;
+import com.logpie.shopping.management.storage.TextAutoReplyRuleDAO;
 import com.logpie.shopping.management.util.CollectionUtils;
 import com.logpie.shopping.management.wechat.logic.LogpieWechatAutoReplyEngine;
 import com.logpie.shopping.management.wechat.logic.WechatAutoReplyRuleCompiler;
@@ -332,10 +332,10 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     {
         final ModelAndView view = new ModelAndView("wechat_subscription");
         injectAlertMessage(redirectAttrs, view);
-        final SettingDAO settingDAO = new SettingDAO(mCurrentAdmin);
-        final List<Setting> autoReplyRuleList = settingDAO
-                .getAllSettingsByNameSpace(LogpieWechatAutoReplyEngine.sAutoReplyRuleNameSpace);
-        view.addObject("autoReplyRuleList", autoReplyRuleList);
+        final TextAutoReplyRuleDAO textAutoReplyRuleDAO = new TextAutoReplyRuleDAO(mCurrentAdmin);
+        final List<TextAutoReplyRule> autoReplyRuleList = textAutoReplyRuleDAO
+                .getAllTextAutoReplyRules();
+        view.addObject("textAutoReplyRuleList", autoReplyRuleList);
         return view;
     }
 
@@ -345,9 +345,10 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     {
         LOG.debug("Authenticate cookie is valid. Going to create a new text auto reply.");
 
-        final String keywordRule = request.getParameter("TextAutoReplyRule");
-        final String replyString = request.getParameter("TextAutoReplyReplyString");
-        final SettingDAO settingDAO = new SettingDAO(mCurrentAdmin);
+        final Boolean activated = Boolean
+                .valueOf(request.getParameter("TextAutoReplyRuleActivated"));
+        final String keywordRule = request.getParameter("TextAutoReplyRuleKeyword");
+        final String replyString = request.getParameter("TextAutoReplyRuleReplyString");
         boolean createTextAutoReplySuccess = false;
         String message = null;
         LOG.debug("Verifying rule:" + keywordRule + " " + replyString);
@@ -357,8 +358,10 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         }
         else if (WechatAutoReplyRuleCompiler.isAutoReplyRuleLegal(keywordRule, replyString))
         {
-            createTextAutoReplySuccess = settingDAO.addSetting(new Setting(
-                    LogpieWechatAutoReplyEngine.sAutoReplyRuleNameSpace, keywordRule, replyString));
+            LogpieWechatAutoReplyEngine engine = LogpieWechatAutoReplyEngine.getInstance();
+
+            createTextAutoReplySuccess = engine.addAutoReplyRule(activated, keywordRule,
+                    replyString);
         }
         else
         {
@@ -372,6 +375,7 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
         }
         else
         {
+            message = "添加自动回复规则失败";
             redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                     "创建简单文本自动回复规则:" + keywordRule + " 失败!" + message);
         }

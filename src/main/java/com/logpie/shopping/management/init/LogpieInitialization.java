@@ -89,6 +89,8 @@ public class LogpieInitialization
                 "create table if not exists Clients(ClientId serial primary key, ClientRealName text, ClientWechatName text, ClientWechatNumber text,ClientWeiboName text,ClientTaobaoName text,ClientAddress text,ClientPostalCode text,ClientPhone text,ClientNote text,ClientJoinTime timestamp not null default current_timestamp)");
         jdbcTemplate.execute(
                 "create table if not exists Settings(SettingId serial primary key, SettingNameSpace text, SettingKey text, SettingValue text)");
+        jdbcTemplate.execute(
+                "create table if not exists TextAutoReplyRule(TextAutoReplyRuleId serial primary key, TextAutoReplyRuleKeyword text, TextAutoReplyRuleReplyString text, TextAutoReplyRuleActivated boolean not null default true)");
         // jdbcTemplate
         // .execute("create table if not exists ExchangeRate(Date timestamp
         // primary key default current_timestamp, Rate float not null)");

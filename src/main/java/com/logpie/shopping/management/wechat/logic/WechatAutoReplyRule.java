@@ -35,20 +35,64 @@ public class WechatAutoReplyRule
         mReplyString = replyString;
     }
 
-    private String buildReplyString(final List<String> parameterList, final String replyString)
+    public String buildLopgieAutoReplyString(final String[] userRequestComponents)
     {
+
         // No parameters, just return replyString
-        if (parameterList == null || parameterList.isEmpty())
+        if (mParameters == null || mParameters.isEmpty())
         {
+            return mReplyString;
+        }
+
+        int userRquestParameterSize = userRequestComponents.length - 1;
+
+        // Check auto reply rule type
+        if (mType.equals(WechatAutoReplyRuleType.ParallelParametersRule))
+        {
+            // Get a new copy of reply string template
+            String replyStringTemplate = new String(mReplyString);
+            String replyString = "";
+
+            // parameter count must between 1 and 10
+            if (userRquestParameterSize < 1 || userRquestParameterSize > 10)
+            {
+                return null;
+            }
+
+            for (int i = 1; i < userRequestComponents.length; i++)
+            {
+                replyString += replyStringTemplate.replaceAll("\\$" + mParameters.get(0) + "\\$",
+                        userRequestComponents[i]) + "\n";
+            }
             return replyString;
         }
-
-        for (final String parameter : parameterList)
+        else if (mType.equals(WechatAutoReplyRuleType.MultipleParametersRule))
         {
-            replyString.replaceAll("<" + parameter + ">", replyString);
-        }
+            // parameter size doesn't match
+            if (userRquestParameterSize != mParameters.size())
+            {
+                return null;
+            }
 
-        return null;
+            // Get a new copy of reply string template
+            String replyString = new String(mReplyString);
+
+            // first element should be keyword. Get parameter from the second
+            // component
+            int i = 1;
+            // replace with the actual parameters
+            for (final String parameter : mParameters)
+            {
+                replyString = replyString.replaceAll("\\$" + parameter + "\\$",
+                        userRequestComponents[i]);
+                i++;
+            }
+            return replyString;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public String getKeyword()

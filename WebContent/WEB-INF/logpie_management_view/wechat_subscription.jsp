@@ -21,23 +21,25 @@
 	            <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-lg" style="font-size:16px;">新建回复规则</button>
 			</div>
         </div>
-      <div><h4>自动回复规则</h4></div>
+      <div><h4>简单文本自动回复规则</h4></div>
       <table class="table table-striped text-center table-bordered" style="table-layout:fixed;vertical-align:middle;" >
         <thead>
         <tr class="info" style="font-size:15px;">
-	        <th class="col-xs-2 col-md-2 text-center">编号</th>
+	        <th class="col-xs-1 col-md-1 text-center">编号</th>
 	        <th class="col-xs-4 col-md-4 text-center">关键字</th>
 	        <th class="col-xs-6 col-md-6 text-center">回复消息</th>
-	        <th class="col-xs-2 col-md-2 text-center">修改</th>
+	        <th class="col-xs-1 col-md-1 text-center">规则激活</th>
+	        <th class="col-xs-1 col-md-1 text-center">修改</th>
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${autoReplyRuleList}" var="autoReplyRule">
+        <c:forEach items="${textAutoReplyRuleList}" var="textAutoReplyRule">
         <tr style="font-size:16px" height="36" >
-        <td class="anchor" style="color:#428bca"><a name="a${autoReplyRule.settingId}"><span style="padding-top: 65px; margin-top: -65px;"></span></a>${autoReplyRule.settingId}</td>
-        <td>${autoReplyRule.settingKey}</td>
-        <td>${autoReplyRule.settingValue}</td>
-        <td><a type="button" class="btn-small btn-info" href=<c:url value="/auto_reply/edit?id=${order.orderId}&ru=${CurrentUrl}&anchor=a${order.orderId}" />>修改</a></td>
+        <td class="anchor" style="color:#428bca"><a name="a${textAutoReplyRule.textAutoReplyRuleId}"><span style="padding-top: 65px; margin-top: -65px;"></span></a>${textAutoReplyRule.textAutoReplyRuleId}</td>
+        <td>${textAutoReplyRule.textAutoReplyRuleKeyword}</td>
+        <td>${textAutoReplyRule.textAutoReplyRuleReplyString}</td>
+        <td>${textAutoReplyRule.textAutoReplyRuleActivated}</td>
+        <td><a type="button" class="btn btn-warning" href=<c:url value="/text_auto_reply_rule/edit?id=${textAutoReplyRule.textAutoReplyRuleId}&anchor=a${textAutoReplyRule.textAutoReplyRuleId}" />>修改</a></td>
         </tr>
         </c:forEach>
         </tbody>
@@ -48,24 +50,39 @@
         <div class="modal-content">
           <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#section-simple-text－auto-reply">简单文本回复</a></li>
-            <li><a data-toggle="tab" href="#section-img－text－auto-reply">图文回复</a></li>
+            <li><a data-toggle="tab" href="#section-simple-text－auto-reply-test">简单文本回复测试</a></li>
           </ul>
           <div class="tab-content">
           <div id="section-simple-text－auto-reply" class="tab-pane fade in active" style="padding:20px">
               <h3>新建一个简单文本回复规则</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/text_auto_reply/create" />" method="POST" >
                 <div class="row">
-	                <div class="form-group col-sm-12">
+	                <div class="form-group col-sm-10">
 	                  <label for="auto_reply_rule">自动回复关键字规则</label>
-	                  <input class="form-control" id="auto_reply_rule" name="TextAutoReplyRule" value="[]" required autofocus>
+	                  <input class="form-control" id="auto_reply_rule" name="TextAutoReplyRuleKeyword" value="[]" required autofocus>
 	                </div>
 				</div>
                 <div class="row">
                   <div class="form-group col-sm-12">
                       <label for="auto_reply_string">自动回复文本</label>
-                      <input class="form-control" id="auto_reply_string" name="TextAutoReplyReplyString" required>
+                      <input class="form-control" id="auto_reply_string" name="TextAutoReplyRuleReplyString" required>
                   </div>
                 </div>
+                <div class="checkbox" style="padding-left:20px">
+                  	 <input type="checkbox" checked="checked" id="product_is_activated" name="TextAutoReplyRuleActivated" value="True"/>激活该规则</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">确定</button>
+              </form>
+            </div>
+            <div id="section-simple-text－auto-reply-test" class="tab-pane fade" style="padding:20px">
+              <h3>测试简单文本回复规则</h3>
+              <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/text_auto_reply/test" />" method="POST" >
+                <div class="row">
+	                <div class="form-group col-sm-10">
+	                  <label for="auto_reply_rule">发送文本</label>
+	                  <input class="form-control" id="auto_reply_rule" name="TestAutoReplyRequest" value="" required autofocus>
+	                </div>
+				</div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>
             </div>

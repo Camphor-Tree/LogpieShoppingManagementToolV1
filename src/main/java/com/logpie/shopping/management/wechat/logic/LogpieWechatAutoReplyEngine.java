@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.logpie.shopping.management.model.Admin;
-import com.logpie.shopping.management.model.Setting;
-import com.logpie.shopping.management.storage.SettingDAO;
+import com.logpie.shopping.management.model.TextAutoReplyRule;
+import com.logpie.shopping.management.storage.TextAutoReplyRuleDAO;
 import com.logpie.shopping.management.util.XMLParserUtils;
 import com.logpie.shopping.management.wechat.model.WechatTextResponseMessage;
 import com.thoughtworks.xstream.XStream;
@@ -30,29 +30,37 @@ public class LogpieWechatAutoReplyEngine
 
     private static final String MESSAGE_TYPE_TEXT = "text";
     private static LogpieWechatAutoReplyEngine sInstance;
-    private SettingDAO mSettingDAO;
+    private TextAutoReplyRuleDAO mTextAutoReplyRuleDAO;
 
     private ConcurrentHashMap<String, WechatAutoReplyRule> mEngineCache;
 
     private LogpieWechatAutoReplyEngine()
     {
         LOG.info("Start wechat auto reply engine");
-        mSettingDAO = new SettingDAO(Admin.buildSystemSuperAdmin());
-        final List<Setting> settings = mSettingDAO
-                .getAllSettingsByNameSpace(sAutoReplyRuleNameSpace);
-        for (final Setting setting : settings)
+        mTextAutoReplyRuleDAO = new TextAutoReplyRuleDAO(Admin.buildSystemSuperAdmin());
+        mEngineCache = new ConcurrentHashMap<String, WechatAutoReplyRule>();
+        final List<TextAutoReplyRule> replyRules = mTextAutoReplyRuleDAO.getAllTextAutoReplyRules();
+        for (final TextAutoReplyRule replyRule : replyRules)
         {
-            final String rule = setting.getSettingKey();
-            final String replyString = setting.getSettingValue();
+            final Boolean activated = replyRule.getTextAutoReplyRuleActivated();
 
-            final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule, replyString);
-            mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+            if (activated)
+            {
+                final String rule = replyRule.getTextAutoReplyRuleKeyword();
+                final String replyString = replyRule.getTextAutoReplyRuleReplyString();
+
+                final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule,
+                        replyString);
+
+                if (autoReplyRule.getKeyword() != null)
+                {
+                    LOG.info("rule:" + rule + " replyString:" + replyString);
+                    LOG.info("rule parsed keyword:" + autoReplyRule.getKeyword() + " parameters:"
+                            + autoReplyRule.getParameters().toString());
+                    mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+                }
+            }
         }
-    }
-
-    public boolean addAutoReplyRule(final String rule)
-    {
-        return true;
     }
 
     public synchronized static LogpieWechatAutoReplyEngine getInstance()
@@ -64,9 +72,28 @@ public class LogpieWechatAutoReplyEngine
         return sInstance;
     }
 
+    // The rule passed in this method should already be verified.
+    public boolean addAutoReplyRule(final Boolean activated, final String rule,
+            final String replyString)
+    {
+        final TextAutoReplyRule textAutoReplyRule = new TextAutoReplyRule(activated, rule,
+                replyString);
+        if (mTextAutoReplyRuleDAO.addTextAutoReplyRule(textAutoReplyRule) && activated)
+        {
+            final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule, replyString);
+            mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean doesKeywordRuleExist(final String keyword)
+    {
+        return mEngineCache.containsKey(keyword);
+    }
+
     public String processCommingMessage(HttpServletRequest request)
     {
-        String respMessage = null;
         try
         {
             // xml请求解析
@@ -90,13 +117,42 @@ public class LogpieWechatAutoReplyEngine
             {
                 // 接收用户发送的文本消息内容
                 final String content = requestMap.get("Content");
+                return processCommingMessage(content);
             }
 
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return respMessage;
+        return getNoSupportString();
+    }
+
+    public String processCommingMessage(final String content)
+    {
+        final String[] contentComponents = content.split(" ");
+        if (contentComponents == null || contentComponents.length == 0)
+        {
+            return getNoSupportString();
+        }
+        final String keyword = contentComponents[0];
+
+        if (doesKeywordRuleExist(keyword))
+        {
+            final WechatAutoReplyRule autoReplyRule = mEngineCache.get(keyword);
+
+            final String replyString = autoReplyRule.buildLopgieAutoReplyString(contentComponents);
+            if (replyString != null)
+            {
+                return replyString;
+            }
+        }
+
+        return getNoSupportString();
+    }
+
+    public String getNoSupportString()
+    {
+        return "抱歉 您输入的请求格式有误。 请回复\"帮助\" 查看功能文档说明";
     }
 
     /**
