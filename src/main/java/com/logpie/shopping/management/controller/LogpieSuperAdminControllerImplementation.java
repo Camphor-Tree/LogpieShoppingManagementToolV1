@@ -340,8 +340,22 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     }
 
     @Override
-    Object createTextAutoReply(HttpServletRequest request, HttpServletResponse httpResponse,
-            RedirectAttributes redirectAttrs)
+    public Object showEditTextAutoReplyPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String textAutoReplyRuleId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView view = new ModelAndView("text_auto_reply_rule_edit");
+        injectAlertMessage(redirectAttrs, view);
+        final TextAutoReplyRuleDAO textAutoReplyRuleDAO = new TextAutoReplyRuleDAO(mCurrentAdmin);
+        final TextAutoReplyRule textAutoReplyRule = textAutoReplyRuleDAO
+                .getTextAutoReplyRuleById(textAutoReplyRuleId);
+        view.addObject("textAutoReplyRule", textAutoReplyRule);
+        return view;
+    }
+
+    @Override
+    public Object createTextAutoReplyRule(HttpServletRequest request,
+            HttpServletResponse httpResponse, RedirectAttributes redirectAttrs)
     {
         LOG.debug("Authenticate cookie is valid. Going to create a new text auto reply.");
 
@@ -378,6 +392,51 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
             message = "添加自动回复规则失败";
             redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
                     "创建简单文本自动回复规则:" + keywordRule + " 失败!" + message);
+        }
+
+        return "redirect:/wechat_subscription";
+    }
+
+    @Override
+    public Object modifyTextAutoReplyRule(HttpServletRequest request,
+            HttpServletResponse httpResponse, RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to edit a new text auto reply.");
+
+        final String ruleId = request.getParameter("TextAutoReplyRuleId");
+        final Boolean activated = Boolean
+                .valueOf(request.getParameter("TextAutoReplyRuleActivated"));
+        final String keywordRule = request.getParameter("TextAutoReplyRuleKeyword");
+        final String replyString = request.getParameter("TextAutoReplyRuleReplyString");
+        boolean editTextAutoReplySuccess = false;
+        String message = null;
+        LOG.debug("Verifying rule:" + keywordRule + " " + replyString);
+        if (keywordRule == null || replyString == null)
+        {
+            message = "自动回复规则不可以为空";
+        }
+        else if (WechatAutoReplyRuleCompiler.isAutoReplyRuleLegal(keywordRule, replyString))
+        {
+            LogpieWechatAutoReplyEngine engine = LogpieWechatAutoReplyEngine.getInstance();
+
+            editTextAutoReplySuccess = engine.editAutoReplyRule(ruleId, activated, keywordRule,
+                    replyString);
+        }
+        else
+        {
+            message = "自动回复规则不合语法，请检查你的规则以及回复文本 " + keywordRule + " => " + replyString;
+        }
+
+        if (editTextAutoReplySuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "修改简单文本自动回复规则:" + keywordRule + " 成功!");
+        }
+        else
+        {
+            message = "修改自动回复规则失败";
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "修改简单文本自动回复规则:" + keywordRule + " 失败!" + message);
         }
 
         return "redirect:/wechat_subscription";

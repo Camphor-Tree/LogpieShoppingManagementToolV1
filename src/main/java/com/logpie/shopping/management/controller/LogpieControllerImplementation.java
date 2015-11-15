@@ -2080,7 +2080,14 @@ public abstract class LogpieControllerImplementation
     public abstract Object showWechatSubscriptionManagementPage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs);
 
-    abstract Object createTextAutoReply(final HttpServletRequest request,
+    public abstract Object createTextAutoReplyRule(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs);
+
+    public abstract Object showEditTextAutoReplyPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String textAutoReplyRuleId,
+            final RedirectAttributes redirectAttrs);
+
+    abstract public Object modifyTextAutoReplyRule(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs);
 
 }

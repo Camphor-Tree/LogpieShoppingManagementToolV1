@@ -57,7 +57,7 @@
               <h3>新建一个简单文本回复规则</h3>
               <form role="form" style="padding:20px" id="order_creation_form" action="<c:url value="/text_auto_reply/create" />" method="POST" >
                 <div class="row">
-	                <div class="form-group col-sm-10">
+	                <div class="form-group col-sm-12">
 	                  <label for="auto_reply_rule">自动回复关键字规则</label>
 	                  <input class="form-control" id="auto_reply_rule" name="TextAutoReplyRuleKeyword" value="[]" required autofocus>
 	                </div>

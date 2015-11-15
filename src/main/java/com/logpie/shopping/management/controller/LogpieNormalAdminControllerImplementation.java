@@ -97,8 +97,23 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     }
 
     @Override
-    Object createTextAutoReply(HttpServletRequest request, HttpServletResponse httpResponse,
+    public Object createTextAutoReplyRule(HttpServletRequest request,
+            HttpServletResponse httpResponse, RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
+    public Object showEditTextAutoReplyPage(HttpServletRequest request,
+            HttpServletResponse httpResponse, final String textAutoReplyRuleId,
             RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
+    public Object modifyTextAutoReplyRule(HttpServletRequest request,
+            HttpServletResponse httpResponse, RedirectAttributes redirectAttrs)
     {
         return showNoPermissionPage();
     }

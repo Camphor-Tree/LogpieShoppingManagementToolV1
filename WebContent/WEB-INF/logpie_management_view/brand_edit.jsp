@@ -59,7 +59,7 @@
                   </div>
                 </div>
                 <div class="checkbox" style="padding-left:20px">
-                  <label><input type="checkbox" checked="checked" id="brand_is_activated" name="BrandIsActivated" value="True"/>是否激活</label>
+                  <label><input type="checkbox" checked="checked" id="brand_is_activated" name="BrandIsActivated" value="True" <c:if test="${brand.brandIsActivated==true}">checked</c:if>/>是否激活</label>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">确定</button>
               </form>

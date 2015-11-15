@@ -156,7 +156,32 @@ public class WechatSupportController extends LogpieBaseController
     {
         final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
                 .getControllerImplementationBasedForAdmin(request);
-        return logpieControllerImplementation.createTextAutoReply(request, httpResponse,
+        return logpieControllerImplementation.createTextAutoReplyRule(request, httpResponse,
+                redirectAttrs);
+    }
+
+    // 文本自动回复规则编辑
+    @RequestMapping(value = "/text_auto_reply_rule/edit", method = RequestMethod.GET)
+    public Object showEditTextAutoReplyPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("id") String textAutoReplyRuleId,
+            final RedirectAttributes redirectAttrs)
+
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.showEditTextAutoReplyPage(request, httpResponse,
+                textAutoReplyRuleId, redirectAttrs);
+    }
+
+    // 文本自动回复规则编辑
+    @RequestMapping(value = "/text_auto_reply_rule/edit", method = RequestMethod.POST)
+    public Object editTextAutoReplyRule(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.modifyTextAutoReplyRule(request, httpResponse,
                 redirectAttrs);
     }
 

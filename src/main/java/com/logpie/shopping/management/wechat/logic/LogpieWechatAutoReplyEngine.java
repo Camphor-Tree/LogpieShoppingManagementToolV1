@@ -73,15 +73,51 @@ public class LogpieWechatAutoReplyEngine
     }
 
     // The rule passed in this method should already be verified.
-    public boolean addAutoReplyRule(final Boolean activated, final String rule,
+    public synchronized boolean addAutoReplyRule(final Boolean activated, final String rule,
             final String replyString)
     {
         final TextAutoReplyRule textAutoReplyRule = new TextAutoReplyRule(activated, rule,
                 replyString);
-        if (mTextAutoReplyRuleDAO.addTextAutoReplyRule(textAutoReplyRule) && activated)
+        if (mTextAutoReplyRuleDAO.addTextAutoReplyRule(textAutoReplyRule))
         {
-            final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule, replyString);
-            mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+            if (activated)
+            {
+                final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule,
+                        replyString);
+                mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // The rule passed in this method should already be verified.
+    public synchronized boolean editAutoReplyRule(final String ruleId, final Boolean activated,
+            final String rule, final String replyString)
+    {
+        final TextAutoReplyRule originTextAutoReplyRule = mTextAutoReplyRuleDAO
+                .getTextAutoReplyRuleById(ruleId);
+        final WechatAutoReplyRule originAutoReplyRule = new WechatAutoReplyRule(
+                originTextAutoReplyRule.getTextAutoReplyRuleKeyword(),
+                originTextAutoReplyRule.getTextAutoReplyRuleReplyString());
+
+        // clean the cache first, since the edit may change the keyword also
+        if (mEngineCache.containsKey(originAutoReplyRule.getKeyword()))
+        {
+            mEngineCache.remove(originAutoReplyRule.getKeyword());
+        }
+
+        // recompile the rule
+        final TextAutoReplyRule textAutoReplyRule = new TextAutoReplyRule(ruleId, activated, rule,
+                replyString);
+        if (mTextAutoReplyRuleDAO.updateTextAutoReplyRule(textAutoReplyRule))
+        {
+            if (activated)
+            {
+                final WechatAutoReplyRule autoReplyRule = new WechatAutoReplyRule(rule,
+                        replyString);
+                mEngineCache.put(autoReplyRule.getKeyword(), autoReplyRule);
+            }
             return true;
         }
         return false;
