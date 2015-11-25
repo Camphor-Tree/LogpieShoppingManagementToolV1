@@ -4,6 +4,51 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <tag:logpie_common_template>
     <jsp:body>
+    <script type="text/javascript">
+    function quickReceiveMoney(orderId) {
+        $.ajax({
+            url : '<c:url value="/order/quick_edit/receive_money" />'+'?id='+orderId + '&domestic_shipping_fee='+$('#quick_receive_money_input_'+orderId).val(),
+            success : function(resultJSON) {
+            	if(resultJSON.result=='success')
+            	{
+            		$.ajax({
+                        url : '<c:url value="/order/query" />'+'?id='+orderId,
+                        success : function(resultJSON) {
+                        	if(resultJSON.result=='success')
+                        	{
+                        		var orderJSON = resultJSON.order;
+                        		$('#quick_receive_money_result_'+orderId).html("<div class='text-success'>修改成功</div>");
+                        		$('#OrderBuyerName_'+orderId).html(orderJSON.OrderBuyerName);
+                        		$('#OrderProductName_'+orderId).html(orderJSON.OrderProductName);
+                        		$('#OrderProductCount_'+orderId).html(orderJSON.OrderProductCount);
+                        		$('#OrderSellingPrice_'+orderId).html(orderJSON.OrderSellingPrice);
+                        		$('#OrderActualCost_'+orderId).html(orderJSON.OrderActualCost);
+                        		$('#OrderWeight_'+orderId).html(orderJSON.OrderWeight);
+                        		$('#OrderActualShippingFee_'+orderId).html(orderJSON.OrderActualShippingFee);
+                        		$('#OrderDomesticShippingFee_'+orderId).html(orderJSON.OrderDomesticShippingFee);
+                        		$('#OrderCustomerPaidDomesticShippingFee_'+orderId).html(orderJSON.OrderCustomerPaidDomesticShippingFee);
+                        		$('#OrderFinalActualCost_'+orderId).html(orderJSON.OrderFinalActualCost);
+                        		$('#OrderCustomerPaidMoney_'+orderId).html(orderJSON.OrderCustomerPaidMoney);
+                        		$('#OrderFinalProfit_'+orderId).html(orderJSON.OrderFinalProfit);
+                        		$('#OrderCompanyReceivedMoney_'+orderId).html(orderJSON.OrderCompanyReceivedMoney);
+                        		$('#OrderIsProfitPaid_'+orderId).html(orderJSON.OrderIsProfitPaid?"是":"否");
+                        		$('#OrderNote_'+orderId).html("备注: "+orderJSON.OrderNote);
+                        	}
+                        	else
+                        	{
+                        	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改成功，但无法刷新当前订单信息</div>");
+                        	}
+                        }
+                    });
+            	}
+            	else
+            	{
+            	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+resultJSON.reason+"</div>");
+            	}
+            }
+        });
+    }
+</script>
         <div class="row" style="margin-bottom:10px">
         	<h3>欢迎来到 订单管理</h3>
         	<c:if test="${action_message_success !=null}">
@@ -104,30 +149,32 @@
         <tr class='clickable-row' data-href='./order?id=${order.orderId}' style="font-size:16px" height="36" >
         <td class="anchor" style="color:#428bca"><a name="a${order.orderId}"><span style="padding-top: 65px; margin-top: -65px;"></span></a>${order.orderId}</td>
         <td>${fn:substring(order.orderDate,5,10)}</td>
-        <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
-        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#DFF0D8"</c:if>>${order.orderProduct.productName}</td>
-        <td>${order.orderProductCount}</td>
-        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
-        <td>${order.orderActualCost}</td>
-        <td>${order.orderWeight}</td>
+        <td id="OrderBuyerName_${order.orderId}" <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
+        <td id="OrderProductName_${order.orderId}" <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#DFF0D8"</c:if>>${order.orderProduct.productName}</td>
+        <td id="OrderProductCount_${order.orderId}">${order.orderProductCount}</td>
+        <td id="OrderSellingPrice_${order.orderId}" style="background-color:#FFCC99">${order.orderSellingPrice}</td>
+        <td id="OrderActualCost_${order.orderId}">${order.orderActualCost}</td>
+        <td id="OrderWeight_${order.orderId}" >${order.orderWeight}</td>
         <td>${order.orderProxy.adminName}</td>
         <!--<td>${order.orderProxyProfitPercentage}</td>-->
         <!--<td>${order.orderCurrencyRate}</td>-->
         <!-- <td>${order.orderEstimatedShippingFee}</td>-->
-        <td>${order.orderActualShippingFee}</td>
-        <td>${order.orderDomesticShippingFee}</td>
-        <td>${order.orderCustomerPaidDomesticShippingFee}</td>
-        <td>${order.orderFinalActualCost}</td>
-        <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
-        <td>${order.orderFinalProfit}</td>
-        <td>${order.orderCompanyReceivedMoney}</td>
-        <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
-        <!--<td>${order.orderNote}</td>-->
+        <td id="OrderActualShippingFee_${order.orderId}">${order.orderActualShippingFee}</td>
+        <td id="OrderDomesticShippingFee_${order.orderId}">${order.orderDomesticShippingFee}</td>
+        <td id="OrderCustomerPaidDomesticShippingFee_${order.orderId}">${order.orderCustomerPaidDomesticShippingFee}</td>
+        <td id="OrderFinalActualCost_${order.orderId}">${order.orderFinalActualCost}</td>
+        <td id="OrderCustomerPaidMoney_${order.orderId}" style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
+        <td id="OrderFinalProfit_${order.orderId}">${order.orderFinalProfit}</td>
+        <td id="OrderCompanyReceivedMoney_${order.orderId}">${order.orderCompanyReceivedMoney}</td>
+        <td id="OrderIsProfitPaid_${order.orderId}"><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
         <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}&ru=${CurrentUrl}&anchor=a${order.orderId}" />>修改</a></td>
         </tr>
         <tr style="font-size:13px;">
           <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-          <td colspan="14" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
+          <td id="OrderNote_${order.orderId}" colspan="9" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
+          <td colspan="2" class="text-left"><input id="quick_receive_money_input_${order.orderId}" type="number" class="col-xs-6" placeholder="国内邮费"></input><button id="quick_receive_money_submit_${order.orderId}" type="submit" class="btn-small btn-success has-spinner col-xs-6" style="background-color:#bcf89c;border-color:#bcf89c;color:grey" onclick="quickReceiveMoney(${order.orderId})">收款<span class="spinner"><i class="icon-spin icon-refresh"></i></span></button></td>
+          
+          <td colspan="3" class="text-left" id="quick_receive_money_result_${order.orderId}"></td>
         </tr>
         </c:forEach>
         </tbody>

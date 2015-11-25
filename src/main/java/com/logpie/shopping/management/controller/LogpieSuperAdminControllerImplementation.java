@@ -441,4 +441,5 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
 
         return "redirect:/wechat_subscription";
     }
+
 }

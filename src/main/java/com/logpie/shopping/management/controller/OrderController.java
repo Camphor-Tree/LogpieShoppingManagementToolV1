@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -76,6 +77,25 @@ public class OrderController extends LogpieBaseController
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.showModifyOrderPage(request, httpResponse, orderId,
                 redirectUrl, anchor, redirectAttrs);
+    }
+
+    @RequestMapping(value = "/order/quick_edit/receive_money", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    public @ResponseBody String quickEditReceiveMoney(final HttpServletRequest request,
+            @RequestParam("id") String orderId,
+            @RequestParam("domestic_shipping_fee") String domesticShippingFee)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.quickEditReceiveMoney(orderId, domesticShippingFee);
+    }
+
+    @RequestMapping(value = "/order/query", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    public @ResponseBody String querySingleOrder(final HttpServletRequest request,
+            @RequestParam("id") String orderId)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.querySingleOrder(orderId);
     }
 
     @RequestMapping(value = "/order/edit", method = RequestMethod.POST)

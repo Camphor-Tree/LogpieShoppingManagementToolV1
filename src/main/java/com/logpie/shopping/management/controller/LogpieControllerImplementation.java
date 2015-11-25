@@ -282,7 +282,7 @@ public abstract class LogpieControllerImplementation
         long totaltime = time16 - time1;
 
         final StringBuilder metricBuilder = new StringBuilder();
-        metricBuilder.append("总时间:" + totaltime + "<br/>");
+        metricBuilder.append("总时间:" + totaltime + "毫秒<br/>");
         metricBuilder.append("创建view:" + (time2 - time1) + " 耗时百分比:"
                 + ((double) (time2 - time1) / totaltime) + "<br/>");
         metricBuilder.append("alertmessage:" + (time3 - time2) + " 耗时百分比:"
@@ -511,6 +511,145 @@ public abstract class LogpieControllerImplementation
             redirectUrl += "#" + anchor;
         }
         return "redirect:" + redirectUrl;
+    }
+
+    public String quickEditReceiveMoney(String orderId, String domesticShippingFee)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to quick edit the order received money.");
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
+        final Order modifiedOrder = orderDAO.getOrderById(orderId);
+
+        if (modifiedOrder == null)
+        {
+            final JSONObject errorJSON = getErrorResponseJSON();
+            try
+            {
+                errorJSON.put("reason", "抱歉 该订单不存在");
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add error reason", e);
+            }
+            return getErrorResponseJSON().toString();
+        }
+
+        // 如果不是超级管理员 需要验证该订单是否属于该代理
+        if (!mCurrentAdmin.isSuperAdmin())
+        {
+            if (!modifiedOrder.getOrderProxy().getAdminId().equals(mCurrentAdmin.getAdminId()))
+            {
+                final JSONObject errorJSON = getErrorResponseJSON();
+                try
+                {
+                    errorJSON.put("reason", "抱歉 您无权修改该订单");
+                } catch (JSONException e)
+                {
+                    LOG.error("JSONException when trying to add error reason", e);
+                }
+                return getErrorResponseJSON().toString();
+            }
+        }
+
+        final float domesticShppingFeeFloat;
+        // 如果该此ajax请求的国内已付邮费为空 则试用当前设置的用户已付国内邮费
+        if (StringUtils.isEmpty(domesticShippingFee))
+        {
+            domesticShppingFeeFloat = modifiedOrder.getOrderCustomerPaidDomesticShippingFee();
+        }
+        else
+        {
+            domesticShppingFeeFloat = Float.parseFloat(domesticShippingFee);
+        }
+
+        modifiedOrder.setOrderCustomerPaidDomesticShippingFee(domesticShppingFeeFloat);
+
+        final float sellingPrice = modifiedOrder.getOrderSellingPrice();
+        final float receivedMoney = sellingPrice + domesticShppingFeeFloat;
+
+        modifiedOrder.setOrderCustomerPaidMoney(receivedMoney);
+        // 只有超级管理员可以修改公司已收账款
+        if (mCurrentAdmin.isSuperAdmin())
+        {
+            modifiedOrder.setOrderCompanyReceivedMoney(receivedMoney);
+        }
+
+        boolean updateOrderSuccess = orderDAO.updateOrderProfile(modifiedOrder);
+
+        if (updateOrderSuccess)
+        {
+            final JSONObject successJSON = getSuccessResponseJSON();
+            try
+            {
+                successJSON.put("OrderCustomerPaidMoney", receivedMoney);
+                if (mCurrentAdmin.isSuperAdmin())
+                {
+                    successJSON.put("OrderCompanyReceivedMoney", receivedMoney);
+                }
+                successJSON.put("OrderCustomerPaidDomesticShippingFee", domesticShppingFeeFloat);
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add success data", e);
+            }
+            return successJSON.toString();
+        }
+        else
+        {
+            final JSONObject errorJSON = getErrorResponseJSON();
+            try
+            {
+                errorJSON.put("reason", "数据库写入失败，稍后再试");
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add error reason", e);
+            }
+            return getErrorResponseJSON().toString();
+        }
+    }
+
+    public String querySingleOrder(String orderId)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to quick edit the order received money.");
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
+        final Order queryOrder = orderDAO.getOrderById(orderId);
+
+        if (queryOrder == null)
+        {
+            final JSONObject errorJSON = getErrorResponseJSON();
+            try
+            {
+                errorJSON.put("reason", "抱歉 该订单不存在");
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add error reason", e);
+            }
+            return getErrorResponseJSON().toString();
+        }
+
+        // 如果不是超级管理员 需要验证该订单是否属于该代理
+        if (!mCurrentAdmin.isSuperAdmin())
+        {
+            if (!queryOrder.getOrderProxy().getAdminId().equals(mCurrentAdmin.getAdminId()))
+            {
+                final JSONObject errorJSON = getErrorResponseJSON();
+                try
+                {
+                    errorJSON.put("reason", "抱歉 您无权查询该订单");
+                } catch (JSONException e)
+                {
+                    LOG.error("JSONException when trying to add error reason", e);
+                }
+                return getErrorResponseJSON().toString();
+            }
+        }
+
+        final JSONObject successJSON = getSuccessResponseJSON();
+        try
+        {
+            successJSON.put("order", queryOrder.getJSON());
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException when trying to add success data", e);
+        }
+        return successJSON.toString();
     }
 
     /**
@@ -2089,5 +2228,45 @@ public abstract class LogpieControllerImplementation
 
     abstract public Object modifyTextAutoReplyRule(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs);
+
+    protected String getNoPermissionResponseJSON()
+    {
+        final JSONObject response = new JSONObject();
+        try
+        {
+            response.put("result", "error");
+            response.put("reason", "抱歉，您没有权限进行此操作");
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException when building response json", e);
+        }
+        return response.toString();
+    }
+
+    protected JSONObject getSuccessResponseJSON()
+    {
+        final JSONObject response = new JSONObject();
+        try
+        {
+            response.put("result", "success");
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException when building response json", e);
+        }
+        return response;
+    }
+
+    protected JSONObject getErrorResponseJSON()
+    {
+        final JSONObject response = new JSONObject();
+        try
+        {
+            response.put("result", "error");
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException when building response json", e);
+        }
+        return response;
+    }
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -21,6 +22,9 @@ import com.logpie.shopping.management.storage.OrderDAO;
  */
 public class LogpieNormalAdminControllerImplementation extends LogpieControllerImplementation
 {
+    private static final Logger LOG = Logger
+            .getLogger(LogpieNormalAdminControllerImplementation.class);
+
     LogpieNormalAdminControllerImplementation(final Admin admin)
     {
         super(admin);

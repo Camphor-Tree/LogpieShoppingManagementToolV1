@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
@@ -1239,6 +1241,58 @@ public class Order implements RowMapper<Order>, LogpieModel
             }
         }
         return false;
+    }
+
+    public JSONObject getJSON()
+    {
+        final JSONObject orderJSON = new JSONObject();
+        try
+        {
+            orderJSON.put(DB_KEY_ORDER_ID, this.mOrderId);
+            orderJSON.put(DB_KEY_ORDER_DATE, this.mOrderDate);
+            orderJSON.put(DB_KEY_ORDER_PRODUCT_ID, mOrderDate);
+            orderJSON.put(DB_KEY_ORDER_PRODUCT_COUNT, String.valueOf(this.mOrderProductCount));
+            orderJSON.put(DB_KEY_ORDER_WEIGHT, String.valueOf(this.mOrderWeight));
+            orderJSON.put(DB_KEY_ORDER_BUYER_NAME, this.mOrderBuyerName);
+            orderJSON.put(DB_KEY_ORDER_PROXY_ID, this.mOrderProxy.getAdminId());
+            orderJSON.put(DB_KEY_ORDER_PROXY_PROFIT_PERCENTAGE,
+                    String.valueOf(this.mOrderProxyProfitPercentage));
+            orderJSON.put(DB_KEY_ORDER_ACTUAL_COST, String.valueOf(this.mOrderActualCost));
+            orderJSON.put(DB_KEY_ORDER_CURRENCY_RATE, String.valueOf(this.mOrderCurrencyRate));
+            if (this.mOrderPackage != null)
+            {
+                orderJSON.put(DB_KEY_ORDER_PACKAGE_ID, this.mOrderPackage.getPackageId());
+            }
+            orderJSON.put(DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE,
+                    String.valueOf(this.mOrderEstimatedShippingFee));
+            orderJSON.put(DB_KEY_ORDER_ACTUAL_SHIPPING_FEE,
+                    String.valueOf(this.mOrderActualShippingFee));
+            orderJSON.put(DB_KEY_ORDER_DOMESTIC_SHIPPING_FEE,
+                    String.valueOf(this.mOrderDomesticShippingFee));
+            orderJSON.put(DB_KEY_ORDER_CUSTOMER_PAID_DOMESTIC_SHIPPING_FEE,
+                    String.valueOf(this.mOrderCustomerPaidDomesticShippingFee));
+            orderJSON.put(DB_KEY_ORDER_SELLING_PRICE, String.valueOf(this.mOrderSellingPrice));
+            orderJSON.put(DB_KEY_ORDER_CUSTOMER_PAID_MONEY,
+                    String.valueOf(this.mOrderCustomerPaidMoney));
+            orderJSON.put(DB_KEY_ORDER_COMPANY_RECEIVED_MONEY,
+                    String.valueOf(this.mOrderCompanyReceivedMoney));
+            orderJSON.put(DB_KEY_ORDER_IS_PROFIT_PAID, this.mOrderIsProfitPaid);
+            orderJSON.put(DB_KEY_ORDER_SENT_TO_USER, this.mOrderSentToUser);
+            if (this.mOrderClient != null)
+            {
+                orderJSON.put(DB_KEY_ORDER_CLIENT_ID, this.mOrderClient.getClientId());
+            }
+            orderJSON.put(DB_KEY_ORDER_NOTE, this.mOrderNote);
+            // 两个计算项
+            orderJSON.put("OrderFinalActualCost", String.valueOf(this.mOrderFinalActualCost));
+            orderJSON.put("OrderFinalProfit", String.valueOf(this.mOrderFinalProfit));
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException when building order json", e);
+        }
+
+        return orderJSON;
+
     }
 
 }
