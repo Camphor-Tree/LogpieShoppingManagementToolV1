@@ -17,7 +17,7 @@
                         	if(resultJSON.result=='success')
                         	{
                         		var orderJSON = resultJSON.order;
-                        		$('#quick_receive_money_result_'+orderId).html("<div class='text-success'>修改成功</div>");
+                        		$('#quick_receive_money_result_'+orderId).html("<div class='text-success'>修改收款信息成功</div>");
                         		$('#OrderBuyerName_'+orderId).html(orderJSON.OrderBuyerName);
                         		$('#OrderProductName_'+orderId).html(orderJSON.OrderProductName);
                         		$('#OrderProductCount_'+orderId).html(orderJSON.OrderProductCount);
@@ -36,7 +36,7 @@
                         	}
                         	else
                         	{
-                        	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改成功，但无法刷新当前订单信息</div>");
+                        	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改收款信息成功，但无法刷新当前订单信息</div>");
                         	}
                         }
                     });
@@ -172,9 +172,8 @@
         <tr style="font-size:13px;">
           <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
           <td id="OrderNote_${order.orderId}" colspan="9" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
-          <td colspan="2" class="text-left"><input id="quick_receive_money_input_${order.orderId}" type="number" class="col-xs-6" placeholder="国内邮费"></input><button id="quick_receive_money_submit_${order.orderId}" type="submit" class="btn-small btn-success has-spinner col-xs-6" style="background-color:#bcf89c;border-color:#bcf89c;color:grey" onclick="quickReceiveMoney(${order.orderId})">收款<span class="spinner"><i class="icon-spin icon-refresh"></i></span></button></td>
-          
-          <td colspan="3" class="text-left" id="quick_receive_money_result_${order.orderId}"></td>
+          <td colspan="3" class="text-left"><input id="quick_receive_money_input_${order.orderId}" type="number" class="col-xs-8" style="padding-left:0px;padding-right:0px" placeholder="用户已付国内邮费"></input><button id="quick_receive_money_submit_${order.orderId}" type="submit" class="btn-small btn-success has-spinner col-xs-4" style="background-color:#bcf89c;border-color:#bcf89c;color:#5c5c60;padding-left:0px;padding-right:0px" onclick="quickReceiveMoney(${order.orderId})">收款</button></td>
+          <td colspan="2" class="text-left" id="quick_receive_money_result_${order.orderId}"></td>
         </tr>
         </c:forEach>
         </tbody>
