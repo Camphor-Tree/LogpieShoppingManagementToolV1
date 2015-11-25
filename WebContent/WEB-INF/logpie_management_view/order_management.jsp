@@ -5,15 +5,44 @@
 <tag:logpie_common_template>
     <jsp:body>
     <script type="text/javascript">
+    function getErrorMsg(jqXHR)
+    {
+    	if (jqXHR.status === 0) {
+            msg = '网络出错，请检查网络';
+        } else if (jqXHR.status == 404) {
+            msg = '找不到该服务';
+        } else if (jqXHR.status == 500) {
+            msg = '服务器内部错误';
+        } else if (exception === 'parsererror') {
+            msg = 'json解析错误';
+        } else if (exception === 'timeout') {
+            msg = '页面请求超时';
+        } else if (exception === 'abort') {
+            msg = '请求被中止';
+        } else {
+            msg = '未知错误' + jqXHR.responseText;
+        }
+    	return msg;
+    }
     function quickReceiveMoney(orderId) {
     	$('#quick_receive_money_submit_'+orderId).toggleClass('active');
         $.ajax({
             url : '<c:url value="/order/quick_edit/receive_money" />'+'?id='+orderId + '&domestic_shipping_fee='+$('#quick_receive_money_input_'+orderId).val(),
+            error: function(jqXHR, textStatus, errorThrown) {
+            	msg=getErrorMsg(jqXHR);
+                $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+msg+"</div>");
+                $('#quick_receive_money_submit_'+orderId).toggleClass('active');
+            	},
             success : function(resultJSON) {
             	if(resultJSON.result=='success')
             	{
             		$.ajax({
                         url : '<c:url value="/order/query" />'+'?id='+orderId,
+                        error: function(jqXHR, textStatus, errorThrown) {
+                        	msg=getErrorMsg(jqXHR);
+                        	$('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改收款信息成功，但无法刷新当前订单信息,原因："+msg+"</div>");
+                        	 $('#quick_receive_money_submit_'+orderId).toggleClass('active');
+                        	},
                         success : function(resultJSON) {
                         	if(resultJSON.result=='success')
                         	{
@@ -37,7 +66,7 @@
                         	}
                         	else
                         	{
-                        	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改收款信息成功，但无法刷新当前订单信息</div>");
+                        	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改收款信息成功，但无法刷新当前订单信息，原因：服务器返回错误结果"+resultJSON.reason+"</div>");
                         	}
                         	$('#quick_receive_money_submit_'+orderId).toggleClass('active');
                         }
