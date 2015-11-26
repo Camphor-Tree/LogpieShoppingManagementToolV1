@@ -12,7 +12,6 @@
     <link rel="icon" href="http://logpieimage.oss-cn-qingdao.aliyuncs.com/weblogo.png">
     <title>Logpie</title>
     <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="<c:url value="/resources/css/offcanvas.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/logpie_css_v1.0.0.css" />" rel="stylesheet">
     <style type="text/css">

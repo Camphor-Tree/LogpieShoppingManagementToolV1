@@ -34,22 +34,6 @@ input[type=number]::-webkit-outer-spin-button {
   -moz-appearance:textfield;
 }
 
-.spinner {
-  display: inline-block;
-  opacity: 0;
-  max-width: 0;
-
-  -webkit-transition: opacity 0.2s, max-width 0.4s;
-  -moz-transition: opacity 0.2s, max-width 0.4s;
-  -o-transition: opacity 0.2s, max-width 0.4s;
-  transition: opacity 0.2s, max-width 0.4s;
-}
-
 .has-spinner.active {
   cursor:progress;
-}
-
-.has-spinner.active .spinner {
-  opacity: 1;
-  max-width: 50px;
 }
