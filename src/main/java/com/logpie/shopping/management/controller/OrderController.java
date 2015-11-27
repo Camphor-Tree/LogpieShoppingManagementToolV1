@@ -89,6 +89,15 @@ public class OrderController extends LogpieBaseController
         return logpieControllerImplementation.quickEditReceiveMoney(orderId, domesticShippingFee);
     }
 
+    @RequestMapping(value = "/order/quick_edit/set_package", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    public @ResponseBody String quickSetPackage(final HttpServletRequest request,
+            @RequestParam("id") String orderId, @RequestParam("package_id") String packageId)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.quickSetPackage(orderId, packageId);
+    }
+
     @RequestMapping(value = "/order/query", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     public @ResponseBody String querySingleOrder(final HttpServletRequest request,
             @RequestParam("id") String orderId)

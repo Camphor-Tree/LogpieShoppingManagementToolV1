@@ -529,7 +529,7 @@ public abstract class LogpieControllerImplementation
             {
                 LOG.error("JSONException when trying to add error reason", e);
             }
-            return getErrorResponseJSON().toString();
+            return errorJSON.toString();
         }
 
         // 如果不是超级管理员 需要验证该订单是否属于该代理
@@ -545,7 +545,7 @@ public abstract class LogpieControllerImplementation
                 {
                     LOG.error("JSONException when trying to add error reason", e);
                 }
-                return getErrorResponseJSON().toString();
+                return errorJSON.toString();
             }
         }
 
@@ -577,18 +577,6 @@ public abstract class LogpieControllerImplementation
         if (updateOrderSuccess)
         {
             final JSONObject successJSON = getSuccessResponseJSON();
-            try
-            {
-                successJSON.put("OrderCustomerPaidMoney", receivedMoney);
-                if (mCurrentAdmin.isSuperAdmin())
-                {
-                    successJSON.put("OrderCompanyReceivedMoney", receivedMoney);
-                }
-                successJSON.put("OrderCustomerPaidDomesticShippingFee", domesticShppingFeeFloat);
-            } catch (JSONException e)
-            {
-                LOG.error("JSONException when trying to add success data", e);
-            }
             return successJSON.toString();
         }
         else
@@ -601,8 +589,83 @@ public abstract class LogpieControllerImplementation
             {
                 LOG.error("JSONException when trying to add error reason", e);
             }
-            return getErrorResponseJSON().toString();
+            return errorJSON.toString();
         }
+    }
+
+    public String quickSetPackage(final String orderId, final String packageId)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to quick set package link.");
+
+        // 如果不是超级管理员 不允许修改包裹信息
+        if (!mCurrentAdmin.isSuperAdmin())
+        {
+            final JSONObject errorJSON = getErrorResponseJSON();
+            try
+            {
+                errorJSON.put("reason", "抱歉 普通管理员无法修改订单包裹信息");
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add error reason", e);
+            }
+            return errorJSON.toString();
+        }
+
+        final OrderDAO orderDAO = new OrderDAO(mCurrentAdmin);
+        final Order modifiedOrder = orderDAO.getOrderById(orderId);
+
+        if (modifiedOrder == null)
+        {
+            final JSONObject errorJSON = getErrorResponseJSON();
+            try
+            {
+                errorJSON.put("reason", "抱歉 该订单不存在");
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add error reason", e);
+            }
+            return errorJSON.toString();
+        }
+
+        // 如果该此ajax请求的国内已付邮费为空 则试用当前设置的用户已付国内邮费
+        if (StringUtils.isEmpty(packageId))
+        {
+            final JSONObject errorJSON = getErrorResponseJSON();
+            try
+            {
+                errorJSON.put("reason", "抱歉 您没有输入包裹号");
+            } catch (JSONException e)
+            {
+                LOG.error("JSONException when trying to add error reason", e);
+            }
+            return errorJSON.toString();
+        }
+        else
+        {
+            final LogpiePackageDAO packageDAO = new LogpiePackageDAO(mCurrentAdmin);
+            final LogpiePackage orderPackage = packageDAO.getPackageById(packageId);
+            modifiedOrder.setOrderPackage(orderPackage);
+            boolean updateOrderSuccess = orderDAO.updateOrderProfile(modifiedOrder);
+
+            if (updateOrderSuccess)
+            {
+                final JSONObject successJSON = getSuccessResponseJSON();
+                return successJSON.toString();
+            }
+            else
+            {
+                final JSONObject errorJSON = getErrorResponseJSON();
+                try
+                {
+                    errorJSON.put("reason", "数据库写入失败，稍后再试");
+                } catch (JSONException e)
+                {
+                    LOG.error("JSONException when trying to add error reason", e);
+                }
+                return getErrorResponseJSON().toString();
+            }
+        }
+
     }
 
     public String querySingleOrder(String orderId)

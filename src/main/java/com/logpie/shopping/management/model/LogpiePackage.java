@@ -10,6 +10,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
@@ -45,6 +48,8 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
     private Boolean mPackageIsShipped;
     private Boolean mPackageIsDelivered;
     private String mPackageNote;
+
+    private static final Logger LOG = Logger.getLogger(LogpiePackage.class);
 
     // For RowMapper
     public LogpiePackage()
@@ -585,5 +590,46 @@ public class LogpiePackage implements RowMapper<LogpiePackage>, LogpieModel
             }
         }
         return false;
+    }
+
+    public JSONObject getJSON()
+    {
+        final JSONObject packageJSON = new JSONObject();
+        try
+        {
+            packageJSON.put(DB_KEY_PACKAGE_ID, this.mPackageId);
+            packageJSON.put(DB_KEY_PACKAGE_PROXY_NAME, this.mPackageProxyName);
+            packageJSON.put(DB_KEY_PACKAGE_TRACKING_NUMBER, this.mPackageTrackingNumber);
+            packageJSON.put(DB_KEY_PACKAGE_RECEIVER, this.mPackageReceiver);
+            packageJSON.put(DB_KEY_PACKAGE_DESTINATION, this.mPackageDestination);
+            packageJSON.put(DB_KEY_PACKAGE_DATE, this.mPackageDate);
+            packageJSON.put(DB_KEY_PACKAGE_WEIGHT, String.valueOf(this.mPackageWeight));
+            packageJSON.put(DB_KEY_PACKAGE_SHIPPING_FEE, String.valueOf(this.mPackgeShippingFee));
+            packageJSON.put(DB_KEY_PACKAGE_ADDITIONAL_CUSTOM_TAX_FEE,
+                    String.valueOf(this.mPackageAdditionalCustomTaxFee));
+            packageJSON.put(DB_KEY_PACKAGE_ADDITIONAL_INSURANCE_FEE,
+                    String.valueOf(this.mPackageAdditionalInsuranceFee));
+            packageJSON.put(DB_KEY_PACKAGE_IS_SHIPPED, String.valueOf(this.mPackageIsShipped));
+            packageJSON.put(DB_KEY_PACKAGE_IS_DELIVERED, String.valueOf(this.mPackageIsDelivered));
+            packageJSON.put(DB_KEY_PACKAGE_NOTE, this.mPackageNote);
+
+            // 包裹显示在订单管理界面的简介信息
+            // 包裹${order.orderPackage.packageId}
+            // ${order.orderPackage.packageReceiver}
+            // ${order.orderPackage.packageProxyName}
+            // ${fn:substring(order.orderPackage.packageDate,5,10)}
+            // ${order.orderPackage.packageTrackingNumber}
+            packageJSON.put("PackageDescription",
+                    String.format("包裹%s %s %s %s %s", mPackageId, mPackageReceiver,
+                            mPackageProxyName, mPackageDate.substring(5, 10),
+                            mPackageTrackingNumber));
+
+        } catch (JSONException e)
+        {
+            LOG.error("JSONException when building package json", e);
+        }
+
+        return packageJSON;
+
     }
 }

@@ -24,58 +24,97 @@
         }
     	return msg;
     }
+    
+    function refreshOrderRow(orderId, changedInfo)
+    {
+    	$.ajax({
+            url : '<c:url value="/order/query" />'+'?id='+orderId,
+            error: function(jqXHR, textStatus, errorThrown) {
+            	msg=getErrorMsg(jqXHR);
+            	$('#quick_edit_result_'+orderId).html("<div class='text-danger'>修改"+changedInfo+"成功，但无法刷新当前订单信息,原因："+msg+"</div>");
+            	 $('#quick_receive_money_submit_'+orderId).toggleClass('active');
+            	},
+            success : function(resultJSON) {
+            	if(resultJSON.result=='success')
+            	{
+            		var orderJSON = resultJSON.order;
+            		$('#quick_edit_result_'+orderId).html("<div class='text-success'>修改"+changedInfo+"成功</div>");
+            		$('#OrderBuyerName_'+orderId).html(orderJSON.OrderBuyerName);
+            		$('#OrderProductName_'+orderId).html(orderJSON.OrderProductName);
+            		$('#OrderProductCount_'+orderId).html(orderJSON.OrderProductCount);
+            		$('#OrderSellingPrice_'+orderId).html(orderJSON.OrderSellingPrice);
+            		$('#OrderActualCost_'+orderId).html(orderJSON.OrderActualCost);
+            		$('#OrderWeight_'+orderId).html(orderJSON.OrderWeight);
+            		$('#OrderActualShippingFee_'+orderId).html(orderJSON.OrderActualShippingFee);
+            		$('#OrderDomesticShippingFee_'+orderId).html(orderJSON.OrderDomesticShippingFee);
+            		$('#OrderCustomerPaidDomesticShippingFee_'+orderId).html(orderJSON.OrderCustomerPaidDomesticShippingFee);
+            		$('#OrderFinalActualCost_'+orderId).html(orderJSON.OrderFinalActualCost);
+            		$('#OrderCustomerPaidMoney_'+orderId).html(orderJSON.OrderCustomerPaidMoney);
+            		$('#OrderFinalProfit_'+orderId).html(orderJSON.OrderFinalProfit);
+            		$('#OrderCompanyReceivedMoney_'+orderId).html(orderJSON.OrderCompanyReceivedMoney);
+            		$('#OrderIsProfitPaid_'+orderId).html(orderJSON.OrderIsProfitPaid?"是":"否");
+            		if(orderJSON.hasOwnProperty('OrderPackage')){
+                		var pLink = $("<a />", {
+                		    href : "<c:url value="/package?id="/>"+orderJSON.OrderPackage.PackageId,
+                		    text : orderJSON.OrderPackage.PackageDescription
+                		});
+                		$('#OrderPackage_'+orderId).html(pLink);
+            		}
+            		else
+            		{
+            			$('#OrderPackage_'+orderId).html("<input id=\"quick_set_package_input_"+orderId+"\" type=\"number\" class=\"col-xs-2\" style=\"padding-left:0px;padding-right:0px\" placeholder=\"输入包裹号\"></input><button id=\"quick_set_package_submit_"+orderId+"\" type=\"submit\" class=\"col-xs-1 btn-small has-spinner\" style=\"padding-left:0px;padding-right:0px;color:green;border: none;background:#e9e9e9;\" onclick=\"quickSetPackage("+orderId+")\"><span class=\"glyphicon glyphicon-ok spinner\" aria-hidden=\"true\"></span></button>");
+            		}
+            		$('#OrderNote_'+orderId).html("备注: "+orderJSON.OrderNote);
+            	}
+            	else
+            	{
+            	    $('#quick_edit_result_'+orderId).html("<div class='text-danger'>修改"+changedInfo+"成功，但无法刷新当前订单信息，原因：服务器返回错误结果"+resultJSON.reason+"</div>");
+            	}
+            	$('#quick_receive_money_submit_'+orderId).toggleClass('active');
+            }
+        });
+    }
     function quickReceiveMoney(orderId) {
     	$('#quick_receive_money_submit_'+orderId).toggleClass('active');
         $.ajax({
             url : '<c:url value="/order/quick_edit/receive_money" />'+'?id='+orderId + '&domestic_shipping_fee='+$('#quick_receive_money_input_'+orderId).val(),
             error: function(jqXHR, textStatus, errorThrown) {
             	msg=getErrorMsg(jqXHR);
-                $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+msg+"</div>");
+                $('#quick_edit_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+msg+"</div>");
                 $('#quick_receive_money_submit_'+orderId).toggleClass('active');
             	},
             success : function(resultJSON) {
             	if(resultJSON.result=='success')
             	{
-            		$.ajax({
-                        url : '<c:url value="/order/query" />'+'?id='+orderId,
-                        error: function(jqXHR, textStatus, errorThrown) {
-                        	msg=getErrorMsg(jqXHR);
-                        	$('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改收款信息成功，但无法刷新当前订单信息,原因："+msg+"</div>");
-                        	 $('#quick_receive_money_submit_'+orderId).toggleClass('active');
-                        	},
-                        success : function(resultJSON) {
-                        	if(resultJSON.result=='success')
-                        	{
-                        		var orderJSON = resultJSON.order;
-                        		$('#quick_receive_money_result_'+orderId).html("<div class='text-success'>修改收款信息成功</div>");
-                        		$('#OrderBuyerName_'+orderId).html(orderJSON.OrderBuyerName);
-                        		$('#OrderProductName_'+orderId).html(orderJSON.OrderProductName);
-                        		$('#OrderProductCount_'+orderId).html(orderJSON.OrderProductCount);
-                        		$('#OrderSellingPrice_'+orderId).html(orderJSON.OrderSellingPrice);
-                        		$('#OrderActualCost_'+orderId).html(orderJSON.OrderActualCost);
-                        		$('#OrderWeight_'+orderId).html(orderJSON.OrderWeight);
-                        		$('#OrderActualShippingFee_'+orderId).html(orderJSON.OrderActualShippingFee);
-                        		$('#OrderDomesticShippingFee_'+orderId).html(orderJSON.OrderDomesticShippingFee);
-                        		$('#OrderCustomerPaidDomesticShippingFee_'+orderId).html(orderJSON.OrderCustomerPaidDomesticShippingFee);
-                        		$('#OrderFinalActualCost_'+orderId).html(orderJSON.OrderFinalActualCost);
-                        		$('#OrderCustomerPaidMoney_'+orderId).html(orderJSON.OrderCustomerPaidMoney);
-                        		$('#OrderFinalProfit_'+orderId).html(orderJSON.OrderFinalProfit);
-                        		$('#OrderCompanyReceivedMoney_'+orderId).html(orderJSON.OrderCompanyReceivedMoney);
-                        		$('#OrderIsProfitPaid_'+orderId).html(orderJSON.OrderIsProfitPaid?"是":"否");
-                        		$('#OrderNote_'+orderId).html("备注: "+orderJSON.OrderNote);
-                        	}
-                        	else
-                        	{
-                        	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改收款信息成功，但无法刷新当前订单信息，原因：服务器返回错误结果"+resultJSON.reason+"</div>");
-                        	}
-                        	$('#quick_receive_money_submit_'+orderId).toggleClass('active');
-                        }
-                    });
+            		refreshOrderRow(orderId,'收款信息');
             	}
             	else
             	{
-            	    $('#quick_receive_money_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+resultJSON.reason+"</div>");
+            	    $('#quick_edit_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+resultJSON.reason+"</div>");
             	    $('#quick_receive_money_submit_'+orderId).toggleClass('active');
+            	}
+            }
+        });
+    }
+    
+    function quickSetPackage(orderId) {
+    	$('#quick_set_package_submit_'+orderId).toggleClass('active');
+        $.ajax({
+            url : '<c:url value="/order/quick_edit/set_package" />'+'?id='+orderId + '&package_id='+$('#quick_set_package_input_'+orderId).val(),
+            error: function(jqXHR, textStatus, errorThrown) {
+            	msg=getErrorMsg(jqXHR);
+                $('#quick_edit_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+msg+"</div>");
+                $('#quick_set_package_submit_'+orderId).toggleClass('active');
+            	},
+            success : function(resultJSON) {
+            	if(resultJSON.result=='success')
+            	{
+            		refreshOrderRow(orderId,'包裹');
+            	}
+            	else
+            	{
+            	    $('#quick_edit_result_'+orderId).html("<div class='text-danger'>修改失败,原因:"+resultJSON.reason+"</div>");
+            	    $('#quick_set_package_submit_'+orderId).toggleClass('active');
             	}
             }
         });
@@ -202,10 +241,18 @@
         <td><a type="button" class="btn-small btn-info" href=<c:url value="/order/edit?id=${order.orderId}&ru=${CurrentUrl}&anchor=a${order.orderId}" />>修改</a></td>
         </tr>
         <tr style="font-size:13px;">
-          <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
+          <td colspan="4" class="text-left" id="OrderPackage_${order.orderId}" style="color:#999999">
+          <c:if test="${order.orderPackage == null}">
+          <input id="quick_set_package_input_${order.orderId}" type="number" class="col-xs-2" style="padding-left:0px;padding-right:0px" placeholder="输入包裹号"></input><button id="quick_set_package_submit_${order.orderId}" type="submit" class="col-xs-1 btn-small has-spinner" style="padding-left:0px;padding-right:0px;color:green;border: none;background:#e9e9e9;" onclick="quickSetPackage(${order.orderId})"><span class="glyphicon glyphicon-ok spinner" aria-hidden="true"></span></button>
+          <div class="col-xs-8" style="padding: 2px; margin-left:20px; vertical-align: middle;" id="quick_set_package_result_${order.orderId}"></div>
+          </c:if>
+          <c:if test="${order.orderPackage != null}">
+          <a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a>
+          </c:if>
+          </td>
           <td id="OrderNote_${order.orderId}" colspan="9" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
           <td colspan="3" class="text-left"><input id="quick_receive_money_input_${order.orderId}" type="number" class="col-xs-8" style="padding-left:0px;padding-right:0px" placeholder="用户已付国内邮费"></input><button id="quick_receive_money_submit_${order.orderId}" type="submit" class="btn-small btn-success has-spinner col-xs-4" style="background-color:#bcf89c;border-color:#bcf89c;color:#5c5c60;padding-left:0px;padding-right:0px" onclick="quickReceiveMoney(${order.orderId})">收款<span class="spinner"></span></button></td>
-          <td colspan="2" class="text-left" id="quick_receive_money_result_${order.orderId}"></td>
+          <td colspan="2" class="text-left" id="quick_edit_result_${order.orderId}"></td>
         </tr>
         </c:forEach>
         </tbody>

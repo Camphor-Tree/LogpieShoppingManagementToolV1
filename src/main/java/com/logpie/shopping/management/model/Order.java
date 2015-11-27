@@ -1261,7 +1261,7 @@ public class Order implements RowMapper<Order>, LogpieModel
             orderJSON.put(DB_KEY_ORDER_CURRENCY_RATE, String.valueOf(this.mOrderCurrencyRate));
             if (this.mOrderPackage != null)
             {
-                orderJSON.put(DB_KEY_ORDER_PACKAGE_ID, this.mOrderPackage.getPackageId());
+                orderJSON.put("OrderPackage", this.mOrderPackage.getJSON());
             }
             orderJSON.put(DB_KEY_ORDER_ESTIMATED_SHIPPING_FEE,
                     String.valueOf(this.mOrderEstimatedShippingFee));
