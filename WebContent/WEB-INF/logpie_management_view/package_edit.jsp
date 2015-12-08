@@ -37,11 +37,11 @@
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="package_custom_fee">额外海关费用（人民币）：</label>
-                    <input class="form-control" type="number" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="0" value="${logpiePackage.packageAdditionalCustomTaxFee}" required>
+                    <input class="form-control" type="number" id="package_custom_fee" name="PackageAdditionalCustomTaxFee" value="${logpiePackage.packageAdditionalCustomTaxFee}" required>
                   </div>
                   <div class="form-group col-sm-6">
                     <label for="package_insurance_fee">额外保险费用（人民币）：</label>
-                    <input class="form-control"  type="number" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="0" value="${logpiePackage.packageAdditionalInsuranceFee}" required>
+                    <input class="form-control"  type="number" id="package_insurance_fee" name="PackageAdditionalInsuranceFee" value="${logpiePackage.packageAdditionalInsuranceFee}" required>
                   </div>
                 </div>
                 <div class="form-group">
