@@ -73,6 +73,17 @@ public class PackageController extends LogpieBaseController
         return logpieControllerImplementation.createPackage(request, httpResponse, redirectAttrs);
     }
 
+    @RequestMapping(value = "/package/quick_create", method = RequestMethod.GET)
+    public Object quickCreatePackakge(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, @RequestParam("adminId") String adminId,
+            final RedirectAttributes redirectAttrs)
+    {
+        final LogpieControllerImplementation logpieControllerImplementation = LogpieControllerImplementationFactory
+                .getControllerImplementationBasedForAdmin(request);
+        return logpieControllerImplementation.quickCreatePackage(request, httpResponse, adminId,
+                redirectAttrs);
+    }
+
     @RequestMapping(value = "/package/edit", method = RequestMethod.GET)
     public Object showModifyPackagePage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, @RequestParam("id") String packageId,

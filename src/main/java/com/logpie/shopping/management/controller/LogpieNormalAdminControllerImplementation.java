@@ -44,6 +44,13 @@ public class LogpieNormalAdminControllerImplementation extends LogpieControllerI
     }
 
     @Override
+    Object quickCreatePackage(HttpServletRequest request, HttpServletResponse httpResponse,
+            String adminId, RedirectAttributes redirectAttrs)
+    {
+        return showNoPermissionPage();
+    }
+
+    @Override
     public Object showModifyPackagePage(HttpServletRequest request,
             HttpServletResponse httpResponse, String packageId, RedirectAttributes redirectAttrs)
     {

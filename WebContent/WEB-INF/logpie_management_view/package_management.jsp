@@ -20,7 +20,7 @@
 		
 	    <div class="col-md-2" style="margin-bottom:10px">
 	    	<c:if test="${showAll==false}">
-	        <a type="button" class="btn btn-success" style="font-size:16px;" href="<c:url value="/package_management?showAll=true" />">显示所有包裹</a>
+	        <a type="button" class="btn btn-info" style="font-size:16px;" href="<c:url value="/package_management?showAll=true" />">显示所有包裹</a>
 	        </c:if>
 	        <c:if test="${showAll==true}">
 	        <a type="button" class="btn btn-warning" style="font-size:16px;" href="<c:url value="/package_management" />">显示未到包裹</a>
@@ -30,6 +30,25 @@
 		<div class="col-md-2" style="margin-bottom:10px">
 	        <a type="button" class="btn btn-danger" style="font-size:16px;" href="<c:url value="/package_management?showAllDelivered=true" />">显示所有已到包裹</a>
 		</div>
+	  
+	   <c:if test="${admin.isSuperAdmin==true}">
+	   
+	   <div class="col-md-1 btn" disabled style="margin-bottom:10px;font-size:16px;">
+		     快速新建包裹:
+	   </div>
+	   <c:forEach items="${adminList}" var="admin">
+		 	<c:if test="${admin.isSuperAdmin==false}">
+			<div class="col-md-1" style="margin-bottom:10px">
+		        <a type="button" class="btn btn-success" style="font-size:16px;" href="<c:url value="/package/quick_create?adminId=${admin.adminId}"/>">${admin.adminName}</a>
+			</div>
+			</c:if>
+			<c:if test="${admin.isSuperAdmin==true}">
+			<div class="col-md-1" style="margin-bottom:10px">
+		        <a type="button" class="btn btn-success" style="font-size:16px;" href="<c:url value="/package/quick_create?adminId=${admin.adminId}"/>">司华</a>
+			</div>
+			</c:if>
+       </c:forEach>
+       </c:if>
    		
       <table class="table table-striped text-center" style="table-layout:fixed; font-size:18px;">
         <tr class="info">

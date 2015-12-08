@@ -843,6 +843,12 @@ public abstract class LogpieControllerImplementation
         {
             packageList = filterOutPackageNotBelongToCurrentAdmin(packageList);
         }
+        else
+        {
+            final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
+            final List<Admin> adminList = adminDAO.getAllAdmins();
+            packageManagementPage.addObject("adminList", adminList);
+        }
         packageManagementPage.addObject("packageList", packageList);
         packageManagementPage.addObject("admin", mCurrentAdmin);
 
@@ -892,6 +898,10 @@ public abstract class LogpieControllerImplementation
 
     abstract Object createPackage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs);
+
+    abstract Object quickCreatePackage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final RedirectAttributes redirectAttrs);
 
     abstract public Object showModifyPackagePage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, @RequestParam("id") String packageId,

@@ -108,6 +108,50 @@ public class LogpieSuperAdminControllerImplementation extends LogpieControllerIm
     }
 
     @Override
+    public Object quickCreatePackage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final String adminId,
+            final RedirectAttributes redirectAttrs)
+    {
+        LOG.debug("Authenticate cookie is valid. Going to create a new logpiePackage.");
+        final AdminDAO adminDAO = new AdminDAO(mCurrentAdmin);
+        final Admin targetAdmin = adminDAO.queryAccountByAdminId(adminId);
+
+        final LogpiePackage newLogpiePackage;
+        // TODO: should read from system setting
+        if (!targetAdmin.isSuperAdmin())
+        {
+            newLogpiePackage = new LogpiePackage("顺运快递", "SY", targetAdmin.getAdminName(),
+                    targetAdmin.getAdminIdentityNumber() + " 手机: " + targetAdmin.getAdminPhone(), 0,
+                    0, 0, 0, true, false, "");
+        }
+        else
+        {
+            newLogpiePackage = new LogpiePackage("顺运快递", "SY", "司华",
+                    targetAdmin.getAdminIdentityNumber() + " 手机: " + targetAdmin.getAdminPhone(), 0,
+                    0, 0, 0, true, false, "");
+        }
+
+        boolean createLogpiePackageSuccess = false;
+        if (newLogpiePackage != null)
+        {
+            final LogpiePackageDAO logpiePackageDAO = new LogpiePackageDAO(mCurrentAdmin);
+            createLogpiePackageSuccess = logpiePackageDAO.addPackage(newLogpiePackage);
+        }
+
+        if (createLogpiePackageSuccess)
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_SUCCESS,
+                    "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 成功!");
+        }
+        else
+        {
+            redirectAttrs.addFlashAttribute(LogpiePageAlertMessage.KEY_ACTION_MESSAGE_FAIL,
+                    "创建寄给:" + newLogpiePackage.getPackageDestination() + "的包裹 失败!");
+        }
+        return "redirect:/package_management";
+    }
+
+    @Override
     public Object showModifyPackagePage(final HttpServletRequest request,
             final HttpServletResponse httpResponse, final String packageId,
             final RedirectAttributes redirectAttrs)
