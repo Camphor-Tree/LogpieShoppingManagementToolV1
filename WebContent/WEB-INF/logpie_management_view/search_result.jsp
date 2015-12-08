@@ -20,59 +20,7 @@
         </div>
         <hr></hr>
         <h4>共 ${OrdersCount} 个 <span class="text-info"><b>订单</b></span> 满足搜索条件</h4>
-        <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
-	        <tr class="info">
-		        <th class="col-xs-1 col-md-1 text-center">No</th>
-		        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
-		        <th class="col-xs-2 col-md-2 text-center">购买者</th>
-		        <th class="col-xs-4 col-md-4 text-center">商品名称</th>
-		        <th class="col-xs-1 col-md-1 text-center">数量</th>
-		        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
-		        <th class="col-xs-2 col-md-2 text-center">重量</th>
-		        <th class="col-xs-2 col-md-2 text-center">代理者</th>
-	            <th class="col-xs-2 col-md-2 text-center">国际邮费￥</th>
-	            <th class="col-xs-2 col-md-2 text-center">国内邮费￥</th>
-	            <th class="col-xs-2 col-md-2 text-center">已付国内邮费￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
-		        <th class="col-xs-1 col-md-1 text-center">利结</th>
-		        <th class="col-xs-2 col-md-2 text-center">修改</th>
-	        </tr>
-	        <tbody>
-			<c:forEach items="${orderList}" var="order">
-		        <tr class='clickable-row' data-href='./order?id=${order.orderId}'>
-			        <td>${order.orderId}</td>
-			        <td>${fn:substring(order.orderDate,5,10)}</td>
-                    <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>>${order.orderBuyerName}</td>
-			        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
-			        <td>${order.orderProductCount}</td>
-			        <td>${order.orderActualCost}</td>
-			        <td>${order.orderWeight}</td>
-			        <td>${order.orderProxy.adminName}</td>
-			        <!--<td>${order.orderProxyProfitPercentage}</td>-->
-			        <!--<td>${order.orderCurrencyRate}</td>-->
-			        <!-- <td>${order.orderEstimatedShippingFee}</td>-->
-	                <td>${order.orderActualShippingFee}</td>
-	                <td>${order.orderDomesticShippingFee}</td>
-                    <td>${order.orderCustomerPaidDomesticShippingFee}</td>
-			        <td>${order.orderFinalActualCost}</td>
-			        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
-			        <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
-			        <td>${order.orderFinalProfit}</td>
-			        <td>${order.orderCompanyReceivedMoney}</td>
-			        <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
-			        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}&ru=${CurrentUrl}" <c:if test="${order.orderProxy.adminId != admin.adminId && admin.isSuperAdmin==false}">disabled</c:if>>修改</a></td>
-		        </tr>
-		        <tr style="font-size:13px;">
-                    <td colspan="4" class="text-left" style="color:#999999"><c:if test="${order.orderPackage == null}">暂无包裹信息</c:if><c:if test="${order.orderPackage != null}"><a href="<c:url value="/package?id=${order.orderPackage.packageId}"/>">包裹${order.orderPackage.packageId} ${order.orderPackage.packageReceiver} ${order.orderPackage.packageProxyName} ${fn:substring(order.orderPackage.packageDate,5,10)} ${order.orderPackage.packageTrackingNumber}</a></c:if></td>
-                    <td colspan="14" class="text-left" style="color:#999999">备注: ${order.orderNote}</td>
-                </tr>
-       	    </c:forEach>
-	        </tbody>
-        </table>
+		<tag:order_list></tag:order_list>
         <hr></hr>
         <h4>共 ${PackagesCount} 个 <span class="text-info"><b>包裹</b></span>  满足搜索条件</h4>
               <table class="table table-striped text-center" style="table-layout:fixed; font-size:18px;">

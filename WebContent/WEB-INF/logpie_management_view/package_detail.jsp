@@ -18,58 +18,7 @@
     	<div class="row">
             <h3>${logpiePackage.packageId}号包裹详细信息 包裹日期：${logpiePackage.packageDate}</h3>
         </div>
-        <table class="table table-striped text-center" style="table-layout:fixed;vertical-align:middle; font-size:15px;">
-	        <tr class="info">
-		        <th class="col-xs-1 col-md-1 text-center">No</th>
-		        <th class="col-xs-2 col-md-2 text-center">订单日期</th>
-		        <th class="col-xs-2 col-md-2 text-center">购买者</th>
-		        <th class="col-xs-4 col-md-4 text-center">商品名称</th>
-		        <th class="col-xs-1 col-md-1 text-center">数量</th>
-		        <th class="col-xs-2 col-md-2 text-center">购买成本$</th>
-		        <th class="col-xs-2 col-md-2 text-center">重量</th>
-		        <th class="col-xs-2 col-md-2 text-center">代理者</th>
-	            <th class="col-xs-2 col-md-2 text-center">国际邮费￥</th>
-	            <th class="col-xs-2 col-md-2 text-center">国内邮费￥</th>
-	            <th class="col-xs-2 col-md-2 text-center">已付国内邮费￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">总成本￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">售价￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">实收账款￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">最终利润￥</th>
-		        <th class="col-xs-2 col-md-2 text-center">公司入账￥</th>
-		        <th class="col-xs-1 col-md-1 text-center">利结</th>
-		        <th class="col-xs-2 col-md-2 text-center">修改</th>
-	        </tr>
-	        <tbody>
-			<c:forEach items="${orderList}" var="order">
-		        <tr class='clickable-row' data-href='./order?id=${order.orderId}'>
-			        <td>${order.orderId}</td>
-			        <td>${fn:substring(order.orderDate,5,10)}</td>
-                    <td <c:if test="${order.orderSentToUser == true}">style="background-color:#FFCCCC"</c:if>><c:if test="${order.orderClient == null}">${order.orderBuyerName}</c:if> <c:if test="${order.orderClient != null}"><a href="<c:url value="/client_management#a${order.orderClient.clientId}"/>">${order.orderBuyerName}</a></c:if></td>
-			        <td <c:if test="${order.orderPackage.packageIsDelivered == true}">style="background-color:#dff0d8"</c:if>>${order.orderProduct.productName}</td>
-			        <td>${order.orderProductCount}</td>
-			        <td>${order.orderActualCost}</td>
-			        <td>${order.orderWeight}</td>
-			        <td>${order.orderProxy.adminName}</td>
-			        <!--<td>${order.orderProxyProfitPercentage}</td>-->
-			        <!--<td>${order.orderCurrencyRate}</td>-->
-			        <!-- <td>${order.orderEstimatedShippingFee}</td>-->
-	                <td>${order.orderActualShippingFee}</td>
-	                <td>${order.orderDomesticShippingFee}</td>
-                    <td>${order.orderCustomerPaidDomesticShippingFee}</td>
-			        <td>${order.orderFinalActualCost}</td>
-			        <td style="background-color:#FFCC99">${order.orderSellingPrice}</td>
-			        <td style="background-color:#FFCCCC">${order.orderCustomerPaidMoney}</td>
-			        <td>${order.orderFinalProfit}</td>
-			        <td>${order.orderCompanyReceivedMoney}</td>
-			        <td><c:if test="${order.orderIsProfitPaid == true}">是</c:if><c:if test="${order.orderIsProfitPaid == false}">否</c:if></td>
-			        <td><a type="button" class="btn btn-warning" href="./order/edit?id=${order.orderId}&ru=${CurrentUrl}" <c:if test="${order.orderProxy.adminId != admin.adminId && admin.isSuperAdmin==false}">disabled</c:if>>修改</a></td>
-		        </tr>
-		        <tr>
-		            <td colspan="16" class="text-left">备注: ${order.orderNote}</td>
-		        </tr>
-       	    </c:forEach>
-	        </tbody>
-        </table>
+		<tag:order_list></tag:order_list>
         <div class="row">
         <span>当前包裹总重：</span><span>${packageTotalWeight} 克</span> <c:if test="${admin.isSuperAdmin==true}"><a class="btn btn-info" href="./package/quickCalculateShippingFeeDistribution?id=${logpiePackage.packageId}" style="margin-left:20px">快捷计算分摊运费</a></c:if>
         <c:if test="${admin.isSuperAdmin == true}">
