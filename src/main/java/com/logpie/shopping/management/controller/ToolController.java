@@ -28,7 +28,8 @@ public class ToolController extends LogpieBaseController
     {
         final ModelAndView calculatorPage = new ModelAndView("calculator");
         // inject the current currency rate into the page
-        final float currencyRate = CurrencyRateUtils.getUScurrencyRate();
+        // Add 0.1 due to the currency rate may be delay.
+        final float currencyRate = CurrencyRateUtils.getUScurrencyRate() + 0.1f;
         calculatorPage.addObject("CurrencyRate", currencyRate);
         super.injectCurrentActiveTab(calculatorPage, "calculator");
         return calculatorPage;
