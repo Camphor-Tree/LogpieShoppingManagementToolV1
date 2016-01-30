@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +13,9 @@ import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.RowMapper;
+
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * @author zhoyilei
@@ -165,9 +167,9 @@ public class SettleDownRecord implements RowMapper<SettleDownRecord>, LogpieMode
         String settleDownRecordInfoJSONString = null;
         try
         {
-            settleDownRecordInfoJSONString = new String(
-                    Base64.getDecoder().decode(settleDownRecordInfo), "UTF-8");
-        } catch (UnsupportedEncodingException e)
+            settleDownRecordInfoJSONString = new String(Base64.decode(settleDownRecordInfo),
+                    "UTF-8");
+        } catch (UnsupportedEncodingException | Base64DecodingException e)
         {
             LOG.error("Exception happens when trying to build settle down record info json string.",
                     e);
