@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="http://logpieimage.oss-cn-qingdao.aliyuncs.com/weblogo.png">
     <title>欢迎登陆Logpie后台管理</title>
-    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="resources/css/signin.css" rel="stylesheet" >
   </head>
 

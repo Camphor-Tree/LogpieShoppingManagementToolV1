@@ -11,7 +11,7 @@
     <link rel="icon" href="http://logpieimage.oss-cn-qingdao.aliyuncs.com/weblogo.png">
     <link rel="icon" href="http://logpieimage.oss-cn-qingdao.aliyuncs.com/weblogo.png">
     <title>Logpie</title>
-    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="<c:url value="/resources/css/offcanvas.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/css/logpie_css_v1.0.0.css" />" rel="stylesheet">
     <style type="text/css">
@@ -34,8 +34,8 @@ h2{
 	margin: 20px;
 }
     </style>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="//lib.sinaapp.com/js/jquery/2.0/jquery.min.js"></script>
+    <script src="//lib.sinaapp.com/js/bootstrap/v3.0.0/js/bootstrap.min.js"></script>
     <script src="<c:url value="/resources/js/offcanvas.js" />"></script>
   </head>
   <body>
