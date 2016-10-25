@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.logpie.shopping.management.auth.logic.LogpiePageAlertMessage;
@@ -189,6 +190,15 @@ public class WechatSupportController extends LogpieBaseController
                 .getControllerImplementationBasedForAdmin(request);
         return logpieControllerImplementation.modifyTextAutoReplyRule(request, httpResponse,
                 redirectAttrs);
+    }
+
+    // 微信订阅号管理界面
+    @RequestMapping(value = "/wechat/user/profile", method = RequestMethod.GET)
+    public Object showWechatUserPrPage(final HttpServletRequest request,
+            final HttpServletResponse httpResponse, final RedirectAttributes redirectAttrs)
+    {
+        final ModelAndView view = new ModelAndView("wechat_user_profile");
+        return view;
     }
 
     private boolean checkSignature(final String signature, final String timestamp,

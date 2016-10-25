@@ -31,7 +31,7 @@
 		 -->
 	</mvc:interceptors>
 	
-	<bean id="ViewResolver"
+	<bean id="ToolViewResolver"
 		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 			<property name="prefix">
 				<value>/WEB-INF/logpie_management_view/</value>
@@ -39,6 +39,16 @@
 			<property name="suffix">
 				<value>.jsp</value>
 			</property>	
+    </bean>
+    <!-- For wechat related UI using WeUI -->
+    <bean id="WechatViewResolver"
+		  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			<property name="prefix">
+				<value>/WEB-INF/logpie_wechat_view/</value>
+			</property>
+			<property name="suffix">
+				<value>.jsp</value>
+			</property>
     </bean>
     <mvc:resources location="/resources/" mapping="/resources/**"/>
     <mvc:annotation-driven/>

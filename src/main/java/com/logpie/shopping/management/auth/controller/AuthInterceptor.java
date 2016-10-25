@@ -63,6 +63,13 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
                 return true;
             }
 
+            // if the request URI is wechat integration, then just let it pass.
+            if (requestURI.startsWith(LogpieUrlEnum.LogpieWechatSupportUrlPrefix))
+            {
+                LOG.info("Meeting wechat support url prefix, let it pass through");
+                return true;
+            }
+
             // String requestUrl = request.getRequestURL().toString();
             // if (!StringUtils.isEmpty(request.getQueryString()))
             // {

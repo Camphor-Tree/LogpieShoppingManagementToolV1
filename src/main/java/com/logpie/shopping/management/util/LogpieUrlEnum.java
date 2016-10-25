@@ -34,4 +34,9 @@ public class LogpieUrlEnum
      */
     public static final String LogpieWechatIntegrationURL = LogpieBaseURL + "wechat_integration";
 
+    /**
+     * Wechat subscription support URL
+     */
+    public static final String LogpieWechatSupportUrlPrefix = LogpieBaseURL + "wechat/";
+
 }
